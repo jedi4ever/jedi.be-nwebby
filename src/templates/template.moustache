@@ -3,7 +3,7 @@
   <title>{{ event.title }}</title>
 </head>
 <body>
-{{> page}}
+{{> content}}
 
 {{#page.sidebar}}
 this is the sidebar

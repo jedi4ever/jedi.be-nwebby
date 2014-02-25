@@ -245,7 +245,8 @@ module.exports = function(grunt) {
   grunt.registerTask('live', [
     'clean:build',
     'copy',
-    'htmlmin',
+    //'htmlmin',
+    'webby',
     'imagemin',
     'uglify:devopsdays',
     'cssmin:devopsdays',

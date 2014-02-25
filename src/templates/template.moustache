@@ -1,0 +1,12 @@
+<html>
+<head>
+  <title>{{ event.title }}</title>
+</head>
+<body>
+{{> page}}
+
+{{#page.sidebar}}
+this is the sidebar
+{{/page.sidebar}}
+</body>
+</html>

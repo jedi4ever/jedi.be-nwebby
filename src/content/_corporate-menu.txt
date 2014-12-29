@@ -1,0 +1,43 @@
+<div id="dock">
+	<div>
+<a href="http://feeds.feedburner.com/jedi/IZwx"><img width="32px" height="32px" alt="rss feed" title="rss feed" src="/images/feed.png"></a>
+<a href="http://www.twitter.com/patrickdebois"><img width="32px" height="32px" alt="twitter" title="twitter" src="/images/twitter.png"></a>
+<a href="http://be.linkedin.com/in/patrickdebois"><img width="32px" height="32px" alt="linkedin" title="linkedin" src="/images/linkedin.png"></a>
+<a href="http://www.youtube.com/user/jedibvba"><img width="32px" height="32px" alt="youtube" title="youtube" src="/images/youtube.png"></a>
+<a href="http://delicious.com/jedi4ever"><img width="32px" height="32px" alt="delicious" title="delicious" src="/images/delicious.png"></a>
+<a href="http://www.flickr.com/photos/32118572@N06/"><img width="32px" height="32px"  alt="flickr" title="flickr" src="/images/flickr.png"></a>
+<a href="http://www.facebook.com/patrick.debois"><img width="32px" height="32px" alt="facebook" title="facebook" src="/images/facebook.png"></a>
+
+	</div>
+	<div>
+<br>
+		<ul>
+			<li>
+				<a href="/">Home</a>
+			</li>
+
+			<li>
+				<a href="/blog/">Blog</a>
+			</li>
+			<li>
+				<a href="/contact/">Contact</a>
+			</li>
+
+			<li>
+				<a href="/about/">About</a>
+			</li>
+		</ul>
+
+	</div>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="/presentations/">Presentations</a>
+			</li>
+			<li class="last">
+				<a href="/customers/">Customers</a>
+			</li>
+		</ul>
+	</div>
+</div>

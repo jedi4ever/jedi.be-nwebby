@@ -1,0 +1,12 @@
+   {{#page.related.length}}
+     <div class="span-7 last box ">
+
+     <h3>Related Posts</h3>
+       <ul>
+     {{#page.related}}
+       <li><a href="{{ url }}">{{ desc }}</a>
+     {{/page.related}}
+       </ul>
+     </div>
+   </div>
+   {{/page.related.length}}

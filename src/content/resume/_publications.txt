@@ -1,0 +1,6 @@
+---
+filter: textile
+---
+<h2>Publications:</h2>
+* 2010 - Book: Web Operations - Monitoring Chapter
+* 2008 - IEEE - Agile Infrastructure

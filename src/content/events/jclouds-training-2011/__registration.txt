@@ -1,0 +1,17 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Jclouds Training - Registration
+tags: 
+- jcloud
+- amazon
+- devops
+- course
+- training
+- ec2
+- java
+---
+### Sorry registration is not yet open.

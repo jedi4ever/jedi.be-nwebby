@@ -1,0 +1,29 @@
+---
+job: true
+period: "2006"
+customer: Sun Microsystems
+role: Technical Architect
+title: Request For Proposal NMBS Identity and Access Management
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/sun.jpeg" class="left"></div>
+		<div class="span-18 last">
+
+* The railway company "NMBS" made a Request For Proposal for Identity and Access Management. 
+* One of the major challenges was the introduction of disaster recovery capabilities in the Identity and Access Management solution. Due to the distributed nature of their enduser base this resulted in high failover clustering systems.
+* The proposal also provided a solution for creating different environments for development, testing, integration, production and disaster recovery. Hardware was virtualized using Solaris zones technology.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+sun identity management, solaris, zones, legato networker, SLA
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* Responsible for technical sizing and integration of all the components
+</div>
+</div>
+ 

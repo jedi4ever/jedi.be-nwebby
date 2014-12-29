@@ -1,0 +1,290 @@
+--- 
+title:      Controlling virtual Machines with an API
+created_at: 2009-11-17 10:57:20.783625 +01:00
+tags: 
+- ruby 
+- virtualbox
+- sysadmin
+- virsh 
+- vmware
+- ssh
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+<img src='/blog/wp-content/uploads/2009/11/controlling-virtual-machines.jpg' class='left'> In the old days, getting a new machine could take days. It required ordering of hardware and putting everything together. Now in the these virtual/cloud days, creating new machines is a breeze. While a lot of effort is spent on automating the installation of the machine OS and its application, I see that the provisioning of a virtual machine is often still done by the GUI. So why not automate that step too. 
+
+Depending on the virtualization platform you choose, different options exist ranging from GUI (HTTP Posts), Command Lines, SOAP, XML-RPC based or language bindings. What follows is a list of ways I found. Again my experience is that most programming oriented XML-RPC, SOPA or Language Bindings are a subset of the commandline interface. 
+
+In all cases, the commandline API is updated first and then the rest follows. Again, this strengthens me to say that when automating the creation within Ruby you should actually write a wrapper around the commandline API. Because the target audience is sysadmins, this makes a lot of sense. At the end I provide an example using VirtualBox CommandLine API wrapped in Ruby Language. 
+
+### Vmware
+[Vmware](http://www.vmware.com) is one of the most used virtualization tools. These are some of the ways it can be scripted: 
+
+- Vmware Vix API from Java - <http://www.jinvoke.com/Vmware-VIX-API-from-Java>
+- Vmware Infrastructure Java API - <http://sourceforge.net/projects/vijava/>
+- Vmware - Simple Creating using Perl <http://searchsystemschannel.techtarget.com/generic/0,295582,sid99_gci1243525,00.html#>
+- The VmPerl API and The Programming API (previously called C API) - <http://www.vmware.com/support/developer/vix-api/>
+- *Command line * - Using vmrun to Control Virtual Machines <http://www.vmware.com/pdf/vix180_vmrun_command.pdf>
+
+- GUI Vmware Studio - <http://blog.organicelement.com/2008/09/17/vmware-studio-automated-production-of-virtual-machines/>
+- Vmware - VMX Builder - <http://sanbarrow.com/vmxbuilder.html>
+- DC Grendel - VMBuilder - <http://dcgrendel.thewaffleiron.net/vmbuilder/>
+- Easy VmX.com - <http://www.easyvmx.com/>
+- VMBuilder - <http://www.vmxbuilder.com/vmx-builder/>
+
+### LibVirt
+[LibVirt](http://www.libvirt.org) tries to be virtual machine neutral: it has an abstraction for: Xen hypervisor on Linux and Solaris hosts, QEMU emulator, KVM Linux hypervisor, LXC Linux container system, OpenVZ Linux container system, User Mode Linux paravirtualized kernel. It also has experimental support for Virtualbox and Vmware ESX and GSX hypervisors but I found these unstable.
+
+- GUI Approach - <http://ovirt.org/>
+- Python, Perl, OCaml, Java , C# bindings  - <http://libvirt.org/bindings.html>
+- Ruby bindings - <http://libvirt.org/ruby/>
+- Command line using virsh - <http://www.redhat.com/docs/manuals/enterprise/RHEL-5-manual/Virtualization-en-US/ch-virt-task-virsh.html>
+
+At lot of enterprise management tools use libvirt to build on:
+
+- [Cobbler](https://fedorahosted.org/cobbler/) uses Libvirt for Building virtual machine with Koan and Cobbler - 
+<http://fedoraproject.org/wiki/FedoraXenQuickstartFC6#Building_a_Fedora_Guest_System_using_.27cobbler.27_and_.27koan.27>
+- [OpenQrm](http://openqrm.org) has an extensive CLI which uses Libvirt 
+- [Eucalyptus](http://open.eucalyptus.com/wiki/Documentation) uses Libvirt internally to provide a Cloud API
+
+### Solaris Zones
+Sun take another approach with their zones. They provide an excellent command API  to manage their zones. <http://www.sun.com/bigadmin/content/zones/>. Beautifully for scripting.
+
+### Controlling Physical Machines 
+Even non virtual machines can be controlled: you can use wakeonlan, ipmitool or some management interface to power up/down the machines. Cobbler has this kind of powermanagement intergface <https://fedorahosted.org/cobbler/wiki/PowerManagement> to manage bullpap, wti, apc_snmp, ether-wake, ipmilan, drac, ipmitool, ilo, rsa , lpar, bladecenter. 
+
+### Virtualbox
+[Virtualbox](http://www.sun.com/software/products/virtualbox/get.jsp) has one of the most excellent command Line available. And they generate their SOAP API from the same source!
+
+- Virtualbox Command Line- Software Developer Kit SDK (Download) - <http://www.virtualbox.org/wiki/Downloads>
+
+#### Example of the Soap Interface 
+<% codify(:lang => "ruby" , :line_nubers => "inline") do %>
+require 'soap/wsdlDriver'
+require 'pp'
+
+WSDL_URL="vboxwebService.wsdl"
+
+soap = SOAP::WSDLDriverFactory.new(WSDL_URL).create_rpc_driver
+soap.wiredump_dev=STDERR
+#soap = SOAP::WSDLDriverFactory.new(WSDL_URL).create_rpc_driver("vboxService", "vboxServicePort")
+#pp soap.methods
+vbox=soap.IWebsessionManager_logon({:username => '', :password => ''})
+puts "Sessions"+vbox.returnval
+version=soap.IVirtualBox_getVersion({:_this => vbox.returnval})
+puts version.returnval
+disks=soap.IVirtualBox_getHardDisks({:_this => vbox.returnval})
+diskids=disks.returnval
+diskids.each do |diskid| 
+  type=soap.IHardDisk_getType({:_this => diskid })
+  size=soap.IHardDisk_getLogicalSize({:_this => diskid })
+  location=soap.IMedium_getLocation({:_this => diskid })
+  puts diskid+"-"+type.returnval+"-"+size.returnval+location.returnval
+end
+
+<% end %>
+
+#### My commandline based abstraction in Ruby
+
+<% codify(:lang => "ruby", :line_numbers => "inline") do %>
+require "rubygems"
+require "open4"
+require "pp"
+require "systr/commands"
+
+#if disk has not been specified with fullname then is stores it in the default VBOX Location
+
+def wait_for_state_vmachine(vmname, state, options={ })
+  defaults={ :timeout => 1000 , :pollrate => 5 }
+  options=defaults.merge(options) 
+  
+  begin
+    Timeout::timeout(options[:timeout]) do
+    while true do
+        begin
+          puts "polling state"
+          actualstate=state_vmachine(vmname)
+          if actualstate==state
+            return true
+          else
+            puts "Currentstate: "+actualstate
+            sleep options[:pollrate]
+          end 
+        end
+      end
+    end
+  rescue Timeout::Error
+    raise 'timeout waiting for machine to reach state #{state}'
+  end
+  
+end
+
+def state_vmachine(vmname)
+  result=Command.execute("VBoxManage showvminfo #{vmname} --machinereadable|grep VMState=|cut -d '=' -f 2|cut -d '"+'"'+"' -f 2")
+  state=result.stdout.to_s
+  return state
+end
+
+
+def remove_vmachine(vmname,options={})
+
+  defaults={ :disk => vmname }
+
+  options=defaults.merge(options)
+
+    if (state_vmachine(vmname)!="poweroff")
+      Command.comment("Can't remove a running machine")
+      throw "machine is still running"
+    end
+    
+    Command.execute("VBoxManage modifyvm #{vmname} -sataport1 none")
+    #Command.execute("VBoxManage snapshot #{vmname} discardcurrent --all")
+
+    Command.execute("VBoxManage closemedium disk #{vmname}.vdi")
+  
+    Command.execute("VBoxManage unregistervm #{vmname} --delete")
+    
+  
+  #first stop machine
+  
+  #then unregister
+  
+  #then remove it?
+end
+
+def exists_vmachine(vmname)
+    return Command.test("VBoxManage showvminfo #{vmname}")
+end
+
+def floppy_kickstart_vmachine (vmname)
+  #http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html
+  Command.execute("VBoxManage controlvm #{vmname} keyboardputscancode 26 17 31 16 2d 39 25 1f 0d 21 26 18 19 19 15 1c")
+
+end
+
+def add_floppy_vmachine(vmname,floppyfile)
+  Command.execute("VBoxManage modifyvm #{vmname} -floppy #{floppyfile}")
+end
+
+def create_vmachine(vmname,options={})
+
+  defaults={:ostype => 'RedHat', :memory => '384', :disk => vmname, :net => 'pxenet'}
+   
+
+  options=defaults.merge(options)
+
+  Command.execute("VBoxManage createvm -name #{vmname} -ostype #{options[:ostype]} -register")
+# Trying hostonly 
+#  Command.execute("VBoxManage modifyvm #{vmname} -nic1 nat -nic2 intnet -intnet2 #{options[:net]}")
+# http://www.virtualbox.org/manual/UserManual.html#networkingdetails
+
+  
+  Command.execute("VBoxManage modifyvm #{vmname} #{options[:network]}")
+
+  #TODO: VBoxManage modifyvm puppet1 -macaddress1 aaaabbbbcc01
+
+
+  Command.execute("VBoxManage modifyvm #{vmname} -memory #{options[:memory]}")
+  Command.execute("VBoxManage modifyvm #{vmname} -sata on -sataport1 #{options[:disk]}.vdi -sataportcount 1")
+
+  unless options[:dvd].nil?
+    Command.execute("VBoxManage modifyvm #{vmname} -dvd #{options[:dvd]}")
+  else
+    Command.execute("VBoxManage modifyvm #{vmname} -dvd none")
+  end
+  
+  unless options[:floppy].nil?
+    Command.execute("VBoxManage modifyvm #{vmname} -floppy #{options[:floppy]}")
+  else
+    Command.execute("VBoxManage modifyvm #{vmname} -floppy empty")
+    
+  end
+
+  Command.execute("VBoxManage modifyvm #{vmname} --vram 32")
+  Command.execute("VBoxManage modifyvm #{vmname} --bioslogodisplaytime 0")
+#  Command.execute("VBoxManage modifyvm #{vmname} --bioslogoimagepath path-to-256-bmp")
+
+  Command.execute("VBoxManage modifyvm #{vmname} --acpi on")
+  Command.execute("VBoxManage modifyvm #{vmname} --ioapic on")
+
+  Command.execute("VBoxManage modifyvm #{vmname} -boot1 disk")
+  Command.execute("VBoxManage modifyvm #{vmname} -boot2 dvd")
+  Command.execute("VBoxManage modifyvm #{vmname} -boot3 net")
+
+  #suppress interactive messages
+  Command.execute("VBoxManage setextradata global 'GUI/RegistrationData' 'triesLeft=0'")
+  Command.execute("VBoxManage setextradata global 'GUI/UpdateDate' '1 d, 2009-09-20'")
+  Command.execute("VBoxManage setextradata global 'GUI/SuppressMessages' ',confirmInputCapture,remindAboutAutoCapture'")
+
+end
+
+def remove_dhcp
+  result=Command.execute("VBoxManage list dhcpservers| grep NetworkName:|cut -d '-' -f 2").stdout
+  result.each do |interface|
+    Command.execute("VBoxManage  dhcpserver remove --ifname #{interface}")
+  end
+
+#  ERROR: Assertion failed at '/Users/vbox/tinderbox/3.0-mac-rel/src/VBox/Main/VirtualBoxImpl.cpp' (1706) in virtual nsresult VirtualBox::SetExtraData(const PRUnichar*, const PRUnichar*).
+#  Unexpected exception 'N3xml12EIPRTFailureE' (Runtime error: -250 (Unresolved (unknown) device i/o error.)).
+#  Please contact the product vendor!
+#  Details: code NS_ERROR_FAILURE (0x80004005), component VirtualBox, interface IVirtualBox, callee nsISupports
+#  Context: "EnableStaticIpConfig(Bstr(pIp), Bstr(pNetmask))" at line 267 of file VBoxManageHostonly.cpp
+
+  Command.execute("VBoxManage hostonlyif ipconfig vboxnet0 --ip 192.168.10.1 --netmask 255.255.255.0")
+  
+end
+
+def start_vmachine(vmname)
+  Command.comment("starting virtual machine #{vmname}")
+  if ENV['SYSTR_HEADLESS'].nil?
+    Command.execute("VBoxManage startvm  #{vmname}")  
+  else
+    system("VBoxHeadless -s #{vmname} --vrdp off &") 
+    sleep 4 
+  end
+end
+
+def stop_vmachine(vmname)
+  Command.comment("stopping virtual machine #{vmname}")
+  Command.execute("VBoxManage controlvm  #{vmname} poweroff")    
+end
+
+def remove_snapshot_vmachine(vmname,snapname)
+  Command.execute("VBoxManage snapshot #{vmname} discard #{snapname}")  
+
+end
+
+def create_snapshot_vmachine(vmname,snapname)
+  Command.execute("VBoxManage snapshot #{vmname} take #{snapname}")  
+end
+
+def ssh_enable_vmachine(vmname, options={})
+  defaults={:localport => 2222 , :remoteport => 22}
+  options=defaults.merge(options)
+  
+  Command.execute("VBoxManage setextradata #{vmname} 'VBoxInternal/Devices/pcnet/0/LUN#0/Config/ssh/HostPort' #{options[:localport]}")
+  Command.execute("VBoxManage setextradata #{vmname} 'VBoxInternal/Devices/pcnet/0/LUN#0/Config/ssh/GuestPort' #{options[:remoteport]}")
+  Command.execute("VBoxManage setextradata #{vmname} 'VBoxInternal/Devices/pcnet/0/LUN#0/Config/ssh/Protocol' TCP")
+  return options[:port]
+end
+
+
+
+<% end %>
+
+

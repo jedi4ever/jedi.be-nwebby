@@ -1,0 +1,43 @@
+---
+title: "Adding Avi, MKV, Xvid ... to iTunes. It works!"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/11/07/adding-avi-mkv-xvid-to-itunes-it-works/
+created_at: 2008-11-07 12:29:54.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - mkv
+   - xvid
+   - itunes
+   - avi
+---
+<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/itunes-logo.jpg" height="63" alt="" width="111" />
+Let me start by saying that Itunes is probably not the best media management project. BUT! It is the one best integrated on the MacOSX: if you have iphone, appletv or ipod it still is a no brainer application.
+<br>
+Still the world does not revolve around Mac's alone or for that matter on MOV or MP4 files. In the wild, it's avi, xvid or mkv that rule! While you can use <a href="http://perian.org/">Perian</a> to get these files to play by the default Quicktime, Itunes by default refuses this formats to be imported in Itunes. But a little searching turns up the solution...
+<br>
+<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/xvid-logo.jpg" height="46" alt="" width="97" /><img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/mkvaz9.jpg" height="65" alt="" width="65" />
+Say you have file <em>my-super-movie.xvid</em>, then you can easily get Itunes to accept this by opening a terminal and setting the filetype to 'MooV' and creator to 'TVOD'.
+<tt>
+$ SetFile -t "MooV" -c "TVOD" my-super-movie.xvid</tt>
+<br>
+Thats all: Now you can drag it to your Itunes and have it accept it! But also frontrow will also play this.
+Note: appletv will not play them automatically in streaming. If you copy your files to the appletv and install the perian plugin for it that they will get synched aswell.
+<br>
+<em>So where do I get this 'SetFile'?</em>
+<br>
+If you have a history of updates, changes might be that this <em>Setfile</em> does already exist on your disk. Otherwise you can get it by installing the <a href="http://developer.apple.com/tools/">Apple Developers Tools</a>. Or extracting it with <a href="http://www.charlessoft.com/">pacifist</a> from the Apple Developers package without installing the complete toolset.
+<br>
+<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/videodrivelogo.gif" height="62" alt="" width="192" />Another approach is to install the excellent <a href="http://www.aroona.net/VideoDrive/Home.html">VideoDrive</a> application that will do the same trick but will also add metadata in your Itunes.
+<br>
+<strong></strong>
+<br>
+<strong><span>Related postings:</span></strong>
+<ul>
+	<li><a href="http://www.lasseman.se/2008/04/05/add-avi-mkv-or-other-file-formats-into-itunes/">http://www.lasseman.se/2008/04/05/add-avi-mkv-or-other-file-formats-into-itunes/</a></li>
+	<li><a href="http://forums.cnet.com/5208-6126_102-0.html?forumID=10&amp;threadID=296669&amp;messageID=2784719">http://forums.cnet.com/5208-6126_102-0.html?forumID=10&amp;threadID=296669&amp;messageID=2784719</a></li>
+</ul>

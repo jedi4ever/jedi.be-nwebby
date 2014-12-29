@@ -1,0 +1,45 @@
+---
+period: "2007"
+customer: Fedict (Federal ICT)
+role: Technical Project Manager/Technical Consultant
+title: Migration of applications to a new data center and implement a new service management organization
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/fedict.jpeg" class="left"></div>
+		<div class="span-18 last">
+* Fedict in the past only did contract management. Because of the inflexibility of creating a common platform, the decision was made to migrate all existing applications to a distributed datacenter with dedicated infrastructure. This datacenter will also host the portal of Belgium and all inter government SOA communication hubs.
+* In order to migrate several internal processes need to be implemented, both in service delivery as in service management. ITIL was used as the preferred methodology. Still the methodology is only a guidance, the whole company was changed in order to handle this. 
+* Due to the complex nature of the applications and lack of clear and current documentation, also the project methodology slowly embraced a more iterative approach: timeboxing, iterative design and dedicated team were chosen to better deliver in time of the 'political' milestones.
+* The datacenter technology was based upon Redhat Xen virtualization, resulting in separated but centrally managed infrastructure. Installation and configuration of not only the operating system but also the Oracle and Bea Weblogic was automated and integrated in the test cycle.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+weblogic, oracle, zones, solaris, itil, tdd, agile, scrum, xen, identity and access management, san, soa, certificates, e-id
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Service Manager_
+
+* integrate the technical delivery process within the organization. Introduce agility as a concept within the organization
+* define service level agreements
+* define asset management and configuration management
+
+_Architect_
+
+* design the server level of the new datacenter (OS, Web, App, Database)
+* coach the technical team from within inside the organization
+
+_Tester_
+* verify migration readyness of application to the new datacenter
+* setup a test infrastructure
+* interface with development and sysadmin for defining the necessary tests
+
+_Project Manager_
+* followup of migration technical team
+* create bill of material 
+
+</div>
+</div>

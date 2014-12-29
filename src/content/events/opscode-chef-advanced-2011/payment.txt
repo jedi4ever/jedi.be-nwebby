@@ -1,0 +1,54 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Advanced Training - Payment
+dirty: true
+---
+<p>Training registration is for two days and includes the training material, coffee, thee, soft drinks, water and 2 lunches .</p>
+
+<p>Dinner on Monday evening is not included as this will be paid at the restaurant itself by each individual.</p>
+
+<p>Traveling and lodging expenses are not included.</p>
+
+<p>The registration fee for attending the training on <strong>3 and 4 February 2011</strong>:</p>
+
+<ul>
+<li><del>Early Bird: € 145.20 (incl. 21% Taxes/VAT) - Valid Until 15 January 2011</del></li>
+<li>Regular Fee: € 169.40 (incl. 21% Taxes/VAT)</li>
+</ul>
+
+
+<p>We provide two options for payment</p>
+
+<h4>Option 1: Bank payment (preferred)</h4>
+
+<p>Jedi BVBA,
+Quote 29,
+9290 Berlare, Belgium</p>
+
+<p>Bank (Belgium): BNP Paribas , Emiel Hertecantlaan 20, 9290 Berlare, Belgium</p>
+
+<ul>
+<li>Belgium: BNP Paribas 293-0198783-85</li>
+<li>EU zone: IBAN BE89 2930 1987 8385 BIC GEBABEBB</li>
+</ul>
+
+
+<p><em>Mention Chef Fundamentals + Participant name(s)</em></p>
+
+<h4>Option 2: Payment via Paypal/Visa</h4>
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="9BJUQWV36U232">
+<input type="image" src="https://www.paypal.com/en_US/BE/i/btn/btn_paynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+
+<p><a href="mailto:Patrick.Debois@jedi.be?subject=Chef+Advanced+Payment">Drop me an email</a> if you have more questions.</p>
+
+<p><em>Your registration is only valid if payment has been received.</em></p>

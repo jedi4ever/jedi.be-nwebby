@@ -1,0 +1,366 @@
+--- 
+title:      Libvirt 0-8-6 and Vmware Esx
+created_at: 2010-12-08 09:28:25.839558 +01:00
+tags: 
+- libvirt
+- vmware
+- vmware esx
+- vpshere
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+[Libvirt](http://www.libvirt.org) is a great abstraction library for working in a unified way with different virtualization platforms. It provides a way to interact with Xen, Qemu, KVM, LXC, Openvz, Usermode Linux, Virtualbox and ... you guessed it Vmware ESX. 
+
+With the recent version 0.8.6 several things changed for the Vmware Esx level. In this blog post, I'll explore my findings. See also the [libvirt esx page](http://libvirt.org/drvesx.html)
+
+My conclusion is that the support for esx is progressing in libvirt, but quite not there yet. Powershell or the [VMware VI/Vsphere Java API](http://vijava.sourceforge.net/) is still a better option. 
+
+#### Getting/Compiling libvirt with esx support
+Several OS platforms provide libvirt as a package. The propagation of the new version takes some time off course. I made the virsh client work under both Ubuntu and Macosx: 
+
+_Macosx_: libvirt used to be [a pain to compile on mac](http://www.mattvsworld.com/blog/2010/01/compiling-libvirt-and-ruby-libvirt-on-mac-os-x/). Thanks to [Mitchell Hashimoto](http://mitchellhashimoto.com/) author of the excellent tool [vagrant](http://vagrantup.com) I used [homebrew](https://github.com/mxcl/homebrew) and provides the latest version 0.8.3 straight off with esx support. 
+
+<% codify(:shell) do %>
+$ brew install libvirt
+<% end %>
+
+_Ubuntu_ : I tried Ubuntu 10.10 and it has 0.8.3 when you install the latest package of libvirt, and it doesn't have esx enabled by default:
+*using the rpm*
+<% codify(:shell) do %>
+$ sudo apt-get install libvirt-bin
+$ virsh -version
+0.8.3
+$ virsh -c esx://192.168.2.240/?no_verify=1
+error: invalid argument in libvirt was built without the 'esx' driver
+error: failed to connect to the hypervisor
+<% end %>
+
+*compiling from source*
+
+<% codify(:shell) do %>
+$ wget http://libvirt.org/sources/libvirt-0.8.6.tar.gz
+$ tar -xzvf libvirt-0.8.6.tar.gz
+$ cd libvirt-0.8.6
+ 
+# You need a bunch of dependencies before it can properly compile
+
+#checking for XMLRPC... checking libxml2 xml2-config >= 2.6.0 ... configure: error: Could not find libxml2 anywhere (see config.log for details).
+$ sudo apt-get install libxml2-dev
+
+#configure: error: libnl >= 1.1 is required for macvtap support
+$ apt-get install libnl-dev
+
+#configure: error: You must install the GnuTLS library in order to compile and run libvirt
+$ sudo apt-get install gnutls-bin gnutls-dev
+
+#configure: error: You must install device-mapper-devel/libdevmapper >= 1.0.0 to compile libvirt
+$ sudo apt-get install libdevmapper-dev libdevmapper
+
+checking for LIBCURL... configure: libcurl is required for the ESX driver, disabling it
+$ sudo apt-get install libcurl4-openssl-dev
+
+$ ./configure --with-esx --prefix=/opt/libvirt
+$ make
+$ sudo make install
+
+# This will make install virsh in in /opt/libvirt/bin/virsh
+
+<% end %>
+
+#### Connecting to an esx server
+It took me a while to find the correct connect string. Because you are not connecting through libvirtd you have to use double slashes esx:// instead of tripple slashes esx:/// to connect. Also because I was using a test,self signed certificate I needed to instruct virsh to ignore my certificate with the ?no_verify=1 option.
+
+You can also connect over ssh , for more options [check the libvirt esx page](http://libvirt.org/drvesx.html). 
+
+<% codify(:shell) do %>
+
+$ virsh -c esx:///192.168.2.240
+error: unable to connect to '/usr/local/var/run/libvirt/libvirt-sock', libvirtd may need to be started: No such file or directory
+error: failed to connect to the hypervisor
+
+$ virsh -c esx://192.168.2.240
+Enter username for 192.168.2.240 [root]: 
+Enter root's password for 192.168.2.240: 
+error: internal error curl_easy_perform() returned an error: Peer certificate cannot be authenticated with known CA certificates (60) : SSL certificate problem, verify that the CA cert is OK. Details:
+error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
+error: failed to connect to the hypervisor
+
+$ virsh -c esx://192.168.2.240/?no_verify=1
+Enter username for 192.168.2.240 [root]: 
+Enter root's password for 192.168.2.240: 
+Welcome to virsh, the virtualization interactive terminal.
+
+<% end %>
+
+#### Looking around on esx server
+*host information*
+<% codify(:shell) do %>
+
+virsh # nodeinfo
+CPU model:           Intel Core i7 CPU 860 @ 2.80GHz
+CPU(s):              4
+CPU frequency:       2798 MHz
+CPU socket(s):       4
+Core(s) per socket:  1
+Thread(s) per core:  1
+NUMA cell(s):        1
+Memory size:         2096128 kB
+
+virsh #  iface-list
+error: Failed to list active interfaces
+error: this function is not supported by the connection driver: virConnectNumOfInterfaces
+
+<% end %>
+
+*domain information*
+
+<% codify(:shell) do %>
+virsh # list --all
+ Id Name                 State
+----------------------------------
+ 96 puppet-server.example.org running
+
+virsh # dominfo puppet-server.example.org
+Id:             96
+Name:           puppet-server.example.org
+UUID:           564dab50-63a0-8b4f-a1f8-20e4d36efc3b
+OS Type:        hvm
+State:          running
+CPU(s):         1
+Max memory:     786432 kB
+Used memory:    786432 kB
+Persistent:     yes
+
+virsh # dump puppet-server.example.org puppet.xml
+error: Failed to core dump domain puppet-server.example.org to puppet.xml
+error: this function is not supported by the connection driver: virDomainCoreDump
+
+virsh # dumpxml puppet-server.example.org
+<domain type='vmware' id='96'>
+  <name>puppet-server.example.org</name>
+  <uuid>564dab50-63a0-8b4f-a1f8-20e4d36efc3b</uuid>
+  <memory>786432</memory>
+  <currentMemory>786432</currentMemory>
+  <vcpu>1</vcpu>
+  <os>
+    <type arch='i686'>hvm</type>
+  </os>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <disk type='file' device='disk'>
+      <source file='[datastore1] puppet-server.example.org/puppet-server.example.org-000001.vmdk'/>
+      <target dev='sda' bus='scsi'/>
+      <address type='drive' controller='0' bus='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <source file='[datastore1] ubuntu-10.10-server-i386.iso'/>
+      <target dev='hda' bus='ide'/>
+      <address type='drive' controller='0' bus='0' unit='0'/>
+    </disk>
+    <controller type='scsi' index='0' model='lsilogic'/>
+    <controller type='ide' index='0'/>
+    <interface type='bridge'>
+      <mac address='00:0c:29:6e:fc:3b'/>
+      <source bridge='VM Network'/>
+      <model type='e1000'/>
+    </interface>
+    <input type='mouse' bus='ps2'/>
+    <graphics type='vnc' port='5901' autoport='no'/>
+  </devices>
+</domain>
+
+virsh # vncdisplay puppet-server.example.org
+:1
+
+<% end %>
+
+*storage information*
+<% codify(:shell) do %>
+virsh # pool-list
+Name                 State      Autostart 
+-----------------------------------------
+datastore1           active     yes
+
+virsh # pool-info  datastore1
+Name:           datastore1
+UUID:           5c95caef-e8bd-75da-3d51-8ba2c4849229
+State:          running
+Persistent:     yes
+Autostart:      yes
+Capacity:       28.75 GB
+Allocation:     22.91 GB
+Available:      5.84 GB
+
+virsh # vol-list datastore1
+Name                 Path                                    
+-----------------------------------------
+esxconsole-4cd2734f-bd5f-e5f9-9a38-000c29350f5a/esxconsole.vmdk [datastore1] esxconsole-4cd2734f-bd5f-e5f9-9a38-000c29350f5a/esxconsole.vmdk
+puppet-server.example.org/puppet-server.example.org-000001.vmdk [datastore1] puppet-server.example.org/puppet-server.example.org-000001.vmdk
+puppet-server.example.org/puppet-server.example.org.vmdk [datastore1] puppet-server.example.org/puppet-server.example.org.vmdk
+ubuntu-10.10-server-i386.iso [datastore1] ubuntu-10.10-server-i386.iso
+
+
+virsh # vol-dumpxml "[datastore1] puppet-server.example.org/puppet-server.example.org-000001.vmdk"
+<volume>
+  <name>puppet-server.example.org/puppet-server.example.org-000001.vmdk</name>
+  <key>6000c29d-0c39-c276-a97a-5af3d9b806c9</key>
+  <source>
+  </source>
+  <capacity>10240000000</capacity>
+  <allocation>1997537280</allocation>
+  <target>
+    <path>[datastore1] puppet-server.example.org/puppet-server.example.org-000001.vmdk</path>
+    <format type='vmdk'/>
+    <permissions>
+      <mode>00</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+  </target>
+</volume>
+<% end %>
+
+
+#### Creating/Removing a new esx volume 
+This is what a new volume xml file looks like. Note that the capacity and allocation had to be the same: otherwise I would get an error
+<% codify(:shell) do %>
+error: internal error Unsupported capacity-to-allocation relation
+<% end %>
+
+So I found no way to create incremental vmdk files.
+
+<% codify(:xml) do %>
+<volume>
+  <name>test.example.org/test.example.org.vmdk</name>
+  <key>6000c29d-0c39-c276-a97a-5af3d9b806c1</key>
+  <source>
+  </source>
+  <capacity>10240000000</capacity>
+  <allocation>10240000000</allocation>
+  <target>
+    <path>[datastore1] test.example.org/test.example.org.vmdk</path>
+    <format type='vmdk'/>
+    <permissions>
+      <mode>00</mode>
+      <owner>0</owner>
+      <group>0</group>
+    </permissions>
+  </target>
+</volume>
+<% end %>
+
+<% codify(:shell) do %>
+virsh # vol-create --file disk.xml --pool datastore1
+Vol test.example.org/test.example.org.vmdk created from disk.xml
+<% end %>
+
+Removing the volume didn't work though:
+<% codify(:shell) do %>
+virsh # vol-delete "test.example.org/test.example.org.vmdk"
+error: Failed to delete vol [datastore1] test.example.org/test.example.org.vmdk
+error: this function is not supported by the connection driver: virStorageVolDelete
+
+virsh # vol-wipe "test.example.org/test.example.org.vmdk"
+error: Failed to wipe vol [datastore1] test.example.org/test.example.org.vmdk
+error: this function is not supported by the connection driver: virStorageVolWipe
+<% end %>
+
+#### Creating/Removing a new esx domain 
+I adapted this xml file from the existing domain. Note that the memory needs to be multiple of 4096.
+
+<% codify(:xml) do %>
+<domain type='vmware'>
+  <name>test.example.org</name>
+  <memory>262144</memory>
+  <vcpu>1</vcpu>
+  <os>
+    <type arch='i686'>hvm</type>
+  </os>
+  <clock offset='utc'/>
+  <on_poweroff>destroy</on_poweroff>
+  <on_reboot>restart</on_reboot>
+  <on_crash>destroy</on_crash>
+  <devices>
+    <disk type='file' device='disk'>
+      <source file='[datastore1] test.example.org/test.example.org.vmdk'/>
+      <target dev='sda' bus='scsi'/>
+      <address type='drive' controller='0' bus='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <source file='[datastore1] ubuntu-10.10-server-i386.iso'/>
+      <target dev='hda' bus='ide'/>
+      <address type='drive' controller='0' bus='0' unit='0'/>
+    </disk>
+    <controller type='scsi' index='0' model='lsilogic'/>
+    <controller type='ide' index='0'/>
+    <interface type='bridge'>
+      <source bridge='VM Network'/>
+      <model type='e1000'/>
+    </interface>
+    <input type='mouse' bus='ps2'/>
+    <graphics type='vnc' port='5902' autoport='no' passwd='mypassword'/>
+  </devices>
+</domain>
+<% end %> 
+
+I first tried to _create_ the new domain: 
+
+<% codify(:shell) do %>
+virsh # create test-domain.xml
+error: Failed to create domain from new.xml
+error: this function is not supported by the connection driver: virDomainCreateXML
+<% end %>
+
+I found a blogpost that explains there [is a difference between create and define](http://osdir.com/ml/libvir-list/2010-12/msg00317.html): Create creates a transient domain and starts it
+ESX(i) doesn't have this transient semantic for it's domains,therefore libvirt can't support virDomainCreateXML for it.
+
+<% codify(:shell) do %>
+virsh # define test-domain.xml
+Domain test.example.org defined from test-domain.xml
+<% end %>
+
+<% codify(:shell) do %>
+virsh # start test.example.org
+Domain test.example.org started
+
+#Snapshot it
+virsh # snapshot-create test.example.org
+Domain snapshot 1291744079 created
+
+#List the snapshots
+virsh # snapshot-list test.example.org
+ Name                 Creation Time             State
+---------------------------------------------------
+ 1291744079           2010-11-28 22:46:24 +0100 running
+
+#Now we stop it
+virsh # destroy test.example.org
+Domain test.example.org destroyed
+
+#Now remove the definition
+virsh # undefine test.example.org
+Domain test.example.org undefined
+
+<% end %>
+
+#### Tips and gotchas
+enable debugging to see what's happening with setting the LIBVIRT_DEBUG flag
+<% codify(:shell) do %>
+$ export LIBVIRT_DEBUG=debug 
+<% end %>
+
+or starting virsh in debug mode
+
+<% codify(:shell) do %>
+$ virsh -d 5
+<% end %>
+
+On my mac I had to set the TMP_DIR variable to /tmp otherwise I would get an error :
+<% codify(:shell) do %>
+error: /var/folders/o2/o205qRiGGyiU67-ImZI4iU+++TI/-Tmp-//virshY3WtwS.xml: temporary filename contains shell meta or other unacceptable characters (is $TMPDIR wrong?)
+<% end %>

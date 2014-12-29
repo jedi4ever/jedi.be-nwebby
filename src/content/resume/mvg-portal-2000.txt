@@ -1,0 +1,40 @@
+---
+job: true
+period: "2000 - 2001"
+customer: Ministerie Vlaamse Gemeenschap (SBS)
+role: System Architect/Technical Project Manager
+title: Portaal www.vlaanderen.be
+---
+
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/mvg.jpg" class="left"></div>
+		<div class="span-18 last">
+* To unify all internet related services to citizens and companies, a new internet Portal was concieved. This was the start for an e-government platform towards the public. 
+* At the infrastructure level, the demand of a 1000 concurrent requests was requested .Given the visibility of this new project, a strong focus on security and scalability was needed.
+* Internet connectivity was made redundant using multiple accesspoints. Firewalls were  installed at two different layers (Cisco Pix and Checkpoint Firewall). On each server additional host intrusion detection was installed and this was also done at the network level.
+* Application redundancy and scalability was achieved using loadbalancers (Cisco) and clustered application servers (Iplanet). For dynamic data was stored within an database (Oracle). To achieve greater scalability, content proxy servers were installed to offload the application servers.
+* All content was first managed from Siebel Applications, later converted to dedicated custom applications. To be able to search  a search engine was installed.
+* The whole infrastructure was developed, tested and installed within 5 months time.
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+webtrends, compass server, sun application server, cisco pix, cisco loadbalancer, checkpoint firewall, siebel</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* Design and build Portal infrastructure (Web, Application, Proxy, Firewall, IDS)
+* Testing environment setup
+* Application, Network and Server integration
+
+_Tester_
+* Provide and approve test plans for applications that rely on the portal integration
+* Complete creation of a test environment
+* Run load testing, security testing and failover scenario's
+
+_Project Management_
+  * Plan and follow up of project plan.
+  * Technical lead for server and security infrastructure
+</div>

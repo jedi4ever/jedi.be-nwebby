@@ -1,0 +1,13 @@
+---
+filter: textile
+---
+<h2>Professional References</h2>
+* Maarten Verwaest - Informatiebeheer Cluster Manager (VRT Medialab)
+* Eric Roelants - Project Manager (Eurocontrol)
+* Jean-Marie Arnhem - Operation Manager (Federation of Notaries)
+* Nicolas Locoge - Service Level Manager (Fedict)
+* Peter Strickx - Chief Federal Architect (Fedict)
+* Rudy Van Hoe - Project Manager (Sun Microsystems)
+* Jan Van Haecht - CTO (Deloitte)
+* Frank Hamerlinck - CTO (Porthus)
+* Mark Jacobs - Service Manager (Telindus)

@@ -1,0 +1,42 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Build Engineer Bootcamp - Program
+tags: 
+- continuous integration
+- build engineer
+- build
+- continuous delivery
+- citcon
+- hudson
+- course
+- training
+---
+Topics covered include:
+###Day 1 : 
+_Focus Build tools_
+
+#### Introductions
+* Workshop 1 – Running Builds
+* Workshop 2 – Creating a Basic Build
+* Workshop 3 – Unit Test Automation
+* Workshop 4 – Static Code Analysis
+* Workshop 5 – Independence
+* Workshop 6 – Repeatability
+* Workshop 7 – Portability
+* Workshop 8 – Build System Analysis
+
+### Day 2: 
+_Focus Continuous Integration Systems_
+
+* Workshop 1 – What is Continuous Integration?
+* Workshop 2 – Configuring CI Builds
+* Workshop 3 – Adding New Builds
+* Workshop 4 – Installing A CI Server
+* Workshop 5 – Daily Builds vs. Checkin Builds
+* Workshop 6 – Notification Mechanisms
+* Workshop 7 – Load Distribution
+* Workshop 8 – Load Distribution, II

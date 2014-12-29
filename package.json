@@ -1,6 +1,6 @@
 {
-  "name": "devopsdays-node",
-  "version": "0.0.0",
+  "name": "jedi.be-node",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -23,9 +23,11 @@
     "grunt-contrib-clean": "^0.5.0",
     "grunt-contrib-connect": "^0.7.0",
     "grunt-contrib-copy": "^0.5.0",
-    "grunt-hashres": "^0.4.1"
+    "grunt-hashres": "^0.4.1",
+    "nwebby": "^1.0.0"
   },
   "dependencies": {
+    "async": "^0.4.0",
     "js-yaml": "^3.0.1",
     "marked": "^0.3.1",
     "mustache": "^0.8.1"

@@ -1,0 +1,234 @@
+---
+title: Patching Ruby USB on Mac OSX
+tags: 
+- usb
+- ruby-usb
+- libusb
+- macosx
+- Errno::ERANGE
+blog_post: true
+created_at: 2009-11-11 13:38:04.0 +00:00
+filter: 
+- erb
+- markdown
+---
+When my son got himself Buzz Quiz, it struck me that there was no way to create your own quiz.
+So that got me started on reading up on how I could use the Buzz Quiz controllers on my Mac.
+
+### Selecting a toolkit
+All effort has gone to libusb. But i did not want to into C code again. This links sums up a list of related wrappers or bindings: <http://mcuee.blogspot.com/2009/05/libusb-related-wrappers-or-bindings.html>
+
+I've considered the following options:
+
+- libusbjava:  <http://libusbjava.sourceforge.net/wp/> java has javax.usb but nothing that works on Mac
+- jusb: <http://jusb.sourceforge.net/>
+- libusb: sorry but i did not want code C code again
+- apple I/O Kit: apple includes a toolkit for USB programming,  but would make it more mac specific
+- python-usb: not so much for me, as I don't do much pythoin programming
+- ruby-usb: <http://www.a-k-r.org/ruby-usb/> hey I like ruby, why not
+
+### Installing libUSB (using macports)
+ruby-usb requires you to have libusb <http://www.libusb.org/> . This library has a current version of 1.0.3 , this version version not compatible with ruby-usb. Luckily macports still has the older versions available for us. The version we need is the _libusb-compat_ . Note: that my macports where installed in /opt/local so you might need to change some paths.
+
+Lets list the versions available by macports:
+```shell
+$ sudo /opt/local/bin/port list |grep -i usb
+usbprog                        @0.1.8          cross/usbprog
+libusb                         @1.0.3          devel/libusb
+libusb-compat                  @0.1.3          devel/libusb-compat
+libusb-legacy                  @0.1.12         devel/libusb-legacy
+```
+
+We install the libusb-compat version:
+```shell
+$ sudo /opt/local/bin/port install  libusb-compat
+ --->  Computing dependencies for libusb-compat
+ --->  Fetching libusb
+ --->  Verifying checksum(s) for libusb
+ --->  Extracting libusb
+ --->  Applying patches to libusb
+ --->  Configuring libusb
+ --->  Building libusb
+ --->  Staging libusb into destroot
+ --->  Installing libusb @1.0.3_0
+ --->  Activating libusb @1.0.3_0
+ --->  Cleaning libusb
+ --->  Fetching libusb-compat
+ --->  Attempting to fetch libusb-compat-0.1.3.tar.bz2 from http://mesh.dl.sourceforge.net/libusb
+ --->  Verifying checksum(s) for libusb-compat
+ --->  Extracting libusb-compat
+ --->  Configuring libusb-compat
+ --->  Building libusb-compat
+ --->  Staging libusb-compat into destroot
+ --->  Installing libusb-compat @0.1.3_0
+ --->  Activating libusb-compat @0.1.3_0
+ --->  Cleaning libusb-compat
+```
+
+### Getting ruby-usb
+The most recent success with lib-usb I found was described on <http://markmail.org/message/peidli3qjrqpwbk5>
+
+downloaded the latest cvs snapshot from http://www.a-k-r.org/ruby-usb/ . This will install version 0.2-something. The rubygems is only the version 0.1 version. There were some bug fixes since then.
+
+```shell
+$ svn co svn://svn@svn.a-k-r.org/akr/ruby-usb/trunk ruby-usb
+$ cd ruby-usb
+```
+
+### Solving the library and include paths
+replace the extconf.rb as follows where /opt/local is the place where you installed libusb
+
+```ruby
+require 'mkmf' 
+find_header("usb.h", "/opt/local/include") 
+find_library("usb", nil, "/opt/local/lib") 
+have_library("usb", "usb_init") 
+create_makefile('usb')
+```
+
+### Specify the correct build architecture
+
+For some reason, the make mkmf decides to put both the ppc and the i386 as flags to the architecture. So we have to specify the i386 using the ARCHFLAGS variable:
+
+```shell
+$ ARCHFLAGS="-arch i386" ruby extconf.rb
+checking for #include <usb.h>
+... yes
+checking for main() in -lusb... yes
+checking for usb_init() in -lusb... yes
+creating Makefile
+```
+
+Not specifying the architecture would result in a warning at compile time (file is not of required architecture)
+
+```shell
+gcc -I. -I. -I/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/universal-darwin9.0 -I. -I/opt/local/include  -fno-common -arch ppc -arch i386 -Os -pipe -fno-common  -c usb.c
+cc -arch ppc -arch i386 -pipe -bundle -undefined dynamic_lookup -o usb.bundle usb.o -L. -L/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib -L/opt/local/lib -L. -arch ppc -arch i386    -lruby -lusb  -lpthread -ldl -lm  
+ld warning: in /opt/local/lib/libusb.dylib, file is not of required architecture
+```
+
+At runtime this would result in an error
+```yyshell
+dyld: lazy symbol binding failed: Symbol not found: _usb_init
+  Referenced from: /Library/Ruby/Site/1.8/universal-darwin9.0/usb.bundle
+  Expected in: dynamic lookup
+
+dyld: Symbol not found: _usb_init
+  Referenced from: /Library/Ruby/Site/1.8/universal-darwin9.0/usb.bundle
+  Expected in: dynamic lookup
+Trace/BPT trap
+```
+
+Even though we have the usb_init compiled in the dynamic library
+
+```shell
+nm /opt/local/lib/libusb.dylib |grep -i usb_init
+         U _libusb_init
+00001630 T _usb_init
+```
+
+The reason we only get an error at runtime is that ruby-usb dynamically load the library. In our case it will load the libusb.dylib which points to version 0.1.4 of the libusb.
+
+```shell
+/opt/local/lib/libusb-0.1.4.dylib
+/opt/local/lib/libusb-1.0.0.dylib
+/opt/local/lib/libusb-1.0.a
+/opt/local/lib/libusb-1.0.dylib
+/opt/local/lib/libusb-1.0.la
+/opt/local/lib/libusb.a
+/opt/local/lib/libusb.dylib
+/opt/local/lib/libusb.la
+$ ls -l /opt/local/lib/libusb.dylib 
+lrwxr-xr-x  1 root  admin  18 Sep 29 09:24 /opt/local/lib/libusb.dylib -> libusb-0.1.4.dylib
+```
+
+Also check if old libraries exist in other places
+
+```shell
+$ ls -l /usr/lib/libusb.dylib 
+-rwxr-xr-x  1 root  wheel  24084 Sep 29 10:46 /usr/lib/libusb.dylib
+$ sudo rm /usr/lib/libusb.dylib 
+```
+
+
+### Build the library with make
+```shell
+$ make
+gcc -I. -I. -I/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/universal-darwin9.0 -I. -I/opt/local/include  -fno-common -arch i386 -Os -pipe -fno-common  -c usb.c
+cc -arch i386 -pipe -bundle -undefined dynamic_lookup -o usb.bundle usb.o -L. -L/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib -L/opt/local/lib -L. -arch i386    -lruby -lusb -lusb  -lpthread -ldl -lm
+```
+
+### Patching the usb.rb
+The last thing to get it working is to have usb.rb catch the error _Errno::ERANGE_ . 
+We do this by adding it to the corresponding line in usb.rb
+
+```shell
+413c413
+<       rescue Errno::EPIPE, Errno::EFBIG, Errno::EPERM,Errno::ERANGE
+
+>       rescue Errno::EPIPE, Errno::EFBIG, Errno::EPERM
+```
+
+If we don't patch it , it would result in the following error:
+
+```shell
+[Errno::ERANGE: Result too large - usb_get_string_simple
+	from /Library/Ruby/Site/1.8/usb.rb:412:in 'usb_get_string_simple'
+	from /Library/Ruby/Site/1.8/usb.rb:412:in 'get_string_simple'
+	from /Library/Ruby/Site/1.8/usb.rb:349:in 'description'
+	from /Library/Ruby/Site/1.8/usb.rb:276:in 'open'
+	from /Library/Ruby/Site/1.8/usb.rb:349:in 'description'
+	from /Library/Ruby/Site/1.8/usb.rb:341:in 'inspect'
+```
+
+### Finally installing ruby-usb
+```shell
+$ sudo make install
+mkdir -p /Library/Ruby/Site/1.8/universal-darwin9.0
+/usr/bin/install -c -m 0755 usb.bundle /Library/Ruby/Site/1.8/universal-darwin9.0
+/usr/bin/install -c -m 644 ./lib/usb.rb /Library/Ruby/Site/1.8
+```
+
+### Example program
+```ruby
+require 'usb'
+require 'pp'
+
+USB.devices.each do |dev|
+     pp dev
+end
+```
+
+```shell
+#<USB::Device 029/001 05ac:8005 (Full speed Hub)>
+#<USB::Device 029/002 05ac:021b Apple Computer Apple Internal Keyboard / Trackpad ? (HID (01,01), HID (01,02), HID (00,00))>
+#<USB::Device 061/001 05ac:8005 (Full speed Hub)>
+#<USB::Device 093/001 05ac:8005 (Full speed Hub)>
+#<USB::Device 093/002 05ac:8240 (HID (00,00))>
+#<USB::Device 125/001 05ac:8005 (Full speed Hub)>
+#<USB::Device 253/001 05ac:8006 (Hi-speed Hub with single TT)>
+#<USB::Device 253/002 05ac:8501 (Vendor specific (ff,ff))>
+```
+
+### More on Ruby USB
+- Video explaining the use of ruby-usb : <http://mtnwestrubyconf2007.confreaks.com/session09.html>
+- Powerpoint on ruby-usb <http://www.technofetish.net/mike/usb%2520talk%2520slides.ppt>
+
+### Other projects using ruby-usb 
+BetaBrite
+
+* Betabrite integration with ruby-usb : <http://tenderlovemaking.com/2006/09/28/new-ruby-betabrite-002/>
+* RubyUSB - Buffaloblog: <http://technofetish.net/buffaloblog/?page_id=56>
+* <http://stercus.com/weblog/betabrite_prism_with_ruby_u.html>
+
+IBuddy: 
+
+* <http://www.inwebwetrust.net/post/2008/11/23/program-your-i-buddy-with-ruby>
+* <http://github.com/ferblape/rubi-buddy/tree>
+
+USB Missile Launcher: 
+
+* How To Control USB Missile Launcher on Linux : <http://blog.taragana.com/index.php/archive/how-to-control-usb-missile-launcher-on-linux/>
+
+* AC Power Control through USB : <http://www.gniibe.org/ac-power-by-usb/ac-power-control.html>
+

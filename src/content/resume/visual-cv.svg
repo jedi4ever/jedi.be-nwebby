@@ -1,0 +1,650 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="744.09448819"
+   height="1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.47 r22583"
+   sodipodi:docname="visual-cv.svg"
+   inkscape:export-filename="/Users/patrick/Documents/development/rworkspace/jedi-webby/blog-webby/content/resume/visual-cv.png"
+   inkscape:export-xdpi="600"
+   inkscape:export-ydpi="600">
+  <defs
+     id="defs4">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="744.09448 : 526.18109 : 1"
+       inkscape:persp3d-origin="372.04724 : 350.78739 : 1"
+       id="perspective10" />
+    <inkscape:perspective
+       id="perspective2869"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       id="perspective5151"
+       inkscape:persp3d-origin="0.5 : 0.33333333 : 1"
+       inkscape:vp_z="1 : 0.5 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_x="0 : 0.5 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <filter
+       id="filter5187"
+       inkscape:label="Matte ridge"
+       inkscape:menu="Ridges"
+       inkscape:menu-tooltip="Soft pastel ridge"
+       color-interpolation-filters="sRGB">
+      <feGaussianBlur
+         id="feGaussianBlur5189"
+         stdDeviation="0.5"
+         result="result1" />
+      <feBlend
+         id="feBlend5191"
+         in2="result1"
+         in="SourceGraphic"
+         mode="normal"
+         result="result5" />
+      <feGaussianBlur
+         id="feGaussianBlur5193"
+         stdDeviation="3"
+         result="result6"
+         in="result5" />
+      <feComposite
+         id="feComposite5195"
+         in2="result6"
+         operator="xor"
+         in="result6"
+         result="result8" />
+      <feComposite
+         id="feComposite5197"
+         in2="result8"
+         operator="in"
+         result="fbSourceGraphic"
+         in="result6" />
+      <feColorMatrix
+         id="feColorMatrix5199"
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 -1 0 0 0 0 -1 0 0 0 0 -1 0 0 0 0 1 0 " />
+      <feGaussianBlur
+         id="feGaussianBlur5201"
+         result="result0"
+         in="fbSourceGraphic"
+         stdDeviation="0.5" />
+      <feSpecularLighting
+         id="feSpecularLighting5203"
+         specularExponent="55"
+         specularConstant="2"
+         surfaceScale="2"
+         lighting-color="rgb(255,255,255)"
+         result="result1"
+         in="result0">
+        <fePointLight
+           id="fePointLight5205"
+           z="20000"
+           y="-10000"
+           x="-5000" />
+      </feSpecularLighting>
+      <feComposite
+         id="feComposite5207"
+         in2="fbSourceGraphicAlpha"
+         operator="arithmetic"
+         result="result2"
+         in="result1"
+         k1="1" />
+      <feComposite
+         id="feComposite5209"
+         in2="result2"
+         k3="1"
+         k2="0.5"
+         operator="arithmetic"
+         result="result4"
+         in="fbSourceGraphic" />
+      <feComposite
+         id="feComposite5211"
+         in2="result4"
+         operator="over"
+         in="result9"
+         result="result91" />
+      <feBlend
+         id="feBlend5213"
+         in2="result91"
+         mode="screen" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="379"
+     inkscape:cy="645.69824"
+     inkscape:document-units="px"
+     inkscape:current-layer="g5620"
+     showgrid="true"
+     inkscape:object-paths="false"
+     inkscape:snap-intersection-paths="true"
+     inkscape:window-width="1600"
+     inkscape:window-height="1156"
+     inkscape:window-x="185"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     showguides="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid5259" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="segment lines"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="141"
+       y="435.36218"
+       id="text5157"><tspan
+         sodipodi:role="line"
+         id="tspan5159"
+         x="141"
+         y="435.36218" /></text>
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 386,232.36218 c -76,0 -274.17939,215.04594 -446,230"
+       id="path5261"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5317"
+       d="m 386,302.36218 c -76,0 -274.17939,145.04594 -446,160"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 386,354.36218 c -76,0 -274.17939,93.04594 -446,108"
+       id="path5319"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5321"
+       d="m 390,354.36218 c -101.06091,12.89738 -60,108 -160,108"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5323"
+       d="m 386,232.36218 c 76,0 272.17939,215.04594 444,230"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 386,302.36218 c 76,0 272.17939,145.04594 444,160"
+       id="path5325"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5327"
+       d="m 386,354.36218 c 76,0 272.17939,93.04594 444,108"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 390,354.36218 c -101.06091,12.89738 -60,108 -160,108"
+       id="path5333"
+       sodipodi:nodetypes="cc" />
+    <path
+       sodipodi:nodetypes="cc"
+       id="path5335"
+       d="m 390,354.36218 c -101.06091,12.89738 -60,108 -160,108"
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 390,354.36218 c 101.06091,12.89738 60,108 160,108"
+       id="path5337"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m -60,462.36218 c 290,0 290,0 290,0"
+       id="path5341" />
+    <path
+       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 550,462.36218 c 280,0 280,0 280,0"
+       id="path5343" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="segment colors" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="segment text"
+     style="display:inline">
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="306.68359"
+       y="285.36218"
+       id="text5125"><tspan
+         sodipodi:role="line"
+         id="tspan5127"
+         x="306.68359"
+         y="285.36218"
+         style="font-size:24px">management</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       id="text5161"
+       y="451.80359"
+       x="107"><tspan
+         sodipodi:role="line"
+         id="tspan5163"
+         x="107"
+         y="451.80359"
+         style="font-size:24px">development</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="523"
+       y="451.80359"
+       id="text5165"><tspan
+         sodipodi:role="line"
+         id="tspan5167"
+         x="523"
+         y="451.80359"
+         style="font-size:24px">operations</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="409.82031"
+       y="512.36218"
+       id="text5215"><tspan
+         sodipodi:role="line"
+         x="409.82031"
+         y="512.36218"
+         id="tspan5221"
+         style="font-size:18px;font-style:italic;text-align:center;text-anchor:middle;-inkscape-font-specification:Bitstream Vera Sans Oblique">Bridging the gap between development and operations</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="315.13281"
+       y="342.36218"
+       id="text5226"><tspan
+         sodipodi:role="line"
+         id="tspan5228"
+         x="315.13281"
+         y="342.36218">architecture</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:24px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="364.80273"
+       y="427.43835"
+       id="text5253"><tspan
+         sodipodi:role="line"
+         id="tspan5255"
+         x="364.80273"
+         y="427.43835">test</tspan></text>
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="roles">
+    <g
+       id="g5607"
+       transform="translate(-20.213379,0)">
+      <text
+         id="text5378"
+         y="612.36218"
+         x="57.652832"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="612.36218"
+           x="57.652832"
+           id="tspan5380"
+           sodipodi:role="line">Developer</tspan></text>
+      <text
+         id="text5386"
+         y="652.36218"
+         x="22"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:18px"
+           y="652.36218"
+           x="22"
+           id="tspan5388"
+           sodipodi:role="line"><tspan
+   id="tspan5398"
+   style="font-size:18px;font-weight:bold">java</tspan> javascript</tspan><tspan
+           style="font-size:18px"
+           id="tspan5390"
+           y="674.86218"
+           x="22"
+           sodipodi:role="line">ruby <tspan
+   id="tspan5400"
+   style="font-size:18px;font-weight:bold">rails <tspan
+   id="tspan5532"
+   style="font-size:18px;font-weight:normal">amqp</tspan></tspan></tspan><tspan
+           style="font-size:18px"
+           id="tspan5392"
+           y="697.36218"
+           x="22"
+           sodipodi:role="line">jquery php css</tspan><tspan
+           style="font-size:18px"
+           id="tspan5394"
+           y="719.86218"
+           x="22"
+           sodipodi:role="line">sql tdd soap xmlrpc</tspan><tspan
+           style="font-size:18px"
+           y="742.36218"
+           x="22"
+           sodipodi:role="line"
+           id="tspan5662"><tspan
+   style="font-weight:bold"
+   id="tspan5664">multimedia</tspan> json</tspan><tspan
+           id="tspan5530"
+           style="font-size:18px"
+           y="764.86218"
+           x="22"
+           sodipodi:role="line" /></text>
+    </g>
+    <g
+       id="g5634"
+       transform="translate(32.813477,0)">
+      <text
+         id="text5382"
+         y="612.36218"
+         x="589.24951"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="612.36218"
+           x="589.24951"
+           id="tspan5384"
+           sodipodi:role="line">Sysadmin</tspan></text>
+      <text
+         id="text5402"
+         y="652.36218"
+         x="522"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="652.36218"
+           x="522"
+           id="tspan5404"
+           sodipodi:role="line"><tspan
+   id="tspan5418"
+   style="font-weight:bold">unix</tspan> windows <tspan
+   id="tspan5422"
+   style="font-weight:bold">j2ee</tspan></tspan><tspan
+           id="tspan5406"
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="674.86218"
+           x="522"
+           sodipodi:role="line">appserver cache</tspan><tspan
+           id="tspan5408"
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="697.36218"
+           x="522"
+           sodipodi:role="line">virtualization <tspan
+   id="tspan5420"
+   style="font-weight:bold">web</tspan></tspan><tspan
+           id="tspan5410"
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="719.86218"
+           x="522"
+           sodipodi:role="line"><tspan
+   id="tspan5505"
+   style="font-weight:bold">search</tspan> content mgt</tspan><tspan
+           id="tspan5412"
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="742.36218"
+           x="522"
+           sodipodi:role="line">portal loadbalancing</tspan><tspan
+           id="tspan5414"
+           style="font-size:18px;font-weight:bold;text-align:start;text-anchor:start"
+           y="764.86218"
+           x="522"
+           sodipodi:role="line">identity &amp; access mgt</tspan><tspan
+           id="tspan5416"
+           style="font-size:18px;text-align:start;text-anchor:start"
+           y="787.36218"
+           x="522"
+           sodipodi:role="line">ldap solaris <tspan
+   id="tspan5550"
+   style="font-weight:bold">mail <tspan
+   id="tspan5605"
+   style="font-weight:normal">network</tspan></tspan></tspan></text>
+    </g>
+    <g
+       id="g5620"
+       transform="translate(12.778564,0)">
+      <text
+         id="text5424"
+         y="611.74695"
+         x="337.54395"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="611.74695"
+           x="337.54395"
+           id="tspan5426"
+           sodipodi:role="line">Tester</tspan></text>
+      <text
+         id="text5428"
+         y="652.36218"
+         x="250"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:18px;font-weight:bold"
+           y="652.36218"
+           x="250"
+           id="tspan5430"
+           sodipodi:role="line"><tspan
+   id="tspan5523"
+   style="font-weight:normal">uat</tspan> performance</tspan><tspan
+           id="tspan5434"
+           style="font-size:18px"
+           y="674.86218"
+           x="250"
+           sodipodi:role="line">installation docs <tspan
+   id="tspan5525"
+   style="font-weight:bold">security</tspan></tspan><tspan
+           id="tspan5521"
+           style="font-size:18px"
+           y="697.36218"
+           x="250"
+           sodipodi:role="line">continuous integration</tspan><tspan
+           style="font-size:18px;font-weight:bold"
+           y="719.86218"
+           x="250"
+           sodipodi:role="line"
+           id="tspan5656">automation <tspan
+   id="tspan5528"
+   style="font-weight:normal">multi-tier</tspan></tspan><tspan
+           style="font-size:18px;font-weight:bold"
+           y="742.36218"
+           x="250"
+           sodipodi:role="line"
+           id="tspan5666">standards</tspan></text>
+    </g>
+    <g
+       id="g5570"
+       transform="translate(48.114258,0)">
+      <text
+         id="text5370"
+         y="52.362183"
+         x="-15.342773"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="52.362183"
+           x="-15.342773"
+           id="tspan5372"
+           sodipodi:role="line">Project Mgt</tspan></text>
+      <text
+         id="text5436"
+         y="88.362183"
+         x="-20"
+         style="font-size:18px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="88.362183"
+           x="-20"
+           id="tspan5438"
+           sodipodi:role="line">pmbok <tspan
+   id="tspan5507"
+   style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold">agile</tspan></tspan><tspan
+           id="tspan5440"
+           y="110.86218"
+           x="-20"
+           sodipodi:role="line">scrum nlp</tspan><tspan
+           id="tspan5509"
+           y="133.36218"
+           x="-20"
+           sodipodi:role="line">planning bom</tspan></text>
+    </g>
+    <g
+       id="g5593"
+       transform="translate(-43.118652,0)">
+      <text
+         id="text5374"
+         y="52.362183"
+         x="640"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="52.362183"
+           x="640"
+           id="tspan5376"
+           sodipodi:role="line">Service Mgt</tspan></text>
+      <text
+         id="text5444"
+         y="88.362183"
+         x="608"
+         style="font-size:18px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-weight:bold"
+           id="tspan5450"
+           y="88.362183"
+           x="608"
+           sodipodi:role="line">itil service delivery</tspan><tspan
+           id="tspan5466"
+           y="110.86218"
+           x="608"
+           sodipodi:role="line">disaster recovery sla</tspan><tspan
+           id="tspan5452"
+           y="133.36218"
+           x="608"
+           sodipodi:role="line"><tspan
+   id="tspan5503"
+   style="font-weight:bold;-inkscape-font-specification:Bitstream Vera Sans Bold">configuration</tspan> mgt </tspan><tspan
+           id="tspan5468"
+           y="155.86218"
+           x="608"
+           sodipodi:role="line">capacity monitoring</tspan><tspan
+           id="tspan5538"
+           y="178.36218"
+           x="608"
+           sodipodi:role="line">servicedesk datacenter</tspan><tspan
+           id="tspan5542"
+           y="200.86218"
+           x="608"
+           sodipodi:role="line">cab service provider</tspan></text>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="817"
+       y="266.36218"
+       id="text5494"><tspan
+         sodipodi:role="line"
+         id="tspan5496"
+         x="817"
+         y="266.36218" /></text>
+    <text
+       xml:space="preserve"
+       style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="791"
+       y="291.36218"
+       id="text5534"><tspan
+         sodipodi:role="line"
+         id="tspan5536"
+         x="791"
+         y="291.36218" /></text>
+    <g
+       id="g5579"
+       transform="translate(-12.728272,0)">
+      <text
+         id="text5490"
+         y="52.362183"
+         x="350"
+         style="font-size:20px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           y="52.362183"
+           x="350"
+           id="tspan5492"
+           sodipodi:role="line">Architect</tspan></text>
+      <text
+         id="text5544"
+         y="88.362183"
+         x="290"
+         style="font-size:14px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+         xml:space="preserve"><tspan
+           style="font-size:18px"
+           y="88.362183"
+           x="290"
+           id="tspan5546"
+           sodipodi:role="line">pre-sales solutions</tspan><tspan
+           style="font-size:18px"
+           id="tspan5548"
+           y="110.86218"
+           x="290"
+           sodipodi:role="line">datacenter <tspan
+   id="tspan5568"
+   style="font-weight:bold">web</tspan></tspan><tspan
+           id="tspan5552"
+           style="font-size:18px"
+           y="133.36218"
+           x="290"
+           sodipodi:role="line">presentations pricing</tspan><tspan
+           id="tspan5554"
+           style="font-size:18px"
+           y="155.86218"
+           x="290"
+           sodipodi:role="line">identity &amp; access mgt</tspan><tspan
+           id="tspan5556"
+           style="font-size:18px"
+           y="178.36218"
+           x="290"
+           sodipodi:role="line"><tspan
+   id="tspan5562"
+   style="font-weight:bold">sizing</tspan> infrastructure</tspan><tspan
+           id="tspan5558"
+           style="font-size:18px"
+           y="200.86218"
+           x="290"
+           sodipodi:role="line">scalability <tspan
+   id="tspan5560"
+   style="font-weight:bold">migrations</tspan></tspan></text>
+    </g>
+  </g>
+</svg>

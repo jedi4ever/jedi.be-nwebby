@@ -1,0 +1,37 @@
+--- 
+title:      "The Map is not the Territory: The IT-World Anno 2010"
+created_at: 2010-10-13 21:40:46.576078 +02:00
+tags: 
+- devops
+- systemsthinking
+- lean
+- infrastructure as code
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+When I visit IT companies, I get to go in different departments. I see a lot of people really trying hard to do their best, but they base their actions on their local view of the company.
+
+A concept called "_The map is not the Territory_" coined by [Alfred Korzybski](en.wikipedia.org/wiki/Alfred_Korzybski), a Polish-American scientist and philosopher comes into mind.
+
+If you put people in separate parts in your company and hinder them to see the whole picture, then they will act on that worldview: each group will try to optimize their part of the world. Just like in the real world this can result in the following problems: 
+
+- **The rich and the poor**: I've seen companies where one department suck all the money/credits to their part leading to poor working conditions in the other departments.
+- **Nuclear waste areas**: some parts of the company, nobody wants to go to. Everybody knows they exist and try to stay away from it, leading to the [Not In My Backyard Syndrome](http://en.wikipedia.org/wiki/NIMBY)
+- **Local fights**: if you're not on speaking terms with your neighbor you can try to ignore him, and find other routes.
+- **Hard to stop global warming with local actions**: No matter how hard you try to optimize locally, if you don't work together with the other parts, eventually disaster will happen. 
+
+Below you can find a map from what I consider the current state of IT. I've tried to put each of the different methodologies in their place. As you can see, different parts with their own methodologies need to work together. Otherwise the effect on the global company will be minimal and only local. This is a great reason to work together and for whatever you do hold it against the effect that is has on the complete system, not only your local benefit.
+
+I'm aware that this map is only my view on the IT world. How does it differ from yours? Do let me know.
+
+
+Click on the map for zoom in. [Googlemaps version (Piritiles)](http://www.piritiles.com/map/2172008) - [Googlemaps version (local)]({{ page.url }}/the-world-of-IT-anno-2010.html) - [Full Image (png)]({{ page.url }}/the-world-of-IT-anno-2010.png)
+
+<a target="_blank" href="http://www.piritiles.com/map/2172008">
+<img src='{{ page.url }}/the-world-of-IT-anno-2010-small.png'></a>
+
+
+
+

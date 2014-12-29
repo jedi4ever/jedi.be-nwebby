@@ -1,0 +1,364 @@
+--- 
+title:      Vagrant Testing, Testing, One Two
+created_at: 2011-03-29 10:35:34.199577 +02:00
+tags: 
+- vagrant
+- chef
+- puppet
+- cucumber
+- cucumber-nagios
+- webrat
+- mechanize
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Shrinkwrap Vagrant boxes
+  url: /blog/2011/03/31/installable-vagrant-boxes/
+- desc: Vagrant Testing
+  url: /blog/2011/03/29/vagrant-testing-testing-one-two/
+- desc: Vagrant as a Team
+  url: /blog/2011/03/28/using-vagrant-as-a-team/
+---
+Now that we have Vagrant up and running with our favorite Config Management, let's see how we can integrate testing into our workflow.
+
+Given our awesome project from my '[Using Vagrant as a Team](http://jedi.be/blog/2011/03/28/using-vagrant-as-a-team/)' post we have the following components:
+
+<pre>
+[DIR] awesome-vagrant (2)
+	- [DIR] awesome-frontend
+	- [DIR] awesome-datastore
+	- [DIR] awesome-data
+	- [DIR] awesome-chefrepo (1a)
+	- [DIR] awesome-puppetrepo (1b)
+</pre>
+
+## What do we test?
+As awesome-{frontend,datastore,data} are considered traditional software components, they would include the usual unit and integration tests from themselves. You can find ample information on the web for your favorite software component.
+
+### Cucumber and friends
+Testing your configuration management is not that common yet, let's explore our options there:
+
+Most of the current tools are inspired by '[cucumber](http://cukes.info/)' a 'behavior driven development' tool. [Lindsay Holmwood](http://twitter.com/auxesis) his [great presentation at devopsdays 2009](http://www.channels.com/episodes/8659413) on '[cucumber-nagios](http://auxesis.github.com/cucumber-nagios/) inspired a lot of the authors to use it.
+
+A good book on Cucumber is the [rspec book](http://pragprog.com/titles/achbd/the-rspec-book)  and here is a great slideshare presentation on '[Writing software not code with cucumber](http://www.slideshare.net/bmabey/writing-software-not-code-with-cucumber)' and some caveats in [You're cuking it wrong](http://elabs.se/blog/15-you-re-cuking-it-wrong).
+
+Alternatively there is another framework called [Babushka](http://babushka.me/) that sets out with it's own testing DSL. I find it refreshing to see another approach being build upon.
+
+### Puppet testing options
+[puppet](http://puppetlabs.com) you have '[cucumber-puppet](http://blog.nistu.de/cucumber_puppet_0_0_3_released.html)' written by [Nikolay Sturm](http://twitter.com/nistude) a testing framework for your manifests. 
+
+- It relies on the '[noop](http://bitfieldconsulting.com/puppet-dry-run)' parameter of the puppet standalone client to simulate a run and see the results of that run. 
+- It also checks if the catalog of the next puppetrun compiles ok. 
+- [Tom Sulston](http://twitter.com/tomsulston) did a great videocast for [Infoq](http://infoq.com)  [BDD with Puppet and Cucumber](http://www.infoq.com/presentations/BDD-with-Puppet-Cucumber)
+- [Dean Wilson](http://twitter.com/unixdaemon) added [additional steps to check providers with it.](http://www.unixdaemon.net/tools/puppet/puppet-cucumber-providers.html) , they extend the cucumber-puppet by using puppet to actually test things on a provisioned system.
+
+### Chef testing options
+As [chef](http://opscode.com/chef) did not implement the [noop-mode](http://bitfieldconsulting.com/puppet-dry-run), I guess it took some time to have an equivalent. 
+
+- My first thought was to have puppet noop runs against a chef install, but that seemed limited for the business behavior and would only test if chef did it's job.
+
+- Recently [hedgehog](http://hedgehogshiatus.com) announced writing [chef steps for cucumber](http://lists.opscode.com/sympa/arc/chef/2011-03/msg00129.html) . The good thing is he's packaging these steps +those from cucumber nagios and others into a new gem called '[Cuken (pronounced Cookin)]( https://github.com/hedgehog/cuken)' . The origin of the cuken project is [Aruba](https://github.com/aslakhellesoy/aruba) a set of cucumber tests to test a CLI application.
+
+- Also do check out [Stephen Nelson-Smith](http://twitter.com/lordcope) [videocast on doing TDD with Chef and Cucumber with LXC containers on EC2]
+(http://skillsmatter.com/podcast/home/cucumber-chef/js-1541).
+
+### Integration testing
+For our project we took another route: Instead of testing our chef recipes as standalone piece, we would test the whole of our deployed stack: the provisioned/configured system + all application and data deployed. You have to see this as complementary to your recipe/manifest tests: 
+
+1. Testing all components together allows you to test the interaction/integration, 
+2. where as if you only test the recipes itself, it would not test integration stuff like (sessions no being generated). But the advantage is that you have a better idea where things are failing when in type 1 tests.
+
+This is very similar to the complementary fact of unit tests and bdd tests: [test inside out, and outside in](http://blog.mattwynne.net/2010/08/31/outside-in-vs-inside-out-comparing-tdd-approaches/).
+
+## Installing cucumber 
+cucumber is a rubygem: this means that we now require not only the 'vagrant' gem needs to be installed cucumber and cuken too. Note we will include only cucumber-nagios steps and not the cuken part as they still conflict in their ssh steps.
+
+To avoid that we need to communicate the exact version to every team member or any subsequent gem we need, we set out to create a 'Gemfile' that can be used by [bundler](http://gembundler.com/).
+Our Gemfile would look like this
+<pre>
+source 'http://rubygems.org'
+gem 'vagrant', '0.7.2'
+gem 'cuken'
+gem 'cucumber'
+gem 'cucumber-nagios'
+</pre>
+
+I tried to include cuken (that has the chef steps) work from the latest gitrepo:
+<pre>
+gem 'cuken', :git => "git://github.com/hedgehog/cuken.git"
+gem 'ssh-forever', :git => "git://github.com/mattwynne/ssh-forever.git"
+</pre>
+But it complains on ssh-forever not being there because [that version was yanked](https://rubygems.org/gems/ssh-forever/versions/0.4.0) . So no chef steps yet....
+
+Update: 31/03/2011: It should work, and was probably a temporary fluke in my gemset
+
+Now let's continue the installation of our gems using bundler.
+
+We use [a global gemset with rvm](http://rvm.beginrescueend.com/gemsets/global/) to install the bundler gem for all subsequent projects. And install run bundler on our awesome-vagrant gemset
+
+<pre>
+$ rvm gemset use @global
+$ gem install bundler
+$ bundle install
+$ rvm gemset use awesome-vagrant
+</pre>
+
+So now instead of doing 'gem install', you do:
+<pre>
+$ bundle install
+</pre>
+And it will install all the versions you specified in Gemspec the awesome-vagrant gemset . We add it to our git repo of the awesome-vagrant so people can add things if they need to.
+
+You should now be able to run the cucumber command:
+<pre>
+$ cucumber
+</pre>
+
+
+## Setting up our feature structure
+In contract to using cucumber with other frameworks such as rails, we have do some work to get it working. We need to create a feature directory similar to below.
+
+<pre>
+[DIR]awesome-vagrant
+	- Vagrantfile
+	- Gemspec
+	- awesome-{frontend,datastore,date,chefrepo} git repos
+	- features
+		- steps
+			(steps go here)
+		- support
+			env.rb
+		- (features go here)
+</pre>
+
+In env.rb you can put all the necessary requires for libraries you want to include :
+<% codify(:lang => "ruby") do %>
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
+end
+
+$LOAD_PATH.unshift(File.dirname(__FILE__) + '/../../lib')
+
+# Disabling cuken until it gets less conflicting with other parts
+# require 'cuken/ssh'
+# require 'cuken/cmd'
+# require 'cuken/file'
+# require 'cuken/chef'
+
+# We don't include all nagios steps only the http , but there are of-course more
+# require 'cucumber/nagios/steps'
+# Disable the following line if you want to use the extended ssh_steps
+require 'cucumber/nagios/steps/ssh_steps'
+require 'cucumber/nagios/steps/http_steps'
+require 'cucumber/nagios/steps/http_header_steps'
+
+require 'rspec/expectations'
+
+# We use mechanize as this doesn't require us to be a rack application
+require 'mechanize'
+require 'webrat'
+
+World(Webrat)
+World do
+  Webrat::Session.new(Webrat::MechanizeAdapter.new)
+end
+<% end %>
+
+## Using SSH to run commands
+### Our first feature using cucumber ssh steps
+Let's write our first feature that checks our apache. Based on the example described on the [cucumber nagios blogpost](http://holmwood.id.au/~lindsay/2009/11/09/behaviour-driven-infrastructure-through-cucumber/)
+<% codify(:lang => "ruby") do %>
+Feature: Executing commands
+  In order to test a running system
+  As an administrator
+  I want to verify the apache behavior
+
+Scenario: Checking if apache is running
+    When I ssh to "localhost" with the following credentials: 
+     | username | password  |
+     | vagrant  | vagrant | 
+    And I run "ps -ef |grep http|grep -v grep" 
+    Then I should see "http" in the output
+<% end %>
+
+Now run (assuming you have apache of course)
+<pre>$ cucumber </pre>
+
+The problem with the standard cucumber-nagios steps is that it assumes to be on port 22 and vagrant has mapped our port. See the [ssh_steps code](
+https://github.com/auxesis/cucumber-nagios/blob/master/lib/cucumber/nagios/steps/ssh_steps.rb) for details.
+
+### Our enhanced version of the ssh steps
+We decided to extend the ssh steps to add a few more rinkles to it. 
+
+- Download our [extended ssh steps file]({{ page.url}}/ssh_extended_steps.rb) and put it into the <b>steps</b> directory we created earlier as filename 'ssh_extended_steps.rb'. It extends the ssh_steps to be able specify the ssh_port, and capture stderr, stdout and the exit-code too.
+- And do the same for '[vagrant_steps.rb]({{ page.url}}/vagrant_steps.rb)': this will make your ssh steps vagrant aware
+
+Note: To avoid conflict with the cucumber-nagios be sure to disable the "cucumber/nagios/steps/ssh_steps" in your 'env.rb'
+
+<% codify(:lang => "ruby") do %>
+Feature: Executing commands
+  In order to test a running system
+  As an administrator
+  I want to verify the apache behavior
+
+	@apache2
+	Scenario: Checking if apache is running through vagrant	
+	Given I have a vagrant project in "."	
+	When I ssh to vagrantbox "default" with the following credentials: 
+	| username | password|
+	| vagrant  | vagrant | 
+	And I run "ps -ef |grep apache2|grep -v grep" 
+	Then I should see "apache2" in the output
+	And it should have exitcode 0
+	And I should see "apache2" on stdout
+	And there should be no output on stderr
+<% end %>
+
+The step <b>Given I have a vagrant project</b>, loads the vagrant environment
+<% codify(:lang => "ruby") do %>
+Given /^I have a vagrant project in "([^\"]*)"$/ do |path|
+  @vagrant_env=Vagrant::Environment.new(:cwd => path)
+  @vagrant_env.load!
+end
+<% end %>
+
+And the step <b>When I ssh to vagrantbox</b> calculates the port it need to ssh too
+
+<% codify(:lang => "ruby") do %>
+unless @vagrant_env.multivm?
+  port=@vagrant_env.primary_vm.ssh.port
+else
+  port=@vagrant_env.vms[boxname.to_sym].ssh.port
+end
+<% end %>
+
+On a side note, you might notice the <b>@apache2</b> these are tags in cucumber that you can use to specify only certain tasks. This will only run the features with tag apache
+<pre>
+$ cucumber -tags @apache
+</pre>
+
+And this is how you the step <b>When I do a vagrant provision</b> is implemented
+<% codify(:lang => "ruby") do %>
+And /^I do a vagrant provision$/ do 
+  Vagrant::CLI.start(["provision"], :env => @vagrant_env)
+end
+<% end %>
+
+## Running component unit tests from within the machine
+You can use the same mechanism to run your components tests inside the machine itself. You can your application tests mounted inside the VM and run the tests from there. We use it complementary to our 'vagrant project' tests. The advantage of the vagrant tests is that it does an actual network connect without working through loopback and allows you to orchestrate the VM you need to login into in a multivm setup.
+
+<% codify(:lang => "ruby") do %>
+Feature: Executing commands
+  In order to test a running system
+  As an administrator
+  I want to verify the apache behavior
+
+	@unittests
+	Scenario: Checking if componentX unittests ok	
+	Given I have a vagrant project in "."	
+	When I ssh to vagrantbox "default" with the following credentials: 
+	| username | password|
+	| vagrant  | vagrant | 
+	And I run "cd /opt/awesome-frontend; rails_env=test rake" 
+	And it should have exitcode 0
+<% end %>
+
+## Testing HTTP access to a vagrant box
+Besides running commands on the box, we wanted to be able to check HTTP things. The two main webtesting gems in Ruby/Rails land are either [webrat](https://github.com/brynary/webrat) or the newcomer on the block [Capybara](https://github.com/jnicklas/capybara) . Both implement different 'browser' types to check your content: they have adaptors for real browsers (firefox, chrome, safari) through selenium or alike. We needed only simple http testing no DOM checking. The usual suspect is 'rack/test' but as we don't have a rack application that failed miserably. We found that webrat has another option through [mechanize](http://mechanize.rubyforge.org/mechanize/). The gem comes installed when you install cucumber_nagios. Also the webrat websteps are implemented in http_steps of cucumber_nagios. 
+
+Update 31/03/2011: if using capybara there are two frameworks that look an alternative to leave webrat  
+- akephalos adapter that aims to be headless unit testing framework - [https://github.com/bernerdschaefer/akephalos](https://github.com/bernerdschaefer/akephalos)
+- mechanize adapter : [https://github.com/jeroenvandijk/capybara-mechanize](https://github.com/jeroenvandijk/capybara-mechanize)
+
+A feature would like this
+<% codify(:lang => "ruby") do %>
+Scenario: Surf to apache
+Given I go to "http://localhost:9000" 
+Then I should see "It works"
+<% end %>
+
+Similar to our ssh problem, you see that we have to specify our port to the mapped port of vagrant. And this would also fail for virtual hosts as it would not send the correct 'Host' attribute to the server.
+
+Our enhanced vagrant version adds the <b>Give I go vagrant 'url'</b> syntax
+<% codify(:lang => "ruby") do %>
+@vagrant
+Scenario: Surf to apache via vagrant
+Given I have a vagrant project in "."
+Given I go to vagrant "http://www.sample.com" 
+Then I should see "It works"
+<% end %>
+
+<% codify(:lang => "ruby") do %>
+Given /^I go to vagrant "([^\"]*)"$/ do |url|
+    virtual_visit(url)
+end
+<% end %>
+
+The following snippet implements that virtual_visit:
+
+- it assumes @vagrant_env is loaded
+- and the correct the Host: headers accordingly to make the site virtual aware
+- it maps the url port to the port in the guest machine
+- the function is added to the webrat module so it is accessible in your steps
+
+<% codify(:lang => "ruby") do %>
+module Webrat #:nodoc:
+    class Session #:nodoc:
+		def virtual_visit(url, data=nil, options = {})
+			# Options = Headers in regular visit
+			uri = URI.parse(url)
+
+			# We default to the same port
+			port=uri.port
+
+			# Now we translate url port to vagrant port
+			# These mappings of ports are global and not per machine
+			if @vagrant_env.nil?
+			throw "No vagrant environment got loaded"
+			end
+			@vagrant_env.config.vm.forwarded_ports.each do |name,mapping|
+			if mapping[:guestport]==uri.port
+			port=mapping[:hostport]
+			end
+			end
+
+			# Override the hostname to the Headers 
+			header=options
+			headers=options.merge({ 'Host' => uri.host+":"+port.to_s})
+
+			# For the extended get method we need to wrap it
+			# Traditional get method works 
+			# => with an URL as first arg
+			# => and second  = parameters (methods I guess)
+			# But given some other arguments the get command behaves differently
+			# See http://mechanize.rubyforge.org/mechanize/Mechanize.html for the source
+			# https://github.com/brynary/webrat/blob/master/lib/webrat/adapters/mechanize.rb
+			# https://github.com/brynary/webrat/blob/master/lib/webrat/core/session.rb
+
+			# def get(options, parameters = [], referer = nil)
+			@response = get({ 
+			:headers => headers,
+			:url => "#{uri.scheme}://localhost:#{port}#{uri.path}?#{uri.query}", 
+			:verb => :get}, nil,options['Referer'])
+		end
+	end
+end
+<% end %>
+
+Now we can use the standard URL and behind the scenes the URL is translated to the correct http request.
+
+## Final note:
+This is pretty much work in progress, I hope to both contribute to the cuken project for the vagrant and ssh steps to make them uniformly available. Also while writing this blogpost it occurred to me that we need a vagrant-cucumber plugin that will generate the feature structure and integrate cucumber as a subcommand.
+
+Also I'm aware that these are bad examples of BDD, as they don't express Business talk unless your customer is a Sysadmin :)
+
+I've cut off this blogpost here, I did promise you the integration in Jenkins in a CI, so that's the next blogpost.
+
+Hope to hear from you if you found this useful.

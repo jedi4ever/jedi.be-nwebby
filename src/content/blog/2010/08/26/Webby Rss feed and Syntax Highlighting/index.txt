@@ -1,0 +1,70 @@
+--- 
+title:      Webby Rss feed and Syntax Highlighting
+created_at: 2010-08-26 16:37:23.731210 +02:00
+tags: 
+- webby
+- rss
+- syntax highlighting
+- coderay
+- wordpress
+blog_post: true
+filter: 
+- erb
+- markdown
+- basepath
+related:
+- desc: Webby Homepage
+  url: http://webby.rubyforge.org/ 
+- desc: Coderay
+  url: http://coderay.rubychan.de/
+- desc: Ultraviolet
+  url: http://ultraviolet.rubyforge.org/
+- desc: Converting Wordpress to Webby
+  url: http://ananelson.com/blog/2008/06/converting-wordpress-to-webby/
+---
+When I first started blogging I used [Wordpress](http://www.wordpress.org), while it was nice at that time, it felt rather cumbersome to use for posting technical stuff like code samples. Also having everything in the database make it difficult to use my favorite text editor to manage my content. So I decided to move to [Webby](webby.rubyforge.org/) : *it allows you to use the power of ruby erb inside you html pages without the overkill of running a rails* Another advantage is that it creates static html so it's both fast and secure. 
+
+I've been running it now for more then a year and have been happy ever since. This blogpost shares some of my scripts/enhancements I've used:
+
+- **Wordpress exporter to Webby** : this was my first challenge, how do I get everything from my wordpress out of that database. I wrote a little script that reads from the RSS feed of the wordpress and export everything into webby structure . It's not the most robust script (it was early stages ruby for me at that time), but you'll get the idea.
+
+- **RSS feed in Webby**: I didn't find any good rss feed code, most of it didn't pass the rss validation. So here you can find my take on it. As a bonus the script tries to make your images absolute, which is important for having your images displayed in some rss feedreaders.
+
+- **Highlighting with [Coderay](http://coderay.rubychan.de/)** : webby includes a way to highlight parts of the code. This works very well, but I found myself missing a way to include a file instead of pasting the code directly into the blogpost. This has many advantages: I can edit the file separate and the correct syntax  highlighting in my favorite text editor still works. And the escaping works better for ruby code as there can not be a problem with escaping special characters. After a while I switched to [Ultraviolet](http://ultraviolet.rubyforge.org/) because it has way more syntaxes supported. The downside is that it requires the onigurama library . This isn't really a problem on Mac using Macports. 
+
+<% codify ({ :lang => "shell"}) do %>
+patricks-iMac:jedi-webby patrick$ sudo port install oniguruma4
+patricks-iMac:jedi-webby patrick$ gem install ultraviolet -- -I/opt/local/lib
+Building native extensions.  This could take a while...
+ERROR:  Error installing ultraviolet:
+	ERROR: Failed to build gem native extension.
+
+/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/bin/ruby extconf.rb -I/opt/local/lib
+checking for main() in -lonig... no
+creating Makefile
+
+make
+gcc -I. -I. -I/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr/lib/ruby/1.8/universal-darwin10.0 -I. -D_XOPEN_SOURCE -D_DARWIN_C_SOURCE   -fno-common -Wall  -c oregexp.c
+oregexp.c:2:23: error: oniguruma.h: No such file or directory
+
+#Solution
+patricks-iMac:jedi-webby patrick$ gem install ultraviolet -- --with-opt-dir=/opt/local
+<% end %>
+
+This is all for now.
+
+*Codify helper (with Ultraviolet): put inside your webby-root/lib*
+<% codify({:file => "codify_helper-uv.rb"}) do %>
+<% end %>
+
+*Codify helper (with Coderay): put inside your webby-root/lib*
+<% codify({:file => "codify_helper.rb"}) do %>
+<% end %>
+
+*Rss feed file*
+<% codify({:file => "rss-feed.txt", :lang => "ruby"}) do %>
+<% end %>
+
+*Wordpress to webby conversion script*
+<% codify({:file => "wp2webby.rb", :lang => "ruby"}) do %>
+<% end %>

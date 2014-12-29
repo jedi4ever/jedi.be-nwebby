@@ -1,0 +1,164 @@
+--- 
+title:      Installable Vagrant Boxes
+created_at: 2011-03-31 17:03:04.148241 +02:00
+tags: 
+- vagrant
+- warbler
+- sinatra
+blog_post: true
+filter: 
+- erb
+- markdown
+related: 
+- desc: Vagrant Testing
+  url: /blog/2011/03/29/vagrant-testing-testing-one-two/
+- desc: Vagrant as a Team
+  url: /blog/2011/03/28/using-vagrant-as-a-team/
+---
+We distribute vagrantbox to people demo-ing our project. It is a hassle to install the whole setup for non-IT people
+The following is a proof of concept to make a self installing vagrant machine. 
+
+To create the box you need:
+
+- jruby installed
+
+To run the box:
+
+- You need to have Virtualbox installed
+- And Java running on the machine
+- on windows machines you need to comply to  [vagrant windows rules](http://vagrantup.com/docs/getting-started/setup/windows.html) (64bit)
+
+## Get Jruby and all the gems installed
+
+<% codify(:lang => "ruby") do %>
+$ rvm install jruby
+$ rvm use jruby
+$ mkdir shrinkwrap
+$ cd shrinkwrap
+$ cat <EOF > Gemfile
+source 'http://rubygems.org'
+
+gem 'vagrant', '0.7.2'
+gem 'warbler'
+gem 'sinatra'
+gem 'jruby-openssl'
+gem 'jruby-win32ole'
+EOF
+
+$ gem install bundler
+$ bundle install
+<% end %>
+
+## Prepare the vagrantfile 
+We create a simple vagrantfile that downloads a box running ubuntu
+
+<% codify(:lang => "ruby") do %>
+$ mkdir lib
+$ cat <EOF > lib/Vagrantfile
+Vagrant::Config.run do |config|
+  config.vm.box = "shrinkwrap"
+  config.vm.box_url = "http://opscode-vagrant-boxes.s3.amazonaws.com/ubuntu10.04-gems.box"
+  config.vm.boot_mode = :gui
+  config.vm.customize do |vm|
+          vm.memory_size = 384
+          vm.name = "Shrinkwrap"
+  end
+  config.vm.forward_port "http", 80,  9000
+end
+EOF
+<% end %>
+
+## Add Sinatra in the mix
+To give the user a gui to start the vm, we provide a simple URL using [sinatra](http://www.sinatrarb.com)
+
+<% codify(:lang => "ruby") do %>
+$ cat <EOF > lib/shrinkwrap.rb
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'sinatra'
+require 'vagrant'
+require 'vagrant/cli'
+require 'pp'
+
+class Shrinkwrap < Sinatra::Application 
+  get '/up' do
+    body "We do an up"
+        vagrant_dir=File.expand_path(File.dirname(__FILE__))
+        puts "we are loading the config file"
+        @vagrant_env=Vagrant::Environment.new(:cwd => vagrant_dir)
+		pp @vagrant_env
+        @vagrant_env.load!
+		puts "we are uping the machine, please wait..."
+        Vagrant::CLI.start(["up"], :env => @vagrant_env)
+        body "We are up"
+  end
+end
+EOF
+
+$ cat <EOF > config.ru
+require "lib/shrinkwrap"
+run Shrinkwrap.new
+EOF
+
+<% end %>
+## Package the Sinatra project with warbler
+[Warbler](https://github.com/jruby/jruby/wiki/Warbler) allows you to package sinatra projects.
+It packages a jruby version inside the warfile so it only needs java installed.
+
+To package the current sinatra, just run in the directory where you created the config.ru file
+
+<pre>
+$ warble
+</pre>
+
+should result in a shrinkwrap.war
+
+## Make the warfile executable
+Next step is to make the warfile executable. Similar to jenkins we want to execute a war file.
+[Winstone](http://winstone.sourceforge.net/) is the tool that makes it possible
+
+Now can use winstone to make the warfile a selfcontained executable.
+For windows we need to package the "jruby-openssl","jruby-win32ole" so we create a warble config file.
+
+We embed our previous create war file inside the warbler jar by first extracting it, adding it as embedded.war and packaging it back again.
+
+<% codify(:lang => "ruby") do %>
+$ mkdir config
+$ cat <EOF > config/warble.rb
+Warbler::Config.new do |config|
+	 config.gems += ["jruby-openssl","jruby-win32ole"]
+end
+EOF
+$ wget "http://sourceforge.net/projects/winstone/files/winstone/v0.9.10/winstone-0.9.10.jar/download"
+$ mkdir extract
+$ cd extract
+$ jar -xvf ../winstone-0.9.10.jar
+$ cp ../shrinkwrap.war embedded.war
+$ jar cvfm ../ubuntu10-04.jar META-INF/MANIFEST.MF .
+$ cd ..
+
+<% end %>
+## Ready for take off
+now you can start the newly create warfile with 
+<pre>
+$ java -jar ubuntu10-04.jar
+</pre>
+
+And when you surf to http://localhost:8080/up . It will download the box from S3 and after sometime you should see the virtualbox spinup!
+
+## Conclusion
+Point proven. I think this concept has a large potential, you just download the self-executable jar and poof, you have the environment installed. Mix this with a [market place for VMs](http://www.vagrantbox.es/) or vendors packaging demo of their products. 
+
+In a nutshell! The future is here :)
+
+I'd be interested to hear how you would use this idea in your daily life!
+
+Now on to the next idea!
+
+## Further reading
+- [http://winstone.sourceforge.net/#embedding](http://winstone.sourceforge.net/#embedding)
+- [http://sourceforge.net/projects/winstone/files/winstone/v0.9.10/winstone-0.9.10.jar/download](http://sourceforge.net/projects/winstone/files/winstone/v0.9.10/winstone-0.9.10.jar/download)
+- [http://thenice.tumblr.com/post/133345213/deploying-a-rails-application-in-tomcat-with-jruby-a](http://thenice.tumblr.com/post/133345213/deploying-a-rails-application-in-tomcat-with-jruby-a)
+- [http://eclipsesource.com/blogs/2009/10/02/executable-wars-with-jetty/](http://eclipsesource.com/blogs/2009/10/02/executable-wars-with-jetty/)
+- [http://vertis.github.com/2010/02/21/sinatra-on-java.html](http://vertis.github.com/2010/02/21/sinatra-on-java.html)
+- [http://blog.nicksieger.com/articles/2007/09/04/warbler-a-little-birdie-to-introduce-your-rails-app-to-java](http://blog.nicksieger.com/articles/2007/09/04/warbler-a-little-birdie-to-introduce-your-rails-app-to-java)

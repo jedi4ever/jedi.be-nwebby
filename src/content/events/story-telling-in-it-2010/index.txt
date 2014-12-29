@@ -1,0 +1,34 @@
+---
+layout: event
+extension: html
+filter:    erb
+title: Storytelling in IT - Raf Stevens
+period: "28/10/2010"
+dirty: true
+event: true
+short: "<p>This evening session is about the use of <strong>Storytelling</strong> in IT to communicate facts and to make a message stick.This aligns perfectly with the use of personas in User Interface development and User Stories/Mapping used within  Agile Development.</p>"
+tags: 
+- storytelling
+- userstories
+- agile
+- raf stevens
+---
+<p>People working in the IT industry, are used to working with computers. We talk the technical language to interact with them. It's what we are trained for, do for a living, and we are very good at it.   </p>
+<p>It often becomes a different kind of ball game when we have to<strong> transfer a technical message</strong> to a non or less IT savy audience. How many times did you explain things to your customer, your manager, your team, only to see that blank expression on their faces?</p>
+<p>This evening session is about the use of <strong>Storytelling</strong> to overcome that problem.This aligns perfectly with the use of personas in User Interface development and User Stories/Mapping used within  Agile Development.</p>
+<p>
+<table style="width: 587px; height: 144px;" border="0">
+<tbody>
+<tr>
+<td><img title="Raf Steven - Corporate Story Teller" src="https://evbdn.eventbrite.com/s3-s3/eventlogos/801039/storyteller1.jpg" alt="" width="81" height="122" /></td>
+<td>
+<p> On <strong>Thursday 28 October 2010 starting from 19h until 22h</strong>, </p>
+<p> <a href="http://www.corporatestoryteller.be/">Raf Stevens</a> <strong>(a</strong> <strong>corporate storyteller)</strong>
+ will show us the basics of Storytelling and give you inspiration to wrap your technical 
+stuff into a story that sticks! Afterwards we will have an open  
+discussion to share your experiences and ideas. </p>
+</td>
+</tr>
+</tbody>
+</table>
+</p>

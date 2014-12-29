@@ -1,0 +1,47 @@
+---
+period: "2004 - 2005"
+customer: Switch/BIAC (Sun Microsystems)
+role: System Architect/Technical Consultant/Technical Project Manager
+title: Intranet portal project
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/brussels%20airport.jpeg" class="left"></div>
+		<div class="span-18 last">
+* With the ultimate goal to create a web-based desktop, an intranet portal was developed based upon Sun ONE Portal and Citrix.
+* Via portal technology it became possible to work in the same personalized environment at work and at home, thereby extending the office environment at other locations.
+* Content and Document Management was supported by using Livelink and various Weblogic Applications. 
+* The environment was based upon Unix Sun Solaris 15K and HDS storage. It had to comply to the highest SLA demands. To achieve this, a complete test environment was setup with detailed and extensive testing before going to production. Additional monitoring was implemented using the Tivoli framework.
+
+Identity Management
+* To prepare for complete personalization, an identity management system was implemented based upon Sun ONE LDAP, Identity Server, Active Directory and Radius. A full synchronization of Active Directory and LDAP was implemented by IdSync and custom programming. Programming was done using Java and JNDI.
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+active directory, sun identity management, sun portal server, citrix, portlets, ldap, livelink, weblogic, oracle, radius
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Sysadmin_
+* To design, implement, test and roll out the technical environment for the Portal.
+* Solve the Single Sign On problem between Sun Portal, Citrix, Livelink. 
+* Integrate Content Management within Portal personalization
+
+_Tester_
+* Define and execute loadtests
+* Define and execute failover and disaster scenario'
+* End user simulation for driving Citrix and Web application together
+
+_Project Management_
+* To plan and follow-up the planning of the portal project as a co-project leader.
+* analyze business needs for portal.
+* To plan and follow-up the planning and implementation of the identity management project
+* To work as technical lead together with a team of 10 people
+
+_Development_
+* To design and develop several integration prototypes for single sign on (Citrix,Portal)
+* To design and develop the custom synchronization between LDAP and AD
+</div>

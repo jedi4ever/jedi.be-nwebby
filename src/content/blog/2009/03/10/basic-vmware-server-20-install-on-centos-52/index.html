@@ -1,0 +1,233 @@
+---
+title: "Basic Vmware server 2.0 install on Centos 5.2"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=629
+created_at: 2009-03-10 11:40:45.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - dhcpd
+   - vmware
+   - network
+   - centos
+   - paths
+   - listeners
+---
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-server-logo.gif"><img title="vmware-server-logo" class="size-medium wp-image-631 alignleft" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-server-logo.gif" height="53" alt="" width="90" /></a><a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/centos-logo.png"><img title="centos-logo" class="size-medium wp-image-630 alignright" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/centos-logo.png" height="54" alt="" width="173" /></a>
+<br>
+The following is a transcript from a basic vmware server 2.x install on Centos.
+<br>
+<strong>Pre-requisites</strong>:
+<ul>
+	<li>you should not have any other virtualization software running: check vboxdrv , kvm_intel or kvm_amd , xen kernel not being used.</li>
+	<li>Get the latest Vmware Server 2.x RPM for free from http://www.vmware.com . You need to generate a license, but this is completely free!</li>
+	<li>Open the required ports on the network (system-config-securitylevel-tui): tcp:8333 for https:// administration</li>
+	<li>vmware installs dhcp servers, so if you have one running you need to restrict it NOT to run on any of the vmnet* ports. F.i. if you installed the virtualization package with Centos, it installed libvirt and this installed dnsmasq with the option for dhcp (see /etc/libvirt/qemu/networks/autostart/default.html (disable libvirtd via chkconfig)</li>
+	<li>ntp is useful to have no problems with timesynchronization #yum install ntp ; /etc/init.d/ntpd start</li>
+</ul>
+<strong>Setup: </strong>
+<ul>
+	<li>Bridged network (vmnet0)</li>
+	<li>NAT network (vmnet0): 192.168.0.0/255.255.255.0 with 192.168.0.10 as the host IP</li>
+	<li>Hostonly Network (vmnet1): 192.168.1.0/255.255.255.0 with 192.168.1.10 as the host IP</li>
+	<li>Hostonly Network (vmnet2): 192.168.2.0/255.255.255.0 with 192.168.2.10 as the host IP</li>
+</ul>
+<strong>Processes that will be running</strong>
+<ul>
+	<li><em>DHCP for vmnet</em>1: /usr/bin/vmnet-dhcpd -cf /etc/vmware/vmnet1/dhcpd/dhcpd.conf -lf /etc/vmware/vmnet1/dhcpd/dhcpd.leases -pf /var/run/vmnet-dhcpd-vmnet1.pid vmnet1</li>
+	<li><em>DHCP for vmnet2</em>: /usr/bin/vmnet-dhcpd -cf /etc/vmware/vmnet2/dhcpd/dhcpd.conf -lf /etc/vmware/vmnet2/dhcpd/dhcpd.leases -pf /var/run/vmnet-dhcpd-vmnet2.pid vmnet2</li>
+	<li><em>DHCP for vmnet8</em>: /usr/bin/vmnet-dhcpd -cf /etc/vmware/vmnet8/dhcpd/dhcpd.conf -lf /etc/vmware/vmnet2/dhcpd/dhcpd.leases -pf /var/run/vmnet-dhcpd-vmnet8.pid vmnet2</li>
+	<li><em>NAT  for vmnet8</em>: /usr/bin/vmnet-natd -d /var/run/vmnet-natd-8.pid -m /var/run/vmnet-natd-8.mac -c /etc/vmware/vmnet8/nat/nat.conf</li>
+	<li><em>Authentication Server</em>: /usr/sbin/vmware-authdlauncher</li>
+	<li><em>WebInterface backend</em>: /usr/lib/vmware/webAccess/java/jre1.5.0_15/bin/webAccess -client -Xmx64m -XX:MinHeapFreeRatio=30 -XX:MaxHeapFreeRatio=30 -Djava.util.logging.manager=org.apache.juli.ClassLoaderLogManager -Djava.endorsed.dirs=/usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16/common/endorsed -classpath /usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16/bin/bootstrap.jar:/usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16/bin/commons-logging-api.jar -Dcatalina.base=/usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16 -Dcatalina.home=/usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16 -Djava.io.tmpdir=/usr/lib/vmware/webAccess/tomcat/apache-tomcat-6.0.16/temp org.apache.catalina.startup.Bootstrap start</li>
+	<li><em>WebInterface Frontend</em>:/usr/lib/vmware/bin/vmware-hostd -a -d -u /etc/vmware/hostd/config.xml</li>
+</ul>
+<strong>Start Scripts</strong> <strong>that are created</strong>
+<ul>
+	<li>/etc/init.d/vmware  : starts everything -&gt; this is the one installed via chkconfig</li>
+	<li>/etc/init.d/vmware-core: starts the necessary demons but not the management gui</li>
+	<li>/etc/init.d/vmware-autostart: starts the virtual machine who have been marked as autostart</li>
+	<li>/etc/init.d/vmware-mgmt: start the management gui</li>
+</ul>
+<strong>Install Paths used</strong>
+<ul>
+	<li>/usr/lib/vmware: contains the software</li>
+	<li>/var/log/vmware/: contains the logging</li>
+	<li>/etc/vmware/ : contains the config</li>
+	<li>/etc/vmware/vmnet*/dhcpd/ : if you want to configure dhcp settings this is the place</li>
+	<li>/etc/vmware-vix/ : more config for the scripting tools</li>
+</ul>
+<strong>Network Ports:</strong>
+<br>
+[root@myserver ]# netstat -anp|grep vm|grep LISTEN
+tcp        0      0 0.0.0.0:902                 0.0.0.0:*                   LISTEN      17372/vmware-authdlauncher
+tcp        0      0 0.0.0.0:8333               0.0.0.0:*                   LISTEN      17484/vmware-hostd
+tcp        0      0 0.0.0.0:8222               0.0.0.0:*                   LISTEN      17484/vmware-hostd
+<br>
+As mentioned before, vmware runs dhcpd servers (port 68) on each vmnet interface , so check if you are running a dhcpd server allready and have it bind to its own interfaces.
+<br>
+<strong>Stealth IP for NAT:
+</strong>
+<br>
+When you enable NAT in vmware it secretly adds an IP address than is used by the NAT enabled hosts for routing. Even though you specified 192.168.0.10 as the Host address it will install 192.168.0.2 as a gateway address. You can even ping this IP address. The reason that is does this, that vmware can NAT all traffic going over the NAT IP (vmnatd) and not over you host IP (controlled by IPtables). You can change the ip-address by changing the config in<em> /etc/vmware/vmnet8/nat/nat.conf</em>
+<br>
+# Linux NAT configuration file
+[host]
+# NAT gateway address
+ip =<strong> 192.168.0.2</strong>
+netmask = 255.255.255.0
+# or ip = 192.168.0.2/24
+Ok, now that we know what to expect, let's start the actual installation:
+<br>
+
+<br>
+localhost:Desktop myuser$ scp VMware-server-<strong>2.0.0-122956.x86_64.rpm</strong> root@myserver:
+VMware-server-2.0.0-122956.x86_64.rpm         100%  507MB   9.1MB/s   00:56
+<br>
+<strong>Install the RPM</strong>:
+myserver:~ # rpm -ihv VMware-server-2.0.0-122956.x86_64.rpm
+Preparing...                ########################################### [100%]
+1:VMware-server          ########################################### [100%]
+<br>
+The installation of VMware Server 2.0.0 for Linux completed successfully.
+You can decide to remove this software from your system at any time by
+invoking the following command: "rpm -e VMware-server".
+<br>
+Before running VMware Server for the first time, you need to
+configure it for your running kernel by invoking the
+following command: "/usr/bin/vmware-config.pl".
+<br>
+Enjoy,
+--the VMware team
+<br>
+<strong>Run the vmware-config script
+</strong>
+<br>
+Making sure services for VMware Server are stopped.
+<br>
+Stopping VMware autostart virtual machines:
+Virtual machines                                        [FAILED]
+Stopping VMware management services:
+VMware Virtual Infrastructure Web Access
+VMware Server Host Agent                         [FAILED]
+Stopping VMware services:
+VMware Authentication Daemon                 [  OK  ]
+Virtual machine monitor                             [  OK  ]
+<br>
+You must read and accept the End User License Agreement to continue.
+Press enter to display it.
+[And here comes the EULA ]
+<br>
+Do you accept? (yes/no) [no] <strong>yes</strong>
+Thank you.
+<br>
+The bld-2.6.18-8.el5-x86_64smp-RHEL5 - vmmon module loads perfectly into the running kernel.
+The bld-2.6.18-8.el5-x86_64smp-RHEL5 - vmci module loads perfectly into the running kernel.
+The bld-2.6.18-8.el5-x86_64smp-RHEL5 - vsock module loads perfectly into the running kernel.
+<br>
+Do you want networking for your virtual machines? (yes/no/help) [yes] <strong>yes</strong>
+Configuring a bridged network for vmnet0.
+Please specify a name for this network.
+[<strong>Bridged</strong>]
+Your computer has multiple ethernet network interfaces available: eth0, eth1, eth2, virbr0. Which one do you want to bridge to vmnet0? [<strong>eth0</strong>]
+The following bridged networks have been defined:
+. vmnet0 is bridged to eth0
+Do you wish to configure another bridged network? (yes/no) [no] <strong>no</strong>
+<br>
+Do you want to be able to use NAT networking in your virtual machines? (yes/no)
+[yes] <strong>yes</strong>
+Configuring a NAT network for vmnet8.
+Please specify a name for this network. [<strong>NAT</strong>]
+<br>
+Do you want this program to probe for an unused private subnet? (yes/no/help) [yes] <strong>no</strong>
+<br>
+What will be the IP address of your host on the private network? 192.168.0.10
+What will be the netmask of your private network? 255.255.255.0
+The following NAT networks have been defined:
+. vmnet8 is a NAT network on private subnet 192.168.0.0.
+Do you wish to configure another NAT network? (yes/no) [<strong>no</strong>]
+<br>
+Do you want to be able to use host-only networking in your virtual machines?[<strong>yes]</strong>
+Configuring a host-only network for vmnet1.
+Please specify a name for this network. [<strong>HostOnly</strong>]
+Do you want this program to probe for an unused private subnet? (yes/no/help)[yes] <strong>no</strong>
+What will be the IP address of your host on the private network? <strong>192.168.1.10</strong>
+What will be the netmask of your private network? <strong>255.255.255.0</strong>
+<br>
+The following host-only networks have been defined:
+<br>
+. vmnet1 is a host-only network on private subnet 192.168.1.0.
+<br>
+Do you wish to configure another host-only network? (yes/no) [no]<strong> yes</strong>
+Configuring a host-only network for vmnet2.
+Please specify a name for this network.[<strong>HostOnly</strong>]
+<br>
+Do you want this program to probe for an unused private subnet? (yes/no/help) [yes] <strong>no</strong>
+What will be the IP address of your host on the private network? <strong>192.168.2.10</strong>
+What will be the netmask of your private network? 255.255.255.0
+The following host-only networks have been defined:
+. vmnet1 is a host-only network on private subnet 192.168.1.0.
+. vmnet2 is a host-only network on private subnet 192.168.2.0.
+Do you wish to configure another host-only network? (yes/no) [<strong>no</strong>]
+<br>
+Network name "HostOnly" for vmnet2 is already in use by vmnet1 -- renaming to "HostOnly (2)"
+The bld-2.6.18-8.el5-x86_64smp-RHEL5 - vmnet module loads perfectly into the running kernel.
+<br>
+Please specify a port for remote connections to use [902]
+Please specify a port for standard http connections to use [8222]
+Please specify a port for secure http (https) connections to use [8333]
+<br>
+The current administrative user for VMware Server  is ''.  Would you like to specify a different administrator? [no]
+Using root as the VMware Server administrator.
+<br>
+In which directory do you want to keep your virtual machine files?
+[/var/lib/vmware/Virtual Machines] /data/mount/Virtual Machines
+Please enter your 20-character serial number.
+Type XXXXX-XXXXX-XXXXX-XXXXX or 'Enter' to cancel:  <strong>enter yours here</strong>
+<br>
+Creating a new VMware VIX API installer database using the tar4 format.
+<br>
+Installing VMware VIX API.
+<br>
+In which directory do you want to install the VMware VIX API binary files? [/usr/bin]
+<br>
+In which directory do you want to install the VMware VIX API library files? [/usr/lib/vmware-vix/lib]
+The path "/usr/lib/vmware-vix/lib" does not exist currently. This program is
+going to create it, including needed parent directories. Is this what you want? [yes]
+<br>
+In which directory do you want to install the VMware VIX API document pages? [/usr/share/doc/vmware-vix]
+The path "/usr/share/doc/vmware-vix" does not exist currently. This program is
+going to create it, including needed parent directories. Is this what you want? [<strong>yes</strong>]
+<br>
+The installation of VMware VIX API 1.6.0 build-122956 for Linux completed
+successfully. You can decide to remove this software from your system at any
+time by invoking the following command: "/usr/bin/vmware-uninstall-vix.pl".
+<br>
+Enjoy, the VMware team
+<br>
+Starting VMware services:
+Virtual machine monitor                                            [  OK  ]
+Virtual machine communication interface                  [  OK  ]
+VM communication interface socket family:               [  OK  ]
+Virtual ethernet                                                         [  OK  ]
+Bridged networking on /dev/vmnet0                         [  OK  ]
+Host-only networking on /dev/vmnet1 (backgr         [  OK  ]
+DHCP server on /dev/vmnet1                                    [  OK  ]
+Host-only networking on /dev/vmnet2 (background [  OK  ]
+DHCP server on /dev/vmnet2                                    [  OK  ]
+Host-only networking on /dev/vmnet8 (background)[  OK  ]
+DHCP server on /dev/vmnet8                                    [  OK  ]
+NAT service on /dev/vmnet8                                     [  OK  ]
+VMware Server Authentication Daemon (background)[  OK  ]
+Shared Memory Available                                          [  OK  ]
+Starting VMware management services:
+VMware Server Host Agent (background)                   [  OK  ]
+VMware Virtual Infrastructure Web Access
+Starting VMware autostart virtual machines:
+Virtual machines                                                       [  OK  ]
+The configuration of VMware Server 2.0.0 build-122956 for Linux for this
+running kernel completed successfully.

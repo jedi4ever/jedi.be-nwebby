@@ -181,6 +181,7 @@ module.exports = function(grunt) {
           port: 3000,
           base: 'dist',
           livereload: true,
+          keepalive: true,
           debug: true
         }
       }
@@ -231,8 +232,9 @@ module.exports = function(grunt) {
       content: {
         files: [ {
           expand: true,
-          cwd: 'src/',
-          src: ['**/*.{html,txt}'],
+          cwd: 'src/content',
+          src: ['**/**'],
+          dot: true,
           dest: 'dist/'                  // Destination path prefix
         }]
       }
@@ -242,16 +244,20 @@ module.exports = function(grunt) {
 
   grunt.loadTasks('tasks');
 
-  grunt.registerTask('live', [
+  grunt.registerTask('build', [
     'clean:build',
     'copy',
     //'htmlmin',
     'webby',
-    'imagemin',
+    //'imagemin',
     'uglify:devopsdays',
     'cssmin:devopsdays',
     //'hashres',
-    'connect:server',
-    'watch'
+  ]);
+
+  grunt.registerTask('live', [
+    'build',
+    'connect:server'
+    //'watch'
   ]);
 }

@@ -1,0 +1,60 @@
+--- 
+title: Test Driven Automation and Administration
+created_at: 2009-11-16 13:31:30.215699 +01:00
+tags: 
+- test driven automation
+- test driven administration
+- monitoring driven automation
+- behavior driven automation
+- behavior driven infrastructure
+- test driven infrastructure
+- devops
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+### Definition 
+<img src='/blog/wp-content/uploads/2009/11/test-driven-administration.jpg' class='right'>
+Within the world of development, there is a concept called *test driven development*. It relies on the repetition of a very short development cycle: First the developer writes a failing automated test case that defines a desired improvement or new function, then produces code to pass that test and finally refactors the new code to acceptable standards. [wikipedia definition](http://en.wikipedia.org/wiki/Test-driven_development).
+
+### Lots of terms
+Over the last few years, there has been much discussion on how to apply this to IT infrastructure and system administration. It has been called many names now: *Test driven Infrastructure*, *Monitoring driven Infrastructure* or *Test driven Administration* and *Test driven Automation*.
+
+### Monitoring driven vs Test Driven
+If find the term Monitoring too narrow, tests are broader then monitoring as described in the [discussion about tests and checks checks](http://www.developsense.com/2009/09/tests-vs-checks-should-we-call-test.html).
+
+### Test Driven Infrastructure or Automation/Administration
+For me the term infrastructure is a bit misplaced as I think it is a *process* and not a deliverable. Also
+*Administration* is more then just *Automation*. So I guess the process of creating the environment (similar to development) would be called *Test Driven Automation* and when doing changes on a live system I would call it *Test Driven Administration*.
+
+### Test Driven vs Behavior Driven
+Finally, what is considered *Test Driven* and what is *Behavior driven*. Within the development world behavior driven development servers as a complement to the Test Driven approach. It is usually expressed in the business language of the customer, whereas the unit tests are considered technical tests not meant to be read by the customer.
+
+The customer of the infrastructure could be:
+
+- the developer that wants to deploy his application
+- it could be the customer using the application in need to have a performing infrastructure
+- it could be the sysadmin that needs to manage the environment
+
+To give an example of what I consider a unit test would be see if a process is up. This is clearly technical and does not describe any 
+<pre>
+ ps -ef | grep -w 'process name' 
+ echo $?
+</pre>
+
+Examples of what I consider behavior tests:
+<pre>
+ As a sysadmin 
+ I want to login to the system 
+ so that I can see the list of processes
+</pre>
+
+<pre>
+ As a developer 
+ I want to deploy my war file
+ So that I can browse to my application 
+</pre>
+
+It helps to start with the behavior tests, because they express better why you are actually building the system, the real business value. After that you can add unit tests to check with internal commands. 
+

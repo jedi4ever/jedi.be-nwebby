@@ -1,0 +1,17 @@
+---
+layout: event
+extension: html
+filter: 
+- erb
+- markdown
+title: Build Engineer Bootcamp - Location
+dirty: true
+---
+Kindly hosted by [Tomtom](http://tomtom.com) (Former [Teleatlas](http://www.teleatlas.com/))
+
+<img src='<%= @page.url+"/../tomtom-logo.jpg" %>'>
+
+Gaston Crommenlaan 4, 9050 Ledeberg (near Ghent), Belgium
+
+<iframe width="425" height="550" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.be/maps?f=q&amp;source=s_q&amp;hl=nl&amp;geocode=&amp;q=gent,belgium&amp;sll=51.023712,4.022405&amp;sspn=0.01297,0.020106&amp;ie=UTF8&amp;hq=&amp;hnear=Gaston+Crommenlaan+4,9050+Ledeberg&amp;ll=51.053562,3.720867&amp;spn=2.417087,4.669189&amp;z=7&amp;iwloc=A&amp;output=embed"></iframe><br /><small><a href="http://maps.google.be/maps?f=q&amp;source=embed&amp;hl=nl&amp;geocode=&amp;q=gent,belgium&amp;sll=51.023712,4.022405&amp;sspn=0.01297,0.020106&amp;ie=UTF8&amp;hq=&amp;hnear=Gaston+Crommenlaan+4,9050+Ledeberg&amp;ll=51.053562,3.720867&amp;spn=2.417087,4.669189&amp;z=7&amp;iwloc=A" style="color:#0000FF;text-align:left">Grotere kaart weergeven</a></small>
+

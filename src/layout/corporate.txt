@@ -1,0 +1,21 @@
+	{{ >/htmlheader }}
+	{{ >/header }}
+
+
+   <div class="span-15 colborder ">
+	   <div class="span-15 first last">
+	     <h1>{{ page.title }}</h1>
+	   </div>
+	   <div class="span-15  first last ">
+	      {{> content }}
+	   </div>
+   </div>
+
+   <div class="span-7 last box ">
+		{{> /corporate-menu }}
+
+   </div>
+
+   <div class="span-24  first last" id="footer">
+   </div>
+	{{ >/htmlfooter }}

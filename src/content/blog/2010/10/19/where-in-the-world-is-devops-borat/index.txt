@@ -1,0 +1,42 @@
+--- 
+title: Where in the World Is DEVOPS_BORAT
+created_at: 2010-10-19 18:18:46.964220 +02:00
+tags: 
+- devops
+- devopsdays
+- devops_borat
+- humor
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<table><tr><td>
+<p><img src='{{ page.url }}/devops-borat-question.jpg'></td><td> During the recent <a href="http://www.devopsdays.org/2010-europe">devopsdays in Hamburg</a>, several people came to me asking if I had any idea who <a href="http://twitter.com/DEVOPS_BORAT">DEVOPS_BORAT</a>  is. There were some wild conspiracies but it where more wild guesses.</p>
+<p>
+</p>
+<p>
+For those who don't know him: he tweets from Kazakhstan his view on the <a href="http://www.jedi.be/blog/2010/02/12/what-is-this-devops-thing-anyway/">devops</a> world. And does it with load of humor. You should really <a href="http://twitter.com/DEVOPS_BORAT">follow him on twitter</a>!</p>
+<p>
+</p>
+
+</td></tr></table>
+
+So as a good engineer, I've started gathering evidence by looking at his tweets and this is what I found until now: 
+
+- He has attended Surgecon 2010 [http://twitter.com/DEVOPS_BORAT/status/26143068906](http://twitter.com/DEVOPS_BORAT/status/26143068906)
+- He has attended Agile 2010 [http://twitter.com/DEVOPS_BORAT/status/20820538617](http://twitter.com/DEVOPS_BORAT/status/20820538617)
+- He has attended Oscon 2010 - [http://twitter.com/#!/DEVOPS_BORAT/status/20816638029](http://twitter.com/#!/DEVOPS_BORAT/status/20816638029)
+- He likes Django, NoSql, Cloud - [http://twitter.com/#!/DEVOPS_BORAT/status/21507306871](http://twitter.com/#!/DEVOPS_BORAT/status/21507306871)
+- He has an interest in Openstack - [http://twitter.com/DEVOPS_BORAT/status/21523603119
+](http://twitter.com/DEVOPS_BORAT/status/21523603119)
+- He is familiar with Chef and Puppet - [http://twitter.com/#!/DEVOPS_BORAT/status/21760698342](http://twitter.com/#!/DEVOPS_BORAT/status/21760698342)
+- On vacation on 23 August till October 2 - [http://twitter.com/DEVOPS_BORAT/status/21925867241](http://twitter.com/DEVOPS_BORAT/status/21925867241)
+- He has some interest in cycling - [http://twitter.com/DEVOPS_BORAT/status/18776108731](http://twitter.com/DEVOPS_BORAT/status/18776108731)
+- As he knows Amiga +/- 40 years old - [http://twitter.com/#!/DEVOPS_BORAT/status/18786587175](http://twitter.com/#!/DEVOPS_BORAT/status/18786587175)
+- No geolocation - only Kazakhstan :) 
+- He tweets via twitter webinterface or twitter mobile interface
+
+Time for a call to participation I thought. Have a look at <a href='{{ page.url }}/devops_borat-data.zip'>the raw twitter data</a> and maybe you can provide us with some clues? 
+
+The first one to provide us with conclusive evidence, will receive free entrance for one of the next devopsdays. Because after all, we want [DEVOPS_BORAT](http://twitter.com/DEVOPS_BORAT) on stage for the next devopsdays!

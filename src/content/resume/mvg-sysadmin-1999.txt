@@ -1,0 +1,38 @@
+---
+job: true
+period: "1999 - 2000"
+customer: Ministerie Vlaamse Gemeenschap (SBS)
+role: System Administrator/Technical Consultant
+title: Ministerie Vlaamse Gemeenschap Collaboration Services Mail, Calender, Intranet
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/mvg.jpg" class="left"></div>
+		<div class="span-18 last">
+* As of beginning 1999, the ICT of the Ministerie Vlaamse Gemeenschap (10.000 employees) was outsourced to Siemens Business Services. . Before the outsourcing all different departements had their own IT staff. Therefore the first action to be taken, was the consolidation and integration between all sub departements. This consolidation was done at different infrastructural levels: server, network and client. Only relevant details are shown below.
+
+* All basic server infrastructure services (DNS,DHCP,NIS+,LDAP) were aligned and consolidated. Internet connectivity and firewall infrastructure were further optimized. Along with server hardening standards.
+
+* For messaging everything was migrated to Netscape Mail Servers (IMAP4,POP3), Netscape Calendar and Sendmail servers. The existing MS-mail and CC-Mail converted to the new servers. For bulk email Listserv was introduced. Antivirus was added to the fileservers and SMTP gateways for extra security. (TrendMicro)
+
+* Web applications of the different departements were standardized upon Apache Webserver, Jrun, ColdFusion and Informix databases.The idea behind the consolidation was to act as an ASP for the different departements, based upon a shared (virtual) server concept within a J2EE environment.
+
+* The Outsourcing contract was SLA driven: therefore additional monitoring was setup with real end-to-end testing (Big Brother). Also a testframe environment was started to Quality Control the results of 3th party developers.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+jrun, coldfusion, informix, sendmail, netscape, trendmicro antivirus, listserv, DNS, NIS+, Sun LDAP Server, Big Brother
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Architect_
+
+* Design and build Mail, Intranet, Internet and Security infrastructure.
+* Design and build shared web,application database concept
+
+_Service Management_
+* Technical lead and coordinator of Mail, Intranet, Internet and Security group
+	</div>
+</div>

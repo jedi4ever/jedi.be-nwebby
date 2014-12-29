@@ -1,0 +1,177 @@
+--- 
+title: Recipes for Automated installation of OS and beyond
+created_at: 2009-11-18 11:34:28.317196 +01:00
+tags: 
+- puppet
+- chef
+- jeos
+- just enough operating system
+- cfengine
+- smartfrog
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+<img src='/blog/wp-content/uploads/2009/11/recipes-for-os-installation-automation.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) and [network provisioning](http://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/). So now we can actually get started with automating the installation of the Operating System itself. This not surprisingly is were most sysadmins spent most of their time. 
+
+The good news is that we are slowly going a way from the custom scripting toward a reusable and shareable language. Very similar to programming design patterns. Over the years the methods have evolved towards configuration management, which is obviously a good thing.
+
+This also helps in leaving the hero culture sysadmins have because they are the guys who now how to manage their systems.
+ 
+### Jump/Kick start
+The first way of automating the OS installation came from using [Kickstart](http://www.redhat.com/docs/manuals/enterprise/RHEL-5-manual/Installation_Guide-en-US/s1-kickstart2-options.html) or [Jumpstart](http://www.sun.com/bigadmin/features/articles/jumpstart_x86_x64.jsp). In essence it is a config file that defines the information necessary to do an installation. It typically contains:
+
+- the machine's network configuration (interfaces, IP, Routes, DNS)
+- the disk layout setup 
+- the packages to be installed
+- patches to be applied
+
+When booting the kernel of an OS, there usually is a way to specify this file, allowing automated installation. Over time this file was put on a floppy, then on a CDROM, USB Drive. To automatically start the installation the install media needed to be modified to change the default kernel boot options. The syntax of these files is typically different per OS.
+
+To create your first file, you would do a manual installation of the OS, and at the end it would create a file corresponding to the manual choices you made. After that, the file could be altered to include additional post-installation scripts or extra packages. 
+
+Automating the creation of this has never really been important, I was either using an Editor or using a GUI to generate them. Interestly I found [Snake](https://fedorahosted.org/snake/wiki/SnakeExamples/ServerSnakeKs) as an example to scripting the creation of the template.
+
+So in other to automate the installation of software, sysadmin would encourage developers to create packages for their install, so that the installation could be easily automated.
+
+An example of a Solaris Jumpstart:
+<% codify do %>
+# install_type MUST be first
+install_type      initial_install
+# start with the minimal required number of packages
+cluster           SUNWCXall
+cluster           SUNWCapache delete
+cluster           SUNWCpcmc   delete
+cluster           SUNWCpcmcx  delete
+cluster           SUNWCthai   delete
+cluster           SUNWClp     delete
+cluster           SUNWCnis    delete
+cluster           SUNWCppp    delete
+# format the entire disk for Solaris
+fdisk   all   solaris all
+# define how the disk is partitioned
+partitioning      explicit
+filesys           rootdisk.s0 6144  /
+filesys           rootdisk.s1 1024  swap
+filesys           rootdisk.s7 free  /state/partition1
+# install systems as standalone
+system_type standalone
+# specify patches to install
+patch 119281-06 nfs 172.16.64.194:/export/patches
+# specify packages to install
+package SPROcc add nfs 172.16.64.194:/export/packages
+<% end %>
+
+### System installation frameworks
+Over time frameworks emerged to manage all these packages installation and managing :
+
+- FAI: <http://www.informatik.uni-koeln.de/fai/>
+- System Imager : <http://wiki.systemimager.org/index.php/Main_Page>
+- Quattor : <http://sourceforge.net/apps/mediawiki/quattor/index.php?title=Main_Page>
+- Cobbler : <https://fedorahosted.org/cobbler/>
+- Viper: <http://www.spinlocksolutions.com/viper/doc/index.html>
+
+
+### Configuration Management
+As [System recipes and configuration management](http://people.redhat.com/dlutter/puppet-app.html) beautifully describes, managing systems is more then just managing and installing packages : sysadmins would have tons of custom scripts and HOWTO's to describe how to do additional things f.i. installing a complete Webserver according to company standards.  All of this knowledge was usually put in specific custom scripts, without a good way of sharing this, 
+. What we actually need is a formalized description of all the things that need to be present and configured on the machines in your setup.
+
+Enter the world configuration management tools. These tools provide a ways of describing the recipes in a language that makes abstraction of the actual system its running on. F.i. adding a user or adding a package is abstracted in the language.
+
+Examples are: 
+
+- Smartfrog - <http://wiki.smartfrog.org/>
+- LCFG - <http://www.lcfg.org/>
+- BCFG2 - <http://trac.mcs.anl.gov/projects/bcfg2>
+- CFEngine - <http://www.cfengine.org/>
+- Puppet - <http://reductivelabs.com/products/puppet/>
+- Chef - <http://www.opscode.com/chef/>
+
+Puppet seems to have most of the market for now, but the Chef guys are catching up. Also a lot of the system management tools have puppet integration:
+
+- [OpenQRM puppet integration](http://www.johnmwillis.com/puppet/openqrm-and-puppet-integration/)
+- [Foreman](http://theforeman.org/wiki/foreman/Features) is aimed to be a Single Address For All Machines Life Cycle Management.
+- [Using cobbler with config management system](https://fedorahosted.org/cobbler/wiki/UsingCobblerWithConfigManagementSystem)
+
+Example puppet recipe for ensuring the permission of a sudoers file
+<% codify do %>
+# /etc/puppet/manifests/classes/sudo.pp
+class sudo {
+   file { "/etc/sudoers":
+        owner => "root",
+        group => "root",
+         mode  => 440,
+    }
+}
+<% end %>
+
+Example for mysql node installation
+<% codify do %>
+class mysql-server {
+	 $password = "insert_password_here"
+	 package { "MySQL-client": ensure => installed }
+	 package { "MySQL-server": ensure => installed }
+	 package { "MySQL-shared": ensure => installed }
+
+	 exec { "Set MySQL server root password":
+	   subscribe => [ Package["MySQL-server"], Package["MySQL-client"], Package["MySQL-shared"] ],
+	   refreshonly => true,
+	   unless => "mysqladmin -uroot -p$password status",
+	   path => "/bin:/usr/bin",
+	   command => "mysqladmin -uroot password $password",
+	 }
+}
+<% end %>
+
+What's fascinating is the new set of tools that starts to emerge here and how it really starts to integrate in real programming languages such as ruby.
+
+- [Moonshine](http://blog.railsmachine.com/articles/2009/01/16/moonshine-configuration-management-and-deployment/) an opensource configuration management and deployment system that follows the Rails way. 
+- [Gepetto](http://github.com/albanpeignier/gepetto) A helper suite for Puppet projects to create, manage and help daily development
+- [ShadowPuppet](http://github.com/railsmachine/shadow_puppet/) is a Ruby DSL for Puppet, extracted from Moonshine. ShadowPuppet provides a DSL for creating collections (manifests) of Puppet Resources in Ruby.
+- [Carpet](http://www.agileweboperations.com/configuration-management-remixed-introducing-carpet/) of the [Agile Web Operations](http://www.agileweboperations.com/) guys is an example on how you can mix capistrano with puppet.
+- [Cft](http://cft.et.redhat.com/) - Configuration File Tracking: lets you kinda record puppet recipes while entering commands. 
+
+For managing configuration files Augeas is doing a really nice job: it parses configuration files in their native formats and transforms them into a tree. Configuration changes are made by manipulating this tree and saving it back into native config files. 
+
+### Just Enough Operating System
+Now that sysadmins are spending more time with their configuration management, they slim down their initial kickstart installations by only using a minimal base install of the OS in their kickstart + a configuration management tool. And when this minimal install is done, they continue applying their recipes to the installation. 
+
+This minimal install is sometimes called a base install , an installation with the minimal set of packages installed. Some OS vendors are actively working on providing what is called a JeOS which stands for *Just enough Operating System*. This is an image that contains an already installed minimal install. They are also useful for creating appliances. Some example are:
+
+- Oracle JEOS: <http://www.oracle.com/technology/software/products/virtualization/vm_jeos.html>
+- Ubuntu JEOS with their JEOSVMBuilder: <https://help.ubuntu.com/community/JeOSVMBuilder>
+
+### Middleware automation
+If you're installing a complete stack f.i. Oracle Application Server, Database Server, changes are that the initial package install does nothing. What you need is to create your own instances, pools and so on. What's important is that some of these include their own automation language. It is essential that they have a way of doing every GUI action from the commandline. Otherwise you end up writing scripts for managing their config files. This is a bad thing because this might change overtime or even worse impossible because they store things in binary format.
+
+Examples of good API's are:
+
+- Weblogic with its [Weblogic Scripting Language](http://download.oracle.com/.../wls/...scripting/using_WLST.html)
+- [Sun Application Server / Glassfish](https://glassfish.dev.java.net/) with its [asadmin API](http://kenai.com/projects/glassfish-script)
+
+#### Example of asadmin scripting
+<% codify do %>
+# create an cluster
+asadmin create-cluster --user admin --passwordfile adminpassword.txt --host hostname -port 4848 cluster1
+# create instance 1
+asadmin create-instance --user admin --passwordfile adminpassword.txt --host hostname -port 4848 --cluster cluster1 --nodeagent nodeagent1 --systemproperties "JMX_SYSTEM_CONNECTOR_PORT=8687:IIOP_LISTENER_PORT=3330:IIOP_SSL_LISTENER_PORT=4440:IIOP_SSL_ MUTUALAUTH_PORT=5550:HTTP_LISTENER_PORT=1110:HTTP_SSL_LISTENER_PORT=2220" instance1
+# create instance 2
+asadmin create-instance --user admin --passwordfile adminpassword.txt --host hostname -port 4848 --cluster cluster1 --nodeagent nodeagent1 --systemproperties "JMX_SYSTEM_CONNECTOR_PORT=8688:IIOP_LISTENER_PORT=3331:IIOP_SSL_LISTENER_PORT=4441:IIOP_SSL_ MUTUALAUTH_PORT=5551:HTTP_LISTENER_PORT=1111:HTTP_SSL_LISTENER_PORT=2221" instance2
+# start the cluster
+asadmin start-cluster --user admin --passwordfile adminpassword.txt --host hostname --port 4848 cluster1
+<% end %>
+Some tools also provide a 'silent install' feature. It will record the installation into a text file that you can later replay to have the same result. Using some sed/awk scripts you can probably automate some of this.

@@ -1,0 +1,294 @@
+--- 
+title:      Sending Keystrokes to Your (Virtual) Machines using X, Vnc , Rdp or Native ways
+created_at: 2010-08-29 16:35:42.466749 +02:00
+tags: 
+- automation
+- vnc
+- rdesktop
+- rdp
+- xvfb
+- virtualbox
+- xen
+- kvm 
+blog_post: true
+filter: 
+- erb
+- markdown
+related: 
+- desc: Capturing The screen of your virtual machine using X or VNC or RDP or Native
+  url: /blog/2010/08/30/capturing-the-screen-of-your-virtual-machines-using-x-vnc-rdp-or-native/
+---
+### Options overview
+
+<table>
+<tr>
+<td><img src='{{ page.url }}/mission-impossible.jpg'>
+</td>
+<td>
+The most common way to interact with a virtual machine is by remote login via ssh. This blogpost is about a different way of interaction: it will show you how to send keystrokes (or mouse) directly to the remote screen of the machine. This can be used for instance for kickstarting a machine before the network is up (typing linux), or automating things that require screen interaction. 
+</td>
+</tr>
+</table>
+
+In general three types of remote screen sessions exist:
+
+- [VNC](http://en.wikipedia.org/wiki/Vnc): is a graphical desktop sharing system that uses the RFB protocol
+- [RDP](http://en.wikipedia.org/wiki/Remote_Desktop_Protocol): A proprietary developed by Microsoft 
+- [X-session](http://en.wikipedia.org/wiki/X_Window_System): based on the X Window System (commonly X or X11) 
+
+Most virtualization solutions allow you to activate one of these remote session options: 
+
+- [Enable VNC in Vmware Fusion](http://bradarsenault.com/post/482)
+- [Enable VNC in Vmware Esx](http://www.petri.co.il/virtual_using_vnc_and_vmware_server.htm)
+- [Enable VNC in Xen](http://www.virtuatopia.com/index.php/Configuring_a_VNC_based_Graphical_Console_for_a_Xen_Paravirtualized_domainU_Guest#Configuring_a_Xen_domainU_for_VNC_Access
+) 
+- [Enable VNC in KVM](http://www.howtoforge.com/virtualization-with-kvm-on-a-fedora-13-server)
+- [Enable RDP in Virtualbox](http://www.virtualbox.org/manual/ch07.html)
+
+<hr>
+### Keycodes versus keys
+Before we start of with the different solutions, I would like to point out that sending keystrokes to these remote sessions is not the same as printing a character to the screen. 
+
+Keyboards and for that matter virtual keyboards interact with [scancodes](http://en.wikipedia.org/wiki/Scancode) : every key on the keyboard is assigned a scancode. This has a few consequences: 
+
+- An uppercase letter is a combination of a scancode for Shift and a scancode for the letter
+- The same scancode on a different keyboard layout can cause a different letter to be send: f.i. scancode 10 (hex) generate a 'Q' on a Qwerty keyboard but 'A' on an Azerty keyboard
+
+Most of the tools assume the use of a US Layout keyboard. A good overview of the different scancodes can be found at [http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html](http://www.win.tue.nl/~aeb/linux/kbd/scancodes-1.html)
+
+<hr>
+### Interacting with X-Windows
+Before VNC and RDP existed , people already had the option of using an X-client to an X-server. 
+
+P.S. I know you are probably looking for RDP or VNC interaction, but this description will come in handy as we will use this through Xvfb. 
+
+I found two tools that help sending keystrokes:
+
+- xte : [http://hoopajoo.net/projects/xautomation.html](http://hoopajoo.net/projects/xautomation.html)
+- xdotool : [http://www.semicomplete.com/projects/xdotool/](http://www.semicomplete.com/projects/xdotool/)
+- C++ example code : [http://www.doctort.org/adam/nerd-notes/x11-fake-keypress-event.html](http://www.doctort.org/adam/nerd-notes/x11-fake-keypress-event.html)
+
+I couldn't get xte to compile on my mac but xdotool is conveniently available in macports.
+
+What is xdotool?
+This tool lets you simulate keyboard input and mouse activity, move and resize windows, etc. It does this using X11's XTEST extension and other Xlib functions.
+Additionally, you can search for windows and move, resize, hide, and modify window properties like the title. If your window manager supports it, you can use xdotool to switch desktops, move windows between desktops, and change the number of desktops.
+
+<% codify(:lang => "shell") do %>
+$ sudo port install xdotool
+--->  Computing dependencies for xdotool
+--->  Fetching xdotool
+--->  Verifying checksum(s) for xdotool
+--->  Extracting xdotool
+--->  Applying patches to xdotool
+--->  Configuring xdotool
+--->  Building xdotool
+--->  Staging xdotool into destroot
+--->  Installing xdotool @2.20100818.3004_0
+--->  Activating xdotool @2.20100818.3004_0
+
+To use xdotool (and avoid the error message "Error: XTEST extension unavailable
+on '(null)'") you need to enable the XTEST extension. If you're using Apple's
+X11.app, the command to do so is: 
+
+defaults write org.x.X11 enable_test_extensions -boolean true 
+
+If you're using the MacPorts X11.app, use: 
+
+defaults write org.macports.X11 enable_test_extensions -boolean true 
+
+This only needs to be done once.
+--->  Cleaning xdotool
+<% end %>
+
+Sending the key 'a' to your X-sessions 
+
+<% codify(:lang => "shell") do %>
+$ xdotool key 'a'
+<% end %>
+
+The tool has a lot of ways of interacting with the windows, and for our purposes it has a option to send a *key* and even *mouse* . 
+
+<% codify(:lang => "shell") do %>
+$ xdotool
+Usage: xdotool <cmd> <args>
+Available commands:
+  getactivewindow
+  getwindowfocus
+  getwindowname
+  getwindowpid
+  search
+  selectwindow
+  help
+  version
+  click
+  getmouselocation
+  key
+  keydown
+  keyup
+  mousedown
+  mousemove
+  mousemove_relative
+  mouseup
+  type
+  windowactivate
+  windowfocus
+  windowmap
+  windowmove
+  windowraise
+  windowsize
+  windowunmap
+  windowreparent
+  windowkill
+  set_window
+  behave
+  set_num_desktops
+  get_num_desktops
+  set_desktop
+  get_desktop
+  set_desktop_for_window
+  get_desktop_for_window
+  get_desktop_viewport
+  set_desktop_viewport
+<% end %>
+
+<hr>
+### Interacting with VNC
+#### Using Ruby-vnc
+The easiest way I found to interact with a VNC session is by using the excellent ruby-vnc library [http://code.google.com/p/ruby-vnc/](http://code.google.com/p/ruby-vnc/)
+
+The example on the website gives you a good idea on how it works:
+<% codify(:lang => "ruby") do %>
+# launch xclock on localhost. note that there is an xterm in the top-left
+Net::VNC.open 'localhost:0', :shared => true, :password => 'mypass' do |vnc|
+  vnc.pointer_move 10, 10
+  vnc.type 'xclock'
+  vnc.key_press :return
+end
+<% end %>
+
+#### Using vncviewer and xvfb
+If you are not that confident with ruby, there is another option. Xvfb allows you to create a virtual screen on which you can interact. Together with the vncviewer (X-client) we can use it with xdotool to interact with a vnc session.
+
+The first step is to create a vnc password file, as with vncviewer the password can not be supplied on the commandline. 
+
+Create password file name 'mypasswordfile'
+<% codify(:lang => "shell") do %>
+$ vncpasswd mypasswordfile
+Password:
+Verify:
+<% end %>
+
+Start Xfvb screen (:1 means another display and 24 is the colordepth)
+<% codify(:lang => "shell") do %>
+$ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
+(EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
+(EE) GLX: could not load software renderer
+(EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
+(EE) XKB: No components provided for device Virtual core keyboard
+<% end %>
+
+Now we can start vncviewer (that logs in automatically) within the Virtual Frame buffer
+<% codify(:lang => "shell") do %>
+$ DISPLAY=:1 vncviewer -FullColor --Passwordfile mypasswordfile localhost
+<% end %>
+
+Now we are back to using xdotool to interact with the session.
+<hr>
+### Interacting with RDP
+#### Using properjavardp
+*Properjava rdp* -  [http://properjavardp.sourceforge.net/](http://properjavardp.sourceforge.net/) is a full implementation of the RDP protocol in Java. It doesn't seem to be maintained and several 'forks' are available. 
+
+- [http://github.com/kohsuke/properjavardp/tree/master/src/net/propero/](http://github.com/kohsuke/properjavardp/tree/master/src/net/propero/)
+- [http://www.elusiva.com/opensource/](http://www.elusiva.com/opensource/)
+- [http://jrdesktop.sourceforge.net/](http://jrdesktop.sourceforge.net/)
+
+I used the original source to get it running: 
+
+- Import the src directory in a java project
+- Add the src files like RdpPacket_Localised for the src-1.4 directory
+- Add the jar files to the project (log4j.jar, ..)
+
+The following code will give you an idea on how you can use it
+<% codify({:lang => "java", :file => "SendKeysRdp.java"}) do %>
+<% end %>
+
+#### Using rdesktop and Xvfb
+<% codify(:lang => "shell") do %>
+$ sudo port install rdesktop
+$ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
+(EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
+(EE) GLX: could not load software renderer
+(EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
+(EE) XKB: No components provided for device Virtual core keyboard
+<% end %>
+<% codify(:lang => "shell") do %>
+$ DISPLAY=:1 rdesktop -u <username> -p <password> -d <domain> remotehost
+<% end %>
+
+#### Directly from C code re-using code from rdesktop
+I found a link to an xrdp overflow tool that seems to use the *rdp_send_scancode* function to send the keystroke.
+
+[http://webcache.googleusercontent.com/search?q=cache:GIucABEgkT8J:packetstormsecurity.org/0904-exploits/xrdp-overflow.txt+rdp_send_scancode&cd=7&hl=nl&ct=clnk&gl=be&client=firefox-a](http://webcache.googleusercontent.com/search?q=cache:GIucABEgkT8J:packetstormsecurity.org/0904-exploits/xrdp-overflow.txt+rdp_send_scancode&cd=7&hl=nl&ct=clnk&gl=be&client=firefox-a
+)
+	
+Another cool trick I picked up, was the way to launch commands using rdesktop : 
+
+[http://www.singularity.be/2008/03/using-rdesktop-to-script-windows.html](http://www.singularity.be/2008/03/using-rdesktop-to-script-windows.html
+)
+
+<hr>
+### Virtualbox option
+Virtualbox provides a way to send keyboard scancodes directly using it's excellent API. The option *keyboardputscancode* allows to specify the hex code of the scancode. You can also send multiple keycodes after each other. In my experience this doesn't work well for a long sequence. It seems the buffer it limited and your best option is to send the different keycodes in multiple calls to the command line.
+
+<% codify(:lang => "shell") do %>
+VBoxManage controlvm        <uuid>|<name>
+                            pause|resume|reset|poweroff|savestate|
+                            acpipowerbutton|acpisleepbutton|
+                            keyboardputscancode <hex> [<hex> ...]|
+<% end %>
+
+<hr>
+### Using a non-headless solution
+In order to automate visual tasks, there exist a lot of macro/recording tools, the downside of them is that they need an actual display to run. When scripting you are mostly looking for headless solutions though. The disadvantage of headless solutions is that they are cumbersome to create as you have to move the pointer and the keys at the exact spot. 
+
+#### Sikuli
+When you are interacting with a session you as a person do a lot more then just typing things. You yourself also locate which window to focus, what button to click. 
+
+Sikuli is a great tool that tries to help you in those tasks. It uses image recognition tools to find the correct place on the screen. Think of it a visual scripting language for screen interaction. An example script looks like this: 
+
+<img src='{{ page.url }}/sikuli-example.png'>
+
+It allows you use these commands within java and it seems that someone is working on [replacing the java.awt.robot to a vnc version](https://answers.launchpad.net/sikuli/+question/118598)
+
+More background can be found at: 
+
+- [http://www.software-testing.com.au/blog/2010/08/16/automating-flash-ajax-popups-and-more-using-ruby-watir-and-sikuli/
+](http://www.software-testing.com.au/blog/2010/08/16/automating-flash-ajax-popups-and-more-using-ruby-watir-and-sikuli/)
+- [http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-uist2009.pdf](http://groups.csail.mit.edu/uid/projects/sikuli/sikuli-uist2009.pdf)
+- [http://sikuli.org/documentation.shtml#/trac/wiki/How%20to%20use%20Sikuli%20Script%20in%20your%20JAVA%20programs?](http://sikuli.org/documentation.shtml#/trac/wiki/How%20to%20use%20Sikuli%20Script%20in%20your%20JAVA%20programs?)
+
+The function type() simulates keyboard typing just as a user types text in a application. However, type() doesn't work for different keyboard layouts other than QWERTY, such as DVORAK. We provide a workaround paste() since 0.9.7 (20100127). The function paste() transfers text through system's clipboard, which is fully independent of keyboard layouts. A sample usage that paste "network" into a search box is shown as follows.
+
+#### Other options
+For completeness I provide different options I found useful
+
+- pywinauto : [http://pywinauto.openqa.org/](http://pywinauto.openqa.org/)
+- autoit :  [http://www.autoitscript.com/](http://www.autoitscript.com/)
+- Using applescript: [http://jehiah.cz/projects/ARD-SendUnixCommands.php
+](http://jehiah.cz/projects/ARD-SendUnixCommands.php
+)
+
+<% codify(:lang => "shell") do %>
+$ osascript -e 'tell application "System Events" to keystroke "LOGIN_NAME"'; \
+$ osascript -e 'tell application "System Events" to keystroke tab'; \
+$ osascript -e 'tell application "System Events" to delay 0.5'; \
+$ osascript -e 'tell application "System Events" to keystroke "PASSWORDHERE"'; \
+$ osascript -e 'tell application "System Events" to delay 0.5'; \
+$ osascript -e 'tell application "System Events" to keystroke return'
+
+Replace LOGIN_NAME and PASSWORD with the proper values
+Run as "root" user
+<% end %>
+
+

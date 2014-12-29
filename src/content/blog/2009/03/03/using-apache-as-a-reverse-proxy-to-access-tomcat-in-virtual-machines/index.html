@@ -1,0 +1,87 @@
+---
+title: "Using Apache as a reverse proxy to access tomcat in virtual machines"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=598
+created_at: 2009-03-03 18:24:40.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - nat
+   - vmware
+   - reverse
+   - reverseproxy
+   - proxy
+   - apache
+---
+This post describes how to use apache as a reverse proxy to access tomcat or other webservers/services within vmware machines that use network interfaces configured with NAT.
+<br>
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/apache-reverse-proxy-vmware-nat-hosts.png"><img title="apache-reverse-proxy-vmware-nat-hosts" class="alignnone size-full wp-image-597" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/apache-reverse-proxy-vmware-nat-hosts.png" height="540" alt="" width="708" /></a>
+<br>
+<strong>Option 1: Standard vmware NAT</strong>
+<br>
+Vmware has a standard way of exposing services running on vmware machines behind a nat configuration. It uses the file /etc/vmware/vmnet8/nat/nat.conf  to define mapping between external ports and internal vmware hosts.
+<br>
+So say we have to virtual machines called vm1.virtual.net (192.168.0.100) and vm2.virtual.net (192.168.0.100) with both a tomcat listening on port 8080 and we want to make them available on the IP address 10.247.61.17 (eth0)
+<br>
+[incomingtcp]
+<br>
+8080 = 192.168.0.100
+<br>
+8081 = 192.168.0.101
+<br>
+There are two downside to this setup:
+<ul>
+	<li>each developers has to remember the port on which his machine is mapped</li>
+	<li>if you change the file nat.conf you have to restart vmnet8 daemon, possibly causing an interruption of the network traffic.</li>
+</ul>
+<strong>Option 2: Using apache reverse proxy</strong>
+<br>
+Here comes Apache2 to the rescue! It is very simple to setup a reverse proxy in apache.
+<br>
+<em>Step 0: install apache</em>
+<br>
+#yum install httpd
+<br>
+<em>Step1: Enable the correct modules in apache (httpd.conf)
+</em>
+<br>
+LoadModule proxy_module
+<br>
+LoadModule proxy_http_module
+<br>
+<em>Step 2:Enable a virtualhosts (listener.conf)
+</em>
+<br>
+NameVirtualHost *:80
+<br>
+<em>
+</em>
+<br>
+<em>Step 3: For each host create a virtualhost mapping (vhosts.d)</em>
+<br>
+&lt;VirtualHost *:80&gt;
+<br>
+Servername vm1.virtual.net
+<br>
+ProxyPass/ http://192.168.0.100:8080
+<br>
+ProxyPassReverse / http://192.168.0.100:80
+<br>
+&lt;/VirtualHost&gt;
+<br>
+This will correctly route all request coming on port 80 using the name vm1.virtual.net to the backend server with IP addres 192.168.0.100 on port 8080. And if the servers returns information it will do the same.
+<br>
+<strong>Conclusion:</strong>
+<br>
+Using a reverse proxy is much powerful then using vmware-NAT configuration. Be aware that in both setup, you have to make sure that when your application generates URL's for links, that they don't do this based upon their own port (8080) but do this relative. Still redirection of URLs can't be relative (according to the spec), this requires changes in Tomcat . See <a href="http://www.mbaworld.com/docs/proxy-howto.html">http://www.mbaworld.com/docs/proxy-howto.html</a>
+<br>
+<img src="http://www.mbaworld.com/docs/images/void.gif" vspace="0" border="0" height="1" hspace="0" alt="" width="1" />
+<pre>&lt;Connector port="8081" ...
+              proxyName="www.mycompany.com"
+              proxyPort="80"/&gt;</pre>
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/apache-reverse-proxy-vmware-nat-hosts.png">
+</a>

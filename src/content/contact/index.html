@@ -1,0 +1,57 @@
+---
+layout: corporate
+extension: html
+filter:    erb
+title: How to Contact me
+---
+<h3>Jedi BVBA</h3>
+<p>Quote 29 , 9290 Berlare, Belgium</p>
+<p>Tel: +32/475.37.38.53</p>
+<p>BTW: BE-463-132-141</p>
+<p>Email: <a href="mailto:Patrick.Debois@jedi.be">Patrick.Debois@jedi.be</a></p>
+
+<div>
+<form action="http://maps.google.nl/maps" method="get" target="_blank">
+    	<input type="hidden" name="daddr" value="quote 29 Berlare belgium (Jedi)">
+    	<input size="40" type="text" name="saddr" value="enter your address here">
+    	<input type="submit" name="route" value="Calculate route to Jedi BVBA">
+</form>
+</div>
+<br>
+ 
+ <div id="map" style="width: 560px; height: 400px"></div>
+
+
+
+	<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA-_xq4xWdGM_Cr0mB475CDxS-2QLOlUbSLsExp-rYMmRE9FN3SRQl-0jcuboX3QuBnQ1M3fhroCLV2Q" type="text/javascript"></script>
+	<script type="text/javascript">
+
+	    //<![CDATA[
+
+	    function mapLoad() {
+	      if (GBrowserIsCompatible()) {
+	        var html="JEDI BVBA";
+	        var map = new GMap2(document.getElementById("map"));
+	        map.addControl(new GSmallMapControl());
+	        map.addControl(new GOverviewMapControl());
+	        map.addControl(new GMapTypeControl());
+	        var lat=51.030167;
+	        var lat2=4.026575;
+	        map.setCenter(new GLatLng(lat, lat2), 9);
+	        var marker = new GMarker(new GLatLng(51.030167,4.026575));
+	        map.addOverlay(marker);
+	        //GEvent.addListener(marker,"click",function() {
+	        // marker.openInfoWindowHtml(html);
+	        //map.setCenter(new GLatLng(lat, lat2), 9);
+	        //});
+	        //marker.openInfoWindowHtml(html);
+	      }
+	    }
+		mapLoad();
+	    //]]>
+	</script>
+
+
+	<!--[if IE 5]><div id="ie5" class="ie"><![endif]-->
+	<!--[if IE 6]><div id="ie6" class="ie"><![endif]-->
+	<!--[if IE 7]><div id="ie7" class="ie"><![endif]-->

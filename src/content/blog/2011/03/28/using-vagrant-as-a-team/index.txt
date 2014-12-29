@@ -1,0 +1,516 @@
+--- 
+title:      Using Vagrant as a Team
+created_at: 2011-03-28 09:25:13.684315 +02:00
+tags: 
+- devops
+- chef
+- puppet
+- virtualbox
+- vagrant
+- nfs
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Shrinkwrap Vagrant boxes
+  url: /blog/2011/03/31/installable-vagrant-boxes/
+- desc: Vagrant Testing
+  url: /blog/2011/03/29/vagrant-testing-testing-one-two/
+---
+This blogpost goes into detail how we leverage [Vagrant](http://vagrantup.com) in our day to day work. We use it with a team of 7 people to integrate a pretty complex application. To get an idea on the complexity:
+
+- We have a nodejs server talking to a redis database
+- a grails application that reads from the redis database and writes to a mysql db
+- a rails frontend that reads from the grails rest services and writes to a mysql db
+- a perl application importing data into the mysql db from an external source
+- the nodejs logs via flume to a hadoop storage 
+- we extract data via sqoop from the hadoop storage
+
+And all this is done on one Vagrant machine. We can't even imagine having to synchronize this setup on all the different development machines without Vagrant. 
+
+So thank you "Mitchell Hashimoto" and "John Bender" for this awesome tool!
+
+We hope this blogpost (and the next ones in this series) will inspire you to do great things with it.
+
+## Preparing yourself for takeoff
+### Standard requirements
+[Vagrant](http://vagrantup.com) as described on the website is a tool for building and distributing virtualized development environments. 
+
+- In order to use it, you need to have some things in place :
+	- you need to have [Virtualbox 4.0.X](http://www.virtualbox.org/wiki/Downloads) installed. 
+	- have ruby running 
+- We like to add the following to the mix (not strictly required)
+	- we recommend the use of [RVM](http://rvm.beginrescueend.com/))
+ 	- and have some version control (we use git) installed
+
+### Installing rvm (optional)
+[RVM](http://rvm.beginrescueend.com/) is a great way of managing various things of ruby on a system. We really like it because:
+- It does everything in userland (no sudo for gems)
+- it allows the use of separate gemsets for each (project/customer) individually
+- allows you to use different versions of ruby on the same machine 
+
+Installing it is plain easy:
+<pre>
+$ bash < <( curl http://rvm.beginrescueend.com/releases/rvm-install-head )
+</pre>
+
+To have your shell pick it up you can
+<pre>
+$ source "$HOME/.rvm/scripts/rvm"
+</pre> 
+
+or to make it permanent add it to your .bash_profile
+
+<pre>
+# This loads RVM into a shell session.
+$ [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" 
+</pre>
+
+
+### Setting up rvm
+Up until now we only have the RVM scripts and no ruby yet.
+To install f.i. ruby 1.9.2 on your system you can now:
+<pre>$ rvm install 1.9.2</pre>
+
+### Setting up a vagrant project called 'awesome' with rvm
+
+Create a directory structure
+<pre>
+$ mkdir awesome-vagrant
+</pre>
+
+Now create a file called .rvmrc
+<pre>
+echo "rvm_gemset_create_on_use_flag=1" > .rvmrc
+echo "rvm gemset use awesome-vagrant" >> .rvmrc
+echo "rvm use 1.9.2" >> .rvmrc
+</pre>
+
+Go back one directory
+<pre>
+$ cd ..
+</pre>
+
+Trigger the read of the .rvmrc (works through bash hooks) . This will ask you to trust your new .rvmrc file
+
+<pre>
+$ cd awesome-vagrant
+
+...
+RVM has encountered a not yet trusted .rvmrc file in the    =
+  = current working directory which may contain nasty code.
+...
+</pre>
+
+You should see the correct ruby and gem version now
+<pre>
+$ ruby -version
+$ gem -version
+</pre>
+
+So now every-time you enter the 'awesome-vagrant' directory it will have the correct gemset 'awesome-vagrant' loaded, and have the ruby version you like. Pretty cool, not?
+
+### Installing git (optional)
+Most os'es now have package available for git. 
+Just use your favorite yum, apt, dpkg or whatever to install it. 
+
+On Mac OSX you can use [macports](http://www.macports.org/), we use [homebrew](https://github.com/mxcl/homebrew) because you don't need root rights (it installs stuff in /usr/local/bin)
+
+Alternatively, rvm provides a script based install of git
+<pre>
+bash < <( curl http://rvm.beginrescueend.com/install/git )
+</pre>
+
+<hr>
+## Firing up the engines
+### Vagrant 101
+Now that all the prerequisites are in place we can move on to the most basic example of using vagrant.
+
+The example on the vagrant website goes like this 
+<pre>
+$ cd awesome-vagrant
+$ gem install vagrant
+$ vagrant box add base http://files.vagrantup.com/lucid32.box
+$ vagrant init
+$ vagrant up
+$ vagrant ssh
+</pre>
+
+Et voilà, that's all it takes to get you up and running as a developer with a lucid box! Pretty neat he?
+Under the cover the following happens:
+
+- <i>vagrant box add base  http://files.vagrantup.com/lucid32.box</i>
+	- it will download lucid32.box file 
+	- extract the lucid32.box file into your $HOME/.vagrant/boxes directory
+	- and give it the name 'base'
+- <i>vagrant init</i> : 
+	- creates a file called 'Vagrantfile' in your current directory
+	- when you look at the file, it will contain the directive <pre>...
+	config.vm.box = "base"
+	...</pre> , this is what makes the link to the box we called 'base'
+ 	- you can further edit the Vagrantfile before you start it
+- <i>vagrant up</i>: 
+	- up until now, no virtual machine was created
+	- therefore vagrant will import the disks from the box 'base' into Virtualbox
+	- map via NAT the port 22 from your VM to a free local port
+	- it will create a .vagrant file : a file that contains a mapping between your description 'base' and the UUID of the virtual machine
+	- If you want to follow the magic, just start Virtualbox and you will see the machine being created
+- <i>vagrant ssh</i>:
+	- this will lookup the mapping of the ssh inside and will execute the SSH process to log into the machine
+	- use a privatekey of use vagrant to login to a box that has the user vagrant with it's public setup in the virtual machine
+
+### What about windows?
+Some of our team members are not using a MacOSX or Linux variant but are running Windows.
+
+There are some excellent instructions in getting Vagrant running on windows as a host:
+- [Vagrant and Windows](http://vagrantup.com/docs/getting-started/setup/windows.html)
+- [Vagrant and Windows 64-Bit](http://vagrantup.com/docs/getting-started/setup/windows_x64.html)
+- [Jruby, Winole32, Vagrant and Windows](http://www.engineyard.com/blog/2011/jruby-win32ole-and-vagrant-on-windows/)
+
+We used the following:
+
+- Install Java 64 Bit version
+- Set $JAVA_HOME environment variable to the 64 Bit version
+- Put $JAVA_HOME/bin in your path
+- Install the Jruby 64 Bit (Ole version)
+- Put $Jruby/bin in your path
+- install the vagrant gem
+- use Putty instead of vagrant ssh subcommand
+- import the vagrant private key into your putty
+
+Starting the vagrant command is a lot slower then under linux/macosx. I don't know why, but it slows the interaction down.
+
+- We found that destroying a windows box, sometimes requires you to manually cleanup the Virtualbox Machine directory of that virtual machine.
+
+Running windows as VM managed by Vagrant is currently still a dream. But the [Winrm project](https://github.com/zenchild/WinRM) is making good way to become a ssh alternative to windows machines. The opscode guys are already [integrating winrm in  chef/knife](https://github.com/opscode/knife-windows). Maybe I'll start writing a winrm vagrant plugin for that soon.
+
+
+### A word on Vagrant baseboxes
+Up until recently, finding Vagrant baseboxes, was matter of searching the internet and finding the URL's on different individuals websites. [Gareth Rushgrove](http://morethanseven.net/) has done a great job by setting up [vagrantbox.es](http://vagrantbox.es) where you can submit your own baseboxes in a central directory.
+
+Those baseboxes are great, but you have to trust the one who packaged the box. In the future we might see vendors providing baseboxes for their setup similar to providing official AMI's on Amazon, but we're not there yet.
+
+You can create a virtualbox virtual machine yourself (manual install, pxe install, or starting from an existing basebox), and then [export it as a vagrant box](http://vagrantup.com/docs/base_boxes.html) <pre>$ vagrant package --base my_base_box</pre>
+
+### Introducing veewee : an easy way to bootstrap new baseboxes
+An alternative is to use [veewee](https://github.com/jedi4ever/veewee/) to bootstrap a machine automatically from scratch. This a vagrant plugin I created that eases the creation of baseboxes from scratch. It simulates a manual install by levering VRDP to type some linux boot string and have the kickstart/preseed read over an HTTP server.
+
+The following is a rundown on how to create an ubuntu basebox with veewee
+
+Install the gem:
+<pre>
+$ gem install veewee
+</pre>
+
+List the veewee basebox definitions available:
+<pre>
+$ vagrant basebox templates 
+The following templates are available:
+...
+vagrant basebox define '&lt;boxname&gt;' 'ubuntu-10.10-server-i386'
+vagrant basebox define '&lt;boxname&gt;' 'ubuntu-10.10-server-i386-netboot'
+...
+</pre>
+
+Define a new box , this creates a definition directory
+<pre>
+$ vagrant basebox define 'myubuntu' 'ubuntu-10.10-server-i386' 
+</pre>
+
+Have a look at the definition directory and change them if you want
+<pre>
+$ ls definitions/myubuntu  
+definition.rb postinstall.sh preseed.cfg
+</pre>
+
+Build the box. Note this will download the necessary iso file if needed
+<pre>
+$ vagrant basebox build 'myubuntu' 
+</pre>
+
+Export the created vm as a basebox. This will finally create a myubuntubox.box
+<pre>
+$ vagrant basebox export'myubuntu' 
+</pre>
+
+It's still experimental, but we have automated installation for various versions of Archlinux,Centos, Debian, Freebsd, Ubuntu working. I think the benefit from it, is that you don't need a PXE environment to setup machines and it allows you to test your preseed, kickstart files and version control the behavior of your basebox. 
+
+### Remember it's code
+Now is a good time to version control your awesome-vagrant project
+<pre>
+$ cd 
+$ git init
+$ git add Vagrantfile
+$ git commit -m "This was just my first commit"
+</pre>
+
+<hr>
+## Taking a test flight
+### Getting your code on board
+Now that you have your basebox running and are able to login to it, I know you are eager to start development. So let's grab that code you already did from git.
+
+<pre>
+$ cd awesome-vagrant
+$ git clone git@somerepo:/var/git/awesome-datastore
+$ git clone git@somerepo:/var/git/awesome-frontend
+$ git clone git@somerepo:/var/git/awesome-data
+</pre>
+
+This results in the following structure
+<pre>
+[DIR] awesome-vagrant
+	- [DIR] awesome-datastore (component1)
+	- [DIR] awesome-frontend (component2)
+	- [DIR] awesome-data (component3)
+	- Vagrantfile
+</pre>
+
+Each directory shown here is a git repository that is checked out separately. Now we can mount this as directories inside our virtualmachine. This is what vagrant calls shared folders. 
+
+Our Vagrantfile looks like this
+<pre>
+config.vm.share_folder "awesome-datastore", "/home/vagrant/awesome-datastore", "./awesome-datastore"
+config.vm.share_folder "awesome-frontend", "/home/vagrant/awesome-frontend", "./awesome-frontend"
+config.vm.share_folder "awesome-data", "/home/vagrant/awesome-data", "./awesome-data"
+</pre>
+
+This will set up the directories inside your vm so you can edit them using your favorite IDE on your laptop and have the files instantly available inside your VM without the need for sync.
+
+After editing the file you need to 'reboot' the machine to take this settings
+<pre>
+$ vagrant reload
+</pre>
+
+We've hit quite a few problems with writing to shared folders. Standard Vagrant used the Virtualbox Guest additions to share a folder of your local/host machine to the Virtual machine. There have been numerous of complaints about the stability and therefore you might want to check out the use of NFS folders to share the directories. [Just add the share NFS flag](http://vagrantup.com/docs/nfs.html) at the end. Please note that this requires an nfs-client to be installed in the basebox first.
+
+<pre>
+config.vm.share_folder "awesome-frontend", "/home/vagrant/awesome-frontend", "./awesome-frontend",<b>{:nfs => true}</b>
+...
+</pre>
+
+The communication between host and vm is done over a host-only network, so your nfs shares will not get exposed to the outside world. Therefore you need to enable hostonly networking by adding the following to your vagrant file
+
+<pre>
+config.vm.network "33.33.33.10"
+</pre>
+
+Don't forget to reload after changing that
+<pre>
+$ vagrant reload
+</pre>
+
+### Adding config management to the mix
+It might be tempting to login into your new vagrant box and install a bunch of packages manually to get things started. You should all remember Willem van den Ende saying [Server login considered harmful](http://me.andering.com/2011/02/03/server-login-considered-harmful/)
+
+The real power of vagrant is that it promotes the use of configuration management for that. Infrastructure as code, FTW!
+
+Vagrant currently support both Chef-Solo, Chef, Puppet, Puppet-Server and bash scripting as 'provisioners'. Provisioners are different from traditional installation scripts, as they follow the idempotence principle. They can be run over and over again and get the same results. 
+
+The vagrant command to run this is:
+<pre>
+$ vagrant provision
+</pre>
+
+and provisioning is also run when you do a 
+<pre>
+$ vagrant up
+</pre>
+
+If don't want it to run, you can specify
+<pre>
+$ vagrant up --no-provision
+</pre>
+
+#### Chef-Solo sample setup
+The setup and explanation of Chef is beyond the scope of this blogpost. There is [a great description on the Opscode website ](http://wiki.opscode.com/display/chef/Chef+Repository) on how to setup a chef repository.
+
+<pre>
+awesome-chefrepo
+	[DIR]cookbooks #those that come from opscode
+	[DIR]site-cookbooks #or your own
+</pre>
+
+A sample Vagrantfile snippet looks like this:
+<pre>
+config.vm.provision :chef_solo do |chef|
+	chef.cookbooks_path = ["awesome-chefrepo/cookbooks",
+							"awesome-chefrepo/site-cookbooks"]
+ 	chef.log_level = "debug"
+	chef.add_recipe("nfs-client")
+	chef.json.merge!({
+					:mysql => {
+	                	:server_root_password => "supersecret",
+	                	:server_repl_password => "supersecret",
+	                	:server_debian_password => "supersecret"},
+					:java => {
+						:install_flavor => "sun"}
+	})
+end
+</pre>
+
+Running 'vagrant provision' will:
+
+- share the cookbooks_path's (and rolepaths,...) in the virtualmachine
+- generate a solo.rb configfile and transfer it to /tmp
+- generate a dna.json file: a merge of a vagrant json information and the json you provided
+- login to the virtualmachine as vagrant and do a <pre>sudo chef-solo -r solo.rb -j dna.json</pre>
+
+More detailed notes can be found on the [Vagrant Provisioner website section](http://vagrantup.com/docs/provisioners.html)
+
+#### Puppet sample setup
+[James Turnbull wrote the puppet provisioner](http://www.kartar.net/2010/12/vagrant-and-puppet/)
+
+We setup our puppet-repo like this: 
+<pre>
+awesome-puppetrepo
+	[DIR] manifests
+	[DIR] modules
+	mybox.pp
+</pre>
+
+With the corresponding the following puppet Vagrantfile section
+<pre>
+config.vm.provision :puppet do |puppet|
+	puppet.pp_path = "/tmp/vagrant-puppet"
+	puppet.manifests_path = "./awesome-puppetrepo/manifests"
+	puppet.module_path = "./awesome-puppetrepo/modules"
+	puppet.manifest_file = "./awesome-puppetrepo/mybox.pp"
+end
+</pre>
+
+Where mybox.pp contains the manifest (f.i. apache2) to be run on that box
+<pre>
+package "apache2": { ensure => 'installed' }
+</pre>
+
+Running 'vagrant provision' will:
+
+- share the manifests_paths + module_paths in the virtualmachine
+- transfer your manifest_file to /tmp
+- login to the virtualmachine as vagrant and do a <pre>sudo puppet --modulepath awesome-puppetrepo/modules mybox.pp</pre>
+
+More detailed notes can be found on the [Vagrant Provisioner website section](http://vagrantup.com/docs/provisioners.html)
+
+### Opening up the box - Network
+Now that you have both your code and your environment inside the VM setup, the next step is to gain access to some of the network services. Vagrant makes this damn easy by mapping ports inside the VM to ports on your local system.
+
+<pre>
+# Forward a port from the guest to the host, which allows for outside
+  # computers to access the VM, whereas host only networking does not.
+  # config.vm.forward_port "http", 80, 8080
+  config.vm.forward_port "awesome-datastore", 8080, 8080
+  config.vm.forward_port "awesome-frontend", 8000, 80
+</pre>
+
+Again to make these mapping take effect you need to restart vagrant box
+<pre>
+$ vagrant reload
+</pre>
+
+Now you can surf to your http://localhost:8080 and access your frontend inside the box
+
+### Overcoming bad network performance
+We noticed that some of our network services would perform badly when accessed from the outside and be fast from the inside. At first we suspected it to be the Virtualbox network natting slowing things down, but it turned out that DNS resolving was causing the delays. We been told before that '[Everything is Freaking DNS problem](http://www.krisbuytaert.be/blog/)' and yes: 
+
+- depending on the network you were running, DNS was badly setup for resolving internal IP's. Check your resolver
+- we had libavahi installed (apparently came with java) : so we had to disable that to speed up the resolving
+
+
+<hr>
+## Tuning your engines
+### Customizing Vagrantfile
+The great thing about the Vagrantfile is that is actual ruby code.
+
+#### Settings for only some hosts
+The following snippit allows us to still share the Vagrantfile but allow people to use NFS if they need it
+<pre> 
+# Switching to nfs for only those who want it
+nfs_hosts=%w(mylaptop1 ruben-meanmachine)
+
+require 'socket'
+my_hostname=Socket.gethostname.split(/\./)[0]
+
+if nfs_hosts.include?(my_hostname)
+      # Assign this VM to a host only network IP, allowing you to access it
+      # via the IP.
+      config.vm.network "33.33.33.10"
+      share_flags={:nfs => true}
+else
+      share_flags={}
+end
+</pre>
+
+#### Enabling different settings based on environment
+Besides people developing code or configuration management code, we also have people who use a Vagrant machine to give demo's at various place. They pull the latest version from git and are able to have the VM build with the latest features enabled. 
+
+For the demos they don't need to have the shared directories of all the code components available. We introduced the notion of 
+
+- vagrant_env : development,test, production, demo, 
+- awesome_mode : a flag indicating what mode our applications should run into
+
+Both can be set as environment variables and are picked up by the Vagrantfile
+<pre>
+if (vagrant_env=="development" && ENV["AWESOME_MODE"]!="demo")
+</pre>
+
+Setting these variables is as easy as prepending them to the vagrant command
+<pre>$ vagrant_env=development vagrant up</pre>
+
+<hr>
+## And now as a team please : 
+
+### Some observations
+We've been using vagrant as a team for about 2 months now and here are some observations we made:
+
+- It clearly helps everybody to have a consistent environment to develop against, the lastest version is just one git pull away.
+- The central approach drives people to a) do frequent commits  and b) do stable commits.
+
+- The task of writing recipes/manifests is not picked up by all team members, and seem to stay the main job of the system oriented people on the team. 
+- Reading manifests help people understand what is needed and makes it easy to point out what needs to be changed. But learning the skills to write recipes/manifest is a blocking factor just as having a backend developer writing frontend code.
+- When manifest/recipes are modified during a sprint, provisioning an existing virtual machine might fail as we don't take migrations from one VM state to the other into account. In that case, a box destroy and full provision is required.
+- The test the admins do before committing their manifests, is that they destroy their own 'development' box and re-provision a new box to see if this works.
+
+- The longer the the provision takes, the less frequent people do it. It's important to keep that process as fast as possible. It's all about feedback and we want it fast. 
+- Installation problems would get noticed far sooner in the process.
+- People would only do a full rebuild in the morning when getting their coffee.
+
+### Having both development and production mode running on the Vagrant box
+In our environment we have both the development and the production version running.
+
+F.i. for our rails component we have:
+
+- a share of the awesome-frontend inside the box (and when this starts it runs on port 3000)
+- we have the production mode running on port 80 (pulled from git as the latest tagged production)
+
+This allows us to easily have both versions running. The production version is installed by a manifest/recipe and the share is started manually.
+
+### In summary
+Vagrant rocks, but by now you should know !
+
+<hr>
+## Don't worry the journey continues...
+
+In the next post, I'll introduce you how we setup Vagrant with testing and use a Continuous integration environment to have it build a new box , run the tests and make everybody happy. So stay tuned!
+
+For additional inspiration:
+
+- [Vagrant main website](http://vagrantup.com)
+- [Mitchell Hashimoto Blog](http://mitchellhashimoto.com/)
+- [John Bender's blog](http://nickelcode.com/)
+- [Cloudspace: Setting up development environments with vagrant and the opscode platform](http://www.cloudspace.com/blog/2011/03/22/setting-up-development-environments-using-vagrant-and-the-opscode-platform/)
+- [My vagrant workflow - by Dougal Matthews](http://dougalmatthews.com/2011/02/27/my-vagrant-workflow/)
+- [Bring the cloud on your desktop with Vagrant](http://grokandroll.com/vagrant-review.html)
+- [Start using Vagrant by Theodo](http://www.theodo.fr/blog/2011/03/start-using-vagrant/)
+- [Vagrant - Spatula](http://rubydoc.info/gems/vagrant-spatula/0.0.2/frames)
+- [Rvm with vagrant](http://rvm.beginrescueend.com/integration/vagrant/)
+- [Instant Rails in A Virtualbox](http://www.engineyard.com/blog/2010/virtualize-this-instant-rails-in-a-virtual-box/)
+- [Openstack - Single node nova installation using Vagrant and chef](http://wiki.openstack.org/SingleNodeNovaVagrantChef)
+- [Upgrading to Movable Type5 using chef and vagrant](http://sci-blog.com/2010/10/upgrading-to-movable-type-5-using-chef-and-vagrant/)
+- [Haskell and Vagrant's Middleware](http://nickelcode.com/2010/10/18/haskell-and-vagrants-middleware/)
+- [Getting the most out of chef with Scalarium and Vagrant](http://till.klampaeckel.de/blog/archives/142-Getting-the-most-out-of-Chef-with-Scalarium-and-vagrant.html)
+- [Gareth Rushgrove - talk at Fosdem on Configuration Management for development environments](http://morethanseven.net/2011/02/08/Configuration-management-for-development-environments.html)
+- [Gareth Rushgrove - default Recipes for Vagrant Virtual Machines - Using Gitrepos for your recipes](http://morethanseven.net/2011/01/10/My-default-recipes-for-vagrant-virtual-machines.html)
+- [Gareth Rushgrove - A continuous deployment example setup](http://morethanseven.net/2011/03/20/A-continuous-deployment-example-setup.html)
+
+

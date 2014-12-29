@@ -1,0 +1,343 @@
+---
+title: "Rails Syndrome: It works on my PC but I don't know for how long"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=654
+created_at: 2009-03-13 16:36:56.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - svn
+   - rails
+   - gemsonrails
+   - externals
+   - subversion
+   - GEM_HOME
+   - native
+   - freeze
+   - piston
+   - ruby
+   - gems
+---
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/end_of_track.jpg"><img title="end_of_track" class="alignleft size-full wp-image-656" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/end_of_track.jpg" height="178" alt="" width="238" /></a>Rails projects tend to suffer from the 'it works on my PC syndrome'. People seem to struggle with keeping their application environment under control so it can be reproduced on another system. One of the reasons is that rails and ruby evolve fast to new concepts and ideas. While this is clearly a good thing, it does require additional steps to keep a rails project under control. There exist a lot of documentation in books and blogs, but that also suffers from the same problem: the recipe working for version X of rails, might not work anymore in the new version.
+<br>
+This document will try to document how to control it, additionally listing older approaches and indicating that they have become deprecated.
+<br>
+NOTE:
+<ul>
+	<li>We assume that you have a working version of ruby and ruby-gems installed</li>
+	<li>This document uses unix commands useful for linux or macosx variants, Windows users should use their equivalent</li>
+	<li>This is work in progress. But I found it more important to get feedback before finishing the whole project</li>
+</ul>
+<strong>STEP 0: Create an initial directory structure for our projects</strong>
+let's make the project structure we would like
+<br>
+projects
++ project1
+....
++ projectX
+projectX.ENV
++gem (where our project gems go)
++rails (where our rails code goes)
+<pre>export PROJ_NAME=projectX
+export PROJ_PATH=`pwd`/$PROJ_NAME
+cd $PROJ_NAME</pre>
+<strong>STEP 1: control your RUBY
+</strong>The first thing to decide is the ruby version you will use. This is usually a step to people tend to skip, they will use whatever ruby that is in the path
+Lets see where the ruby binary is installed
+<pre>RUBY_BINARY=`which ruby`
+echo $RUBY_BINARY
+RUBY_VERSION=`ruby --version`
+echo $RUBY_VERSION</pre>
+To fix the ruby version you want to use the environment variable RUBY_HOME
+If this variable is set, everything will be executed from this environment variable
+<pre>export RUBY_HOME='/System/Library/Frameworks/Ruby.framework/Versions/1.8/usr'
+echo $RUBY_HOME
+export PATH=$RUBY_HOME/bin:$PATH</pre>
+Let's write this variable to a file so that we can set it again everytime we need it
+<pre>echo "export RUBY_HOME=$RUBY_HOME" &gt;&gt; ENV.$PROJ_NAME</pre>
+<strong>STEP 2: control your RAILS</strong>
+Just as we decided which version of ruby, we have to do the same with our rails version
+Again in most documents you will find a 'gem install rails' installing gems either in the system environment or the per user environment
+@REF: <a href="http://blog.divergentsoftware.com/2007/11/gemhome-is-where-partys-at.html">http://blog.divergentsoftware.com/2007/11/gemhome-is-where-partys-at.html</a>
+@REF:<a href="https://we.riseup.net/rails/subversion-for-rails"> https://we.riseup.net/rails/subversion-for-rails</a>
+If you want to protect this project from other gem installs and gem updates we can dedicate a directory for this
+The path where gem install writes it's gems is in GEM_HOME
+<pre>export GEM_HOME=$PROJ_PATH/gem
+mkdir $GEM_HOME</pre>
+The path where the are read is in GEM_PATH. We set this to be excluvely to the gems in this directory. So no use of other f.i. system gems
+<pre>export GEM_PATH=$GEM_HOME</pre>
+Let's write this again to our ENV file
+<pre> echo "export GEM_HOME=$GEM_HOME" &gt;&gt; ENV.$PROJ_NAME
+ echo "export GEM_PATH=$GEM_PATH" &gt;&gt; ENV.$PROJ_NAME</pre>
+Let get the version we want
+<pre>RAILS_VERSION="2.1"
+gem install rails -v $RAILS_VERSION</pre>
+let's check if the files are indeed installed in the right place
+<pre>ls $GEMHOME/</pre>
+To check the path of the installed versions
+<pre>gem list -d</pre>
+<strong>STEP 3: let's setup a subversion to check our code in</strong>
+@REF: <a href="https://wincent.com/wiki/Checking_a_new_Rails_application_into_an_existing_Subversion_repository">https://wincent.com/wiki/Checking_a_new_Rails_application_into_an_existing_Subversion_repository</a>
+Chances are you have one allready but, this should show the basic setup of setting up yourself
+The place where you store your repository = REPO_PATH
+<pre>REPO_PATH=$HOME/subversion-repository
+#REPO_URL="file://"$REPO_PATH/$PROJ_NAME
+REPO_URL="svn://localhost/"$PROJ_NAME</pre>
+Go within the repository path
+<pre>cd $REPO_PATH</pre>
+and create the svn repository for our project = $PROJ_NAME
+<pre>svnadmin create ./$PROJ_NAME</pre>
+Add some userT with password passwordT
+<pre>export SVN_USER="userT"
+export SVN_PASSWORD="passwordT"
+echo "$SVN_USER = $SVN_PASSWORD" &gt;&gt; $REPO_PATH/$PROJ_NAME/conf/passwd
+echo "auth-access = write" &gt;&gt; $REPO_PATH/$PROJ_NAME/conf/svnserve.conf
+echo "password-db = passwd" &gt;&gt; $REPO_PATH/$PROJ_NAME/conf/svnserve.conf
+echo "realm = Project $PROJ_NAME" &gt;&gt; $REPO_PATH/$PROJ_NAME/conf/svnserve.conf</pre>
+Start the listener to listen on the network
+<pre>svnserve -d -r $REPO_PATH</pre>
+This command will create a trunk, tags, branches directory and commit the version of the project
+<pre>svn --username=$SVN_USER --password=$SVN_PASSWORD mkdir --message="standard project start" "$REPO_URL/trunk" "$REPO_URL/branches" "$REPO_URL/tags"</pre>
+<strong>STEP 4: Create our first rails skeleton for the application
+</strong>Let's go to the our project directory we created in STEP 0
+<pre>cd $PROJ_PATH</pre>
+Remember to set your RUBY_HOME, GEM_HOME, GEM_PATH
+We can use our project ENV to set things up again
+<pre>. ENV.$PROJ_NAME</pre>
+Within our PROJ_PATH we will checkout the trunk to the rails directory
+Remember that REPO_URL includes PROJ_NAME (we assume that each project will have it's own trunk, tags, release)
+<pre>svn checkout "$REPO_URL/trunk" rails
+cd rails</pre>
+Set the database type (DB_TYPE) we would like to use
+<pre>DB_TYPE=mysql
+rails . -d $DB_TYPE</pre>
+Take the generated and add it to the files to check in
+<pre>svn add --force .</pre>
+BUT: we don't want everything to be checked in so we need to set a set of ignores
+@REF = Addison Wesley - The Rails Way, 2008 : page 811
+<br>
+We don't want to have .DS_Store files to be checked in
+<pre>svn propset svn:ignore -R ".DS_Store" . --force</pre>
+We don't want to have the log files to be checked in
+<pre>svn revert log/*
+svn propset svn:ignore "*.log" log</pre>
+We don't want to have generated documentation to be checked in
+<pre>svn propset svn:ignore "*" doc</pre>
+@REF = <a href="http://www.sepcot.com/blog/2008/04/svn-rake-tasks-1">http://www.sepcot.com/blog/2008/04/svn-rake-tasks-1</a>
+We don't want to have generated documentation to be checked in
+<pre>svn propset svn:ignore "*" doc/api
+svn propset svn:ignore "*" doc/app</pre>
+@REF = Addison Wesley - The Rails Way, 2008 : page 811
+<pre>svn propset svn:ignore "*" tmp
+svn propset svn:ignore "*" tmp/sessions tmp/cache tmp/sockets
+svn propset svn:ignore "*.q" db/ --force
+svn propset svn:ignore "*.db" db/ --force</pre>
+# We don't want to have developers overwrite eachother or worse production databases definition
+# Instead we create a template file that can be copied but it should never be checked in
+<pre>cp config/database.yml config/database.yml.template
+svn add config/database.yml.template
+svn revert config/database.yml
+svn propset svn:ignore "database.yml" config</pre>
+We can set some scripts as executable so that they can be started using GUI tools
+This goes for all dispatchers
+<pre>svn propset svn:executable "*" public/dispatch.*</pre>
+and for all scripts inside the script directory
+<pre>svn propset svn:executable "*" `find script -type f | grep -v '.svn'`</pre>
+Make sure we set the correct native eol style
+<br>
+@REF = Pragmatic Programmers - Deploying Rails Application : p 28
+<pre>svn propset svn:eol-style native public/dispatch.*</pre>
+@REF = Pragmatic Programmers - Deploying Rails Application : p 28
+<pre>svn propset svn:ignore "engine_files" public</pre>
+@REF = <a href="http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects">http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects</a>
+We want to make sure that the default page is not shown, so that it never looks like a default installation
+<pre>svn revert public/index.html</pre>
+@REF = <a href="http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects">http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects</a>
+# This URL proposes to ignore the schema.rb because it is generated but the next one opposes this view
+# svn propset svn:ignore "schema.rb" db
+<br>
+@REF = Professional Ruby on Rails : p.45
+@REF = <a href="http://books.google.be/books?id=aB4B13xGEv4C&amp;pg=PA45&amp;lpg=PA45&amp;dq=subversion+schema.rb&amp;source=bl&amp;ots=fec_xmHyMa&amp;sig=6PGXK4irrfzNYHxplVIJ2syoXgQ&amp;hl=en&amp;ei=ke64SfThCsm4-QaRm6HRBA&amp;sa=X&amp;oi=book_result&amp;resnum=8&amp;ct=result#PPA50,M1">http://books.google.be/books?id=aB4B13xGEv4C&amp;pg=PA45&amp;lpg=PA45&amp;dq=subversion+schema.rb&amp;source=bl&amp;ots=fec_xmHyMa&amp;sig=6PGXK4irrfzNYHxplVIJ2syoXgQ&amp;hl=en&amp;ei=ke64SfThCsm4-QaRm6HRBA&amp;sa=X&amp;oi=book_result&amp;resnum=8&amp;ct=result#PPA50,M1</a>
+They propose to insert the schema.rb within subversion, developers can start without applying all migrations and it might help
+<br>
+Let's see if we got all files marked and with correct status
+<pre>svn status
+svn commit -m "initial rails checkin with ignores"</pre>
+<strong>Step 5: Freezing rails
+</strong>To handle this, rails seem to have moved through different solutions
+<em>Option 1 (DEPRECATED):</em> define the vendor/rails directory in your project as an SVN External, but the rails repository moved to GIT and so the latest versions can't be used
+@REF = <a href="http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects">http://blog.teksol.info/2006/03/09/subversion-primer-for-rails-projects</a>
+@REF = Wrox - Professional Ruby on Rails - page 55
+<pre>#svn propset svn:externals "rails http://dev.rubyonrails.org/svn/rails/branches/ 2-2-stable" vendor
+#svn update vendor
+#svn commit -m "vendor integration"</pre>
+<em>Option 2 (BACKWARDS COMPATIBLE)</em>: to solve this, there exist a gem called 'Piston' that allows you to handle git repositories and integrate them into a subversion repository
+@REF = <a href="http://blog.logeek.fr/2008/1/4/how-to-use-piston-to-ease-your-upgrades">http://blog.logeek.fr/2008/1/4/how-to-use-piston-to-ease-your-upgrades</a>
+@REF = <a href="http://piston.rubyforge.org/">http://piston.rubyforge.org/</a>
+<br>
+<em>Option 3 (RECENT VERSIONS)</em> : the rails seems to have a command option to tell it to freeze
+@REF = Wrox - Professonal Ruby on Rails - p 56
+<pre>#rails . -f</pre>
+<em>Option 4 (RECENT VERSIONS)</em>: rails now includes a rake task to freeze it into your project directory
+This will download the rails tar.gz from the edge site and we can tell to use a specific version using RELEASE=
+@REF = <a href="http://support.tigertech.net/freeze-rails">http://support.tigertech.net/freeze-rails</a>
+@REF = <a href="http://codeclimber.blogspot.com/2008/09/freeze-those-rails.html">http://codeclimber.blogspot.com/2008/09/freeze-those-rails.html
+</a>
+<pre>rake rails:freeze:edge RELEASE=$RAILS_VERSION
+svn add vendor/rails
+svn commit -m "frozen rails to version $RAILS_VERSION"</pre>
+Should we set RAILS_HOME after freezing?
+@REF = <a href="http://snippets.dzone.com/posts/show/4730">http://snippets.dzone.com/posts/show/4730</a>
+# PATH=`pwd`/vendor/rails/railties/bin:$PATH
+# export PATH
+<br>
+<strong><span>Step 6: Freezing rails gems
+</span></strong>Recent versions only: Together with the rake task for rails there comes a rake task to freeze gems.
+<br>
+If you have frozen rails in Step 5, there is no additional need to do this. Use this only if you want to freeze the rails gems and NOT rails itself.
+<pre>rake rails:freeze:gems
+svn add vendor/gems
+svn commit -m "frozen rails gems $RAILS_VERSION"</pre>
+<strong>Step 7: Freezing non-rails gems
+</strong><em>Option 1 (DEPRECATED):</em> the first solution that appeared was to unpack of a gem in vendor , copy the files to the correct place and remove the unpack
+<br>
+This is a tedious job because you have to go into the structure and move files around
+<br>
+@REF = <a href="http://www.vaporbase.com/postings/Using_Subversion_and_Rails">http://www.vaporbase.com/postings/Using_Subversion_and_Rails</a>
+<pre># cd vendor
+# gem unpack gemname
+# cp -Rf gemname-n.n.n/lib/* .
+# cp -Rf gemname-n.n.n/MIT-LICENSE LICENSE-gemname
+# cp -Rf gemname-n.n.n/README README-gemname
+# svn add aaaa bbbb cccc dddd.rb LICENSE-gemname README-gemname
+# svn propset version "n.n.n (Gem)" gemname.rb
+# rm -Rf gemname-n.n.n
+# cd ..</pre>
+<em>Option 2 (CUSTOM):</em> instead of copying the files, the gems are left unpacked in the vendor directory and the then the config.load_paths is adapted to include dynamically include the libs of all subdirs
+@REF = Oreilly - Advanced Rails - Large Projects p. 312
+<pre># cd vendor
+# mkdir gems
+# cd gems
+# gem unpack gemname
+# cat ../../config/environment.rb |\
+# sed -e 's@# config.load_paths += %W( #{RAILS_ROOT}/extras )@config.load_paths + = Dir["#{RAILS_ROOT}/vendor/gems/**"].map do |dir|\n\tFile.directory?(lib = "#{dir}/lib") ? lib : dir\nend@' &gt; ../../config/environment.rb
+# cd ..
+# cd ..</pre>
+<em>Option 3 (CUSTOM)</em> : do the same unpack of the gem in the vendors directory but use the GEM_PATH to include the paths where the gems are unpacked
+@REF = <a href="http://errtheblog.com/posts/50-vendor-everything">http://errtheblog.com/posts/50-vendor-everything</a>
+<pre># cd vendor
+# mkdir gems
+# cd gems
+# gem unpack gemname
+# cd ..
+# cd ..
+# echo "ENV['GEM_PATH'] = File.join(RAILS_ROOT, 'vendor', 'gems')" &gt;&gt; config/boot.rb</pre>
+<em>Option 4 (BACKWARDS COMPATIBLE)</em> : gemsonrails
+@REF = <a href="http://gemsonrails.rubyforge.org/">http://gemsonrails.rubyforge.org/</a>
+<br>
+<em>Option 5 (RECENT)</em> : similar to the rails freeze, there is now a rake task that allows you to unpack the gems your project needs
+The first step is to list the required gems and their version and optional their source to the config/environment.rb file
+@REF = <a href="http://www.pathf.com/blogs/2009/03/keeping-up-with-the-joneses-keeping-rails-and-its-extensions-up-to-date/">http://www.pathf.com/blogs/2009/03/keeping-up-with-the-joneses-keeping-rails-and-its-extensions-up-to-date/</a>
+<pre>export GEM_NAME="hpricot"
+export GEM_VERSION="0.6.0"
+cat config/environment.rb | sed -e 's@# config.gem "bj"@config.gem "$GEM_NAME", :lib =&gt; "$GEM_NAME", :version =&gt; "$GEM_VERSION"@' &gt; config/environment.rb.$$
+mv config/environment.rb.$$ config/environment.rb</pre>
+To use the rake task unpack, we first need to install the gem
+then we can execute the gem installation. Note: because we still have the GEMS_PATH and GEM_HOME set, the install will be specific to our project
+<pre>rake gems:install</pre>
+Now that it is installed we can unpack the gems, this will go in the vendor/gems directory
+<pre>rake gems:unpack:dependencies
+svn add vendor/gems
+svn commit -m "frozen additional gem $GEM_NAME to version $GEM_VERSION"</pre>
+To list the gems state there is a rake task (this only seems to work ok in Rails version 2.3.1 (otherwise you seem to get random nil.dependencies errors)
+<pre>rake gems</pre>
+<em>Option 6:</em> warbler
+<br>
+@REF = <a href="http://caldersphere.rubyforge.org/warbler/">http://caldersphere.rubyforge.org/warbler/</a>
+<br>
+If you need to transfer your application to another system, another approach would be to create a war file of your application and run your rails application with jruby.
+<br>
+<em>Option 7:</em> gems2rpm
+<br>
+@REF =<a href="http://www.fooplanet.com/projects/gem2rpm/">http://www.fooplanet.com/projects/gem2rpm/</a>
+<br>
+Instead of putting your gems inside your project, it might be more useful to package your gems as an rpm. This is exactly what the gem2rpm script does. It only works with non-native gems
+<br>
+<span>Step 8: Freezing native gems
+</span>
+<br>
+the procedures from Step 7 will work but for gems requiring native when you unpack a gem, it will only unpack the ruby code that does not need to be compiled
+@REF = <a href="http://www.theagiledeveloper.com/localizing-gems-with-native-extensions.html">http://www.theagiledeveloper.com/localizing-gems-with-native-extensions.html</a>
+@REF = <a href="http://agilewebdevelopment.com/plugins/gems_with_architecture">http://agilewebdevelopment.com/plugins/gems_with_architecture</a>
+@REF = <a href="http://www.linuxtopia.org/online_books/programming_books/ruby_tutorial/Extending_Ruby_Creating_a_Makefile_with_extconf.rb.html">http://www.linuxtopia.org/online_books/programming_books/ruby_tutorial/Extending_Ruby_Creating_a_Makefile_with_extconf.rb.html</a>
+<br>
+<em>Option 1: works but needs recompile on other architectures</em>
+<pre>rake gems:build</pre>
+<em>Option 2: puts the binaries in a place where you want to</em>
+<br>
+We prepare a directory called <em>native-lib</em> where we put all the compiled stuff from the native gems
+<pre>mkdir native-lib
+ARCHDIR=`pwd`/native-lib/`ruby -e "puts RUBY_PLATFORM"`
+export ARCHDIR</pre>
+Next we search these directories for extconf.rb
+Then execute ruby extconf.rb , which will create a makefile, we do a make
+Then we install this to the native-lib directory we created, otherwise it would install itself in the system ruby directory
+<pre>find vendor/gems/ -name "extconf.rb" | xargs dirname | xargs -I {}  ksh 'cd {} ; ruby extconf.rb; make; make RUBYARCHDIR=$ARCHDIR install'</pre>
+We add the native-lib directory to the load_paths in config.environment so that these can be found when executing
+<pre>cat config/environment.rb | sed -e 's@# config.load_paths += %W( #{RAILS_ROOT}/extras )@ config.load_paths += %W( #{RAILS_ROOT}/native-lib/#{RUBY_PLATFORM} )@' &gt; config/environment.rb.$$
+mv config/environment.rb.$$ config/environment.rb</pre>
+Now you can argue that we file is generated , so we might not need to check in
+But on some systems there isn't a compiler available (on Windows, no standard C compiler is installed f.i. , the same goes for stripped production installations)
+<pre>svn add $ARCHDIR
+svn commit -m "commited native libs"</pre>
+<strong>Step 9: Checking it all out on another system</strong>
+<ul>
+	<li>Create the project structure (see STEP 0)</li>
+	<li> Set the ENV's (RUBY_HOME, GEM_HOME, GEM_PATH) (see STEP1)</li>
+	<li> Check the project out in the rails directory (see STEP )</li>
+	<li>Copy the database template</li>
+	<li>We need to repeat the svn ignores stuff (see STEP )</li>
+	<li> Generate the cross compiled stuff (see STEP 8). Otherwise you get rails to ask you to install the gem.</li>
+</ul>
+@REF = <a href="http://tenderlovemaking.com/2008/11/21/cross-compiling-ruby-gems-for-win32/">http://tenderlovemaking.com/2008/11/21/cross-compiling-ruby-gems-for-win32/</a>
+<br>
+You can create a custom rake task for doing all this stuff. If you create a file in PROJECTDIR/rails/lib/tasks
+<pre>namespace :svn do
+        desc "Sets the correct ignores and other stuff for a correct checkin of rails project in an svn repository"
+        task :propset do
+                system 'svn propset svn:ignore -R ".DS_Store" . --force'
+                system 'svn propset svn:ignore "*.log" log/'
+                system 'svn propset svn:ignore "*.db" db/'
+                system 'svn propset svn:ignore "*.sqlite3" db/'
+                system 'svn propset svn:ignore "database.yml" config/'
+                system 'svn propset svn:ignore "*" doc/'
+                system 'svn propset svn:ignore "*" doc/api'
+                system 'svn propset svn:ignore "*" doc/app'
+                system 'svn propset svn:ignore "*" tmp/'
+                system 'svn propset svn:ignore "*" tmp/sessions tmp/cache tmp/sockets'
+                system 'svn propset svn:executable "*" public/dispatch.*'
+                system 'svn propset svn:eol-style native public/dispatch.*'
+                system 'svn propset svn:ignore "engine_files" public/ '
+                system 'svn propset svn:ignore index.html public/'
+        end
+end</pre>
+then you can repeat this tasks with:
+<pre>$ rake -T |grep svn
+rake svn:propset                          # Sets the correct ignores and other stuff for a correct checkin of rails project in an svn repository</pre>
+<strong>Step 10: Do you first scaffold.</strong>
+If you supply the -svn , the files generated will automatically be add for the next commit
+<pre>./script/generate scaffold -svn
+svn commit -m "first scaffold"</pre>
+# TODO : Freeze plugins<a href="http://www.vaporbase.com/postings/Using_Subversion_and_Rails"> http://www.vaporbase.com/postings/Using_Subversion_and_Rails</a>
+# TODO : how to update to a new version of rails : rake rails:unfreeze, rake rails:update (seems to delete the who vendor dir?)
+#        rake rails:update -v 2.2.2
+#        @REF = <a href="http://stackoverflow.com/questions/313176/migrate-from-rails-211-to-222">http://stackoverflow.com/questions/313176/migrate-from-rails-211-to-222</a>
+# TODO : how to update to a new version of a gem
+# TODO : show how you need to set this to work in a production environment (f.i. mod_rails)
+<br>
+# TODO : describe piston and gemsonrails more in detail
+# TODO : show how you need to set this to work in a production environment (f.i. mod_rails)

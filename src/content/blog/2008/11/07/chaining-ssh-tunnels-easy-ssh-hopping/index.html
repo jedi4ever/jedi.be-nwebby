@@ -1,0 +1,57 @@
+---
+title: "Chaining SSH tunnels, Easy SSH hopping"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/11/07/chaining-ssh-tunnels-easy-ssh-hopping/
+created_at: 2008-11-07 14:15:28.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - chaining
+   - ssh
+---
+<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/th-openssh-logo.png" />When managing secure Unix infrastructure, you often find yourself hopping from one server to another by using SSH. 
+Once I actually had a nightmare that I could not find the end of my SSH tunnel.... Hope this stops your nightmare:
+<br>
+Most commonly you would do:
+<br>
+client$&nbsp; ssh user@server1
+server1$ ssh user@server2
+server2$ ....
+<br>
+When verifying services on the end server, you have to build up tunnels to be able to reach the ports. Typically people would build up a new ssh session and chain the tunnels (client -&gt; server 1 and server -&gt; server2), eventually creating a tunnel from your client machine to server2. 
+<br>
+client$ ssh -L9999:localhost:9999 user@server1
+server1$ ssh -L9999:localhost:9999 user@server2
+<br>
+<b>Downsides:
+</b><ol><li>Only one port:The creation of tunnels in SSH is typically done by specifying one port (in fact it is mandatory). But this means that for each port you want to be tunneled you have to specify a new tunnel. </li><li>Manual recreation: You have to login to server 1, then to server 2, ... This is just time consuming.</li><li>Security: You could of course use keys instead of passwords but then you would have to put your keys on each intermediate server also</li></ol><b>Netcat and Proxycommand to the rescue:
+</b>Luckily there exist a more flexible way of doing this by using netcat and SSH ProxyCommand together.&nbsp; The <i>proxycommand</i> allows you to specify a command you can use to reach the ssh host. 
+<br>
+So in your .ssh/config you can specify
+<br>
+Host <i>server2-entry</i>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protocol 2
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port 22
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i><b>ProxyCommand</b> ssh -C server1-entry <b>nc</b> &lt;ip-of-server2-seen-from-server1&gt; 22</i>
+Host <i>server1-entry</i>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protocol 2
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Port 22
+<br>
+When executing <i>ssh server2-entry</i>, it will first execute the <i>server1-entry</i> of your config asking for the password of <i>server1</i> and then make a connection from server1 to server2. And if you use keys now, you can automate this. The difference is that the private key stays on <i>client1</i> and does not need to be copied on server1! Making it more secure again.
+<br>
+Making a tunnel directly to server2 can be done : <i>ssh -L9999:localhost:9999 server2-entry</i> without first having to create the tunnel on server1.
+<br>
+More detail can be found at: <a href="http://fixunix.com/ssh/73544-how-do-i-setup-multiple-hop-tunnel-chain-port-forwarding.html%20">http://fixunix.com/ssh/73544-how-do-i-setup-multiple-hop-tunnel-chain-port-forwarding.html
+</a>
+<b>Another solution:
+</b>The downside is that for this trick to function , netcat needs to be copied on the intermediate hops. In our case server1.
+<a href="http://www.rschulz.eu/2008/09/ssh-proxycommand-without-netcat.html%20">http://www.rschulz.eu/2008/09/ssh-proxycommand-without-netcat.html</a> provides us with a possible solution on Linux (have not tested it).
+It revolves around intelligently using redirection to network pipe the in and outs of the tunnel.
+<br>
+<i>ProxyCommand ssh {gw} 'exec 3&lt;&gt;/dev/tcp/{host}/22;(cat &lt;&amp;3 &amp; );cat &gt;&amp;3'
+</i> 
+--

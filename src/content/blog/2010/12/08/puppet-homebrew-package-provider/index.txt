@@ -1,0 +1,31 @@
+--- 
+title:      Puppet Homebrew Package Provider
+created_at: 2010-12-08 08:52:06.094444 +01:00
+tags: 
+- puppet
+- homebrew
+- macosx
+- package
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+I've become a big fan of [homebrew](https://github.com/mxcl/homebrew) package system on Macosx. I moved away from [macports](http://www.macports.org) because it allows me to easily change the way packages are compiled: sometimes I need experimental versions of software or versions that are not in macports yet. Instead of compiling them in a separate place, I can now create my own formulas and still use the repository in case I need it: this is made possible because it's all based on git and allows you to merge your changes even if upstream packages get updated.
+
+Enough raving about homebrew now. I'm currently exploring [Puppet](http://puppetlabs.com) , it has builtin support for macports (or as it calls it darwinports) but not for my new love. I guess it was the perfect excuse to write my own provider.
+
+On the puppet wiki I found a document describing in generic terms [what you need to do to write a custom provider](http://projects.puppetlabs.com/projects/1/wiki/Development_Provider_Development). It's probably me, but I didn't get it when I read. Therefore I dug into the code of other providers. I found the gem provider most useful, but that's probably because I'm familiar with the gem command and output to see how it works. 
+
+It will only work in new versions of puppet as it uses the new directory structure lib/puppet instead of lib/plugins. There was one gotcha for me. I assumed that I needed to put my provider, well in the directory _modulename/puppet/provider/_ . [It turns out](http://blkperl.blogspot.com/2010/07/provider-errors.html) that you need to put it in a subdirectory of the type your are implementing the provider for : _module/puppet/provider/package_ in my case.
+
+Code is up on github : [https://github.com/jedi4ever/puppet-homebrew](https://github.com/jedi4ever/puppet-homebrew) .
+
+I hope one day, this provider gets into the main puppet provider list :)
+
+*References:*
+
+- [https://github.com/mxcl/homebrew](https://github.com/mxcl/homebrew)
+- [http://projects.puppetlabs.com/projects/1/wiki/Development_Provider_Development](http://projects.puppetlabs.com/projects/1/wiki/Development_Provider_Development)
+- [https://github.com/jedi4ever/puppet-homebrew](https://github.com/jedi4ever/puppet-homebrew) 
+- [http://blkperl.blogspot.com/2010/07/provider-errors.html](http://blkperl.blogspot.com/2010/07/provider-errors.html)

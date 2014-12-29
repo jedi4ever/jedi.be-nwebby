@@ -1,0 +1,152 @@
+--- 
+title:  Interacting - Programming Vmware Vsphere - Esx - On Mac OS X
+created_at: 2010-12-12 09:29:16.342876 +01:00
+tags: 
+- vmware
+- vsphere
+- sdk
+- java
+- vijava
+- ruby
+- automation
+- programming
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+This blogpost gives an overview of the options you have on Mac OSX to interact with a Vmware Esx, Vsphere server. I feel that Vmware threats Mac OSX users as a second thought, which is kind of strange. The options that we will explore are:  
+
+1. [GUI Options](#gui) : simple GUI, not much of automation here
+2. [Commandline Options](#commandline) : commandline options to interact
+3. [Programming/Scripting Options](#programming) : using programming languages such as java, C#, ruby , Powershell, Perl
+
+<a name="gui"></a>
+### GUI Options
+Suppose you have [installed a new Vmware Vsphere/Esx server](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/), the screen will greet you with a URL that you can use to connect to the server. That URL will redirect you to a webpage that gives you two client options: 
+
+**Install the Vpshere Client:**
+as there is only a windows .exe , this option can't be used on a Mac OSX system. I found two ways to get around the problem but it requires you to have a windows machine running: 
+
+1. The guys from Punching Clouds describe how to run a [vSphere Client on Mac OS X](http://www.punchingclouds.com/?p=856) using Rdesktop and Seamless RDP access to a windows Server. 
+2. Install Windows inside your Vmware Fusion and run it in Unity Mode to use it as a client, but this of course requires Vmware Fusion installed.
+
+**Interact via the Web UI:**
+The second way of interacting, is by using the Web UI. The URL to connect to https://<yourserver>/ui . This is disabled by default. [To enable it](http://goingvirtual.wordpress.com/2009/06/18/vsphere-4-web-access-now-disabled/), you need to run the following commands on your ESX server: 
+
+<% codify(:shell) do %>
+$ chkconfig –level 345 vmware-webAccess on
+$ /etc/init.d/vmware-webAccess start or service vmware-webAccess start
+<% end %>
+
+You can find more info in the [vmware vpshere Web access PDF Document](http://www.vmware.com/pdf/vsphere4/r40/vsp_40_web_access.pdf)
+
+**Interact with Virtual Machines Console:**
+The web interface allows you to do the most common tasks , the only thing you can't do on an Mac is to view the console of a machine. This requires a plugin for the browser. The plugin either runs in Linux or Windows, and there is no Mac version of the plugin. 
+
+To get around that problem, I found these options: 
+
+- Enable VNC for Virtual Machine: Vsphere has a build in way to access Virtual Machines via VNC. It's like VNC enabling the BIOS of the virtual machine. For more info see [http://www.geeklab.info/2010/01/use-vnc-to-access-vmware-esx-guests/](http://www.geeklab.info/2010/01/use-vnc-to-access-vmware-esx-guests/)
+
+Beware that you need to allow the VNC service on the server for this
+<% codify(:shell) do %>
+$ esxcfg-firewall -e vncServer
+<% end %>
+
+- Using the Vmware View Open Client :this lets you connect from a Linux or Mac OS X desktop to remote Windows desktops managed by VMware View. It is available under the GNU Lesser General Public License version 2.1 (LGPL v 2.1). [http://code.google.com/p/vmware-view-open-client/](http://code.google.com/p/vmware-view-open-client/)
+  
+<a name="commandline"></a>
+### Commandline options:
+**On the Vsphere server:**
+Vmware provides several commandline tools on the server platform, through the following commands:
+
+- [vmware-cmd](http://www.vmware.com/support/developer/vcli/vcli41/doc/reference/vmware-cmd.html)
+- vmware-vim-cmd : this is a very exhaustive command that let's you do about anything script based.
+- vmware-vimsh : this is the interactive shell that uses vmware-vimcmd
+- vimsh - [http://www.vi-toolkit.com/wiki/index.php/Vimsh](http://www.vi-toolkit.com/wiki/index.php/Vimsh)
+
+**On Mac OS X:**
+If you can't ssh into the server, your options are more limited on Mac OSX: 
+
+- Vmware Fusion provides the vmrun command in "/Library/Application\ Support/VMware\ Fusion/vmrun" . This allows you to interact with Vsphere ESX server too. 
+- Libvirt with ESX : See my [previous post on the state of libvirt 0.8.6 with esx integration](http://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) 
+- Vmware CLI - Bertrand Paquet (OCTO): is the start for a commandline interface based on Java API.  [https://github.com/bpaquet/vmware-cli](https://github.com/bpaquet/vmware-cli)
+- orbit-vm : - [https://code.google.com/p/orbit-vm/](https://code.google.com/p/orbit-vm/)
+
+<a name="programming"></a>
+### Programming Options
+If the commandline tools are too limited for you, or scripting is not your thing, Vmware provides a multitude of options to program/script against an Vsphere/Esx server. 
+
+Note: if you only have an ESXi version, you can only read information! You can't do changes.
+
+**Visual Programming:**
+
+Project Onyx is a new tool in that generates code based on the mouse clicks you make in the vSphere Client. Project Onyx makes it easy to see what is happening behind the covers and can help with development of scripts and automation solutions. Please refer to the Using Project Onyx video for set up and more information.
+
+- More information at [http://communities.vmware.com/community/vmtn/vsphere/automationtools/onyx](http://communities.vmware.com/community/vmtn/vsphere/automationtools/onyx)
+- A slideshare presentation about Onyx : [http://www.slideshare.net/vmwarecarter/getting-stoned-with-project-onyx](http://www.slideshare.net/vmwarecarter/getting-stoned-with-project-onyx)
+
+**Official Programming language options**
+
+All the official programming options are listed at [http://www.vmware.com/support/pubs/sdk_pubs.html](http://www.vmware.com/support/pubs/sdk_pubs.html)
+
+- VI Perl - [http://www.vmware.com/support/developer/viperltoolkit/](http://www.vmware.com/support/developer/viperltoolkit/) . To get it installed on a Mac See [Install the VI Perl Toolkit on OSX](http://www.vi-toolkit.com/wiki/index.php/Install_the_VI_Perl_Toolkit_on_OS_X)
+- Vmware Vsphere Web Services SDK, java and C# [http://www.vmware.com/support/developer/vc-sdk/](http://www.vmware.com/support/developer/vc-sdk/)
+- Powershell - Vsphere CLI , Power CLI [http://www.vmware.com/support/developer/PowerCLI/index.html](http://www.vmware.com/support/pubs/ps_pubs.html)
+
+On a side note, in case you want to automate stuff in the Guest you can use the Vix-API [http://www.vmware.com/support/developer/vix-api/](http://www.vmware.com/support/developer/vix-api/) . The VIX API helps you write programs and scripts to automate virtual machine operations and run programs or manipulate files within guest operating systems
+
+**Semi Official **
+
+From the official options, I consider only the java one to be usable on my Mac. I found the interface for programming Webservices in java, rather cumbersome. And samples are rather spread over the whole site. 
+
+I found much more consistency in the Open Source VI (vSphere) Java API for Managing VMware Platforms (VIjava)
+Created by [Steve Jin](http://www.linkedin.com/in/stevejin/) , it builds upon the WebService interface but provides a great, rather simple but powerful programming API. And it has *lots* of samples and documentation.
+
+- Homepage: [http://vijava.sourceforge.net/](http://vijava.sourceforge.net/)
+- Getting started: [http://vijava.sourceforge.net/doc/getstarted/tutorial.htm](http://vijava.sourceforge.net/doc/getstarted/tutorial.htm)
+- Info Q Presentation : [http://www.infoq.com/presentations/vsphere-java-api](http://www.infoq.com/presentations/vsphere-java-api)
+- Groovy and Vijava : [http://www.virtualinsanity.com/index.php/2010/04/16/easy-vmware-development-with-vi-java-api-and-groovy/](http://www.virtualinsanity.com/index.php/2010/04/16/easy-vmware-development-with-vi-java-api-and-groovy/)
+- Book VMware VI and vSphere SDK: Managing the VMware Infrastructure and vSphere- [http://www.amazon.com/gp/product/0137153635](http://www.amazon.com/gp/product/0137153635)
+
+Personally I believe, this is the way forward: java will undoubtably stay important with the SpringSource acquisition by VMware. 
+
+**Other options: The truth is out there**
+
+_More Java_:
+
+- Java bindings for Libvirt - [http://libvirt.org/java.html](http://libvirt.org/java.html)
+- I know [Jclouds](http://jclouds.org) is planning on interfacing with Vsphere in the future. I'll be probably helping there too.
+
+[https://github.com/andreaturli/jclouds/tree/477466ca64253cb91875cbe58ec60845b66abe5c/sandbox/vsphere](https://github.com/andreaturli/jclouds/tree/477466ca64253cb91875cbe58ec60845b66abe5c/sandbox/vsphere) 
+
+_Ruby_: 
+
+It would be nice to interface with ruby, similar to the Powershell on Windows. I found some hints that this might happen in the future in a blogpost Vmware looking into Ruby? [http://blog.mccrory.me/2010/10/08/vmware-looking-to-ruby/](http://blog.mccrory.me/2010/10/08/vmware-looking-to-ruby/) . Hopefully to be continued in the future. 
+
+- Vmrun Ruby: a ruby wrapper around the vmrun commnd - [http://www.phreedom.org/software/vmrun-ruby/](http://www.phreedom.org/software/vmrun-ruby/)
+- RubyVmware - Ruby Binding for Vmware - [http://rubyvmware.rubyforge.org/](http://rubyvmware.rubyforge.org/)
+- Using JRuby + Vijava to manage and automate vmware vpshere - [http://www.doublecloud.org/2010/08/ruby-to-manage-and-automate-vmware-vsphere/](http://www.doublecloud.org/2010/08/ruby-to-manage-and-automate-vmware-vsphere/)
+- Or the ruby bindings to Libvirt - [http://libvirt.org/ruby/](http://libvirt.org/ruby/)
+- Ruby Vmware leveraging the SOAP api - [http://www.ntpro.nl/blog/archives/1296-Ruby-sample-code-and-library-for-VI-SDK.html](http://www.ntpro.nl/blog/archives/1296-Ruby-sample-code-and-library-for-VI-SDK.html) , [http://svn.paglo.com/paglo_open_source/ruby_vmware/trunk/](http://svn.paglo.com/paglo_open_source/ruby_vmware/trunk/)
+- Vmware-Vix - [http://github.com/bestpractical/vmware-vix](http://github.com/bestpractical/vmware-vix)
+- Vixr - [http://github.com/rhythmx/vixr](http://github.com/rhythmx/vixr)
+- PoolParty - [http://auser.github.com/poolparty/vmware_setup.html](http://auser.github.com/poolparty/vmware_setup.html)
+
+_Python_:
+
+I'm not much into python, but if Python is your thing: 
+
+- Jython Esx Lib: [https://github.com/davebryson/jython_esx_lib](https://github.com/davebryson/jython_esx_lib)
+- vSphere SDK for Python: [https://github.com/jkinred/psphere](https://github.com/jkinred/psphere)
+
+_Puppet_:
+
+Last but not least, I was thinking on creating an interface for puppet to integrate it within manifests. Not much there yet, but I found these useful pointers: 
+
+- [Rdark](http://blog.fohnet.co.uk/) has been experimenting with running puppet on ESX servers. Not for automation but for maintenance. 
+[https://github.com/rdark/puppet-vmwareesx](https://github.com/rdark/puppet-vmwareesx)
+
+And if Libvirt finally gets good esx/vsphere support, the Puppet-Virt project [https://github.com/carlasouza/puppet-virt](https://github.com/carlasouza/puppet-virt) would be an awesome way to interface.
+
+But that's still future stuff...

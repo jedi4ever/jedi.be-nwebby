@@ -1,0 +1,56 @@
+---
+title: "Download all original pictures from Flickr and Picasa via RSS in Iphoto"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=724
+created_at: 2009-04-30 16:00:36.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+   - Java related
+tags:
+   - flickr
+   - iphoto
+   - rss
+   - yahoo pipes
+   - picasa
+---
+<p><a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/iphoto_icon.jpg"><img title="iphoto icon" class="left" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/iphoto_icon.jpg" height="91" alt="" width="91" /></a><a href="http://www.flickr.com">Flickr</a> and <a href="http://picasaweb.google.com/">Picasa</a> make it easy to share pictures taken at events. But when you want to archive these pictures and store them on central place or burn them to a DVD, it takes a bit of extra work. Iphoto allows you to import these pictures directly using a RSS feed.
+</p>
+<p><a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/picasa_logo.gif"><img title="picasa logo" class="right" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/picasa_logo-300x118.gif" height="78" alt="" width="199" /></a>
+</p>
+
+<h3>Picasa-Albums:</h3>
+<p>Google provides an RSS feed on each album page where you can subscribe to the pictures in an album. The problem is getting access to the original uploaded files, instead of the lower resolutions.
+</p>
+<p>As an example I take the pictures from the<a href="http://www.agileopen.net/en/belgium"> Agile Open Belgium 2009</a> event taken by my friend Xavier.
+The RSS feed link looks like :
+<a href="http://picasaweb.google.com/data/feed/base/user/xquesada/albumid/5308588300458757601?alt=rss&amp;kind=photo&amp;hl=en_US">http://picasaweb.google.com/data/feed/base/user/xquesada/albumid/5308588300458757601?alt=rss&amp;kind=photo&amp;hl=en_US</a>
+</p>
+<p>By default the RSS does not show all pictures but only a limited set.  <a href="http://code.google.com/apis/gdata/docs/2.0/reference.html#Queries">http://code.google.com/apis/gdata/docs/2.0/reference.html#Queries</a> nicely explains that you can add the <strong>max-results</strong> parameter to increase this default value.
+</p>
+<p>Another default is that it does not include the original files but the resized versions. <a href="http://code.google.com/apis/picasaweb/reference.html#Parameters">http://code.google.com/apis/picasaweb/reference.html#Parameters</a> explains that you can use the <strong>imgmax=d</strong> to download the original files including the original EXIF information.
+</p>
+<p>
+<a href="http://picasaweb.google.com/data/feed/base/user/xquesada/albumid/5308588300458757601?alt=rss&amp;kind=photo&amp;hl=en_US&amp;imgmax=d&amp;max-results=100000">http://picasaweb.google.com/data/feed/base/user/xquesada/albumid/5308588300458757601?alt=rss&amp;kind=photo&amp;hl=en_US&amp;<strong>imgmax=d&amp;max-results=100000</strong></a>
+</p>
+
+<h3>Flickr:</h3>
+<p>My friend Harald Walker put his pictures on Flickr instead of on Picasa. His link looks like this<a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/flickr-logo.jpg"><img title="flickr-logo" class="right" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/flickr-logo-300x117.jpg" height="79" alt="" width="203" /></a>
+</p><p>
+<a href="http://www.flickr.com/photos/sonicwalker/sets/72157614123886994/">http://www.flickr.com/photos/sonicwalker/sets/72157614123886994/</a>
+</p><p>
+Similar to Picasa , Flickr also offers an RSS feed button on the page of the set
+<a href="http://api.flickr.com/services/feeds/photoset.gne?set=72157614123886994&amp;nsid=80469067@N00&amp;lang=en-us">http://api.flickr.com/services/feeds/photoset.gne?set=72157614123886994&amp;nsid=80469067@N00&amp;lang=en-us</a>
+</p><p>
+http://www.flickr.com/services/api/misc.urls.html describes the URL format of the original files using the o size suffix. It seems by default Flickr does include the _o (original) files in its feed. So no work here.
+</p><p>
+Flickr in contrast with picasa does not have a way of setting the maximum results. The workaround for this, is to make use of <a href="http://pipes.yahoo.com">yahoo pipe</a>s. This does allow you create an RSS stream with more then 20 pictures.
+</p><p>
+Alto Maltés has created an Yahoo Flickr RSS pipe, that you can use to generate your RSS stream with unlimited number of pictures. Check it out at <a href="http://pipes.yahoo.com/pipes/pipe.info?_id=ggi_H7jn2xGoWGzY6UjTQA">http://pipes.yahoo.com/pipes/pipe.info?_id=ggi_H7jn2xGoWGzY6UjTQA</a>
+</p><p>
+To create a URL that does this automagically: It has a parameter called <strong>set=</strong> to select the picture set  and <strong>num=</strong> to specify the number of results.
+</p><p>
+<a href="http://pipes.yahoo.com/pipes/pipe.run?_id=ggi_H7jn2xGoWGzY6UjTQA&amp;_render=rss&amp;num=500&amp;set=72157614123886994">http://pipes.yahoo.com/pipes/pipe.run?_id=ggi_H7jn2xGoWGzY6UjTQA&amp;_render=rss&amp;num=<strong>500</strong>&amp;set=<strong>72157614123886994</strong></a></p>

@@ -1,0 +1,37 @@
+---
+job: true
+period: "2002 - 2003"
+customer: Proxis (Porthus)
+role: Technical Architect
+title: Internet website www.proxis.be
+---
+
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/porthus.jpg" class="left"></div>
+		<div class="span-18 last">
+* Proxis is one of the major e-business bookshops in Belgium. Their website is vital to their selling as it is their only means of communication.
+* The technical Internet platform was based upon Apache, Oracle Application Server and Oracle Database.
+* To reduce the operational cost and achieve better service levels, the infrastructure was migrated to a collocation at Level3.  
+* Due to the migration, the office location was separated from the server location. Using  a Terminal server based solution they achieved additional reduction of cost for network bandwidth .
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+weblogic, oracle database, apache, j2ee
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Architect_
+* Redesign infrastructure within a ASP environment
+* Analysis of office application usage
+
+_Project Management_
+* Create project plan, bill of material
+* Follow-up of technical implementation
+	</div>
+</div>
+
+
+

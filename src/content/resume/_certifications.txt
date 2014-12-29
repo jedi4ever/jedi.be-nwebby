@@ -1,0 +1,20 @@
+---
+filter: textile
+---
+<h2>Certification</h2>
+* Scrum Alliance - Scrum Master 
+* ITIL - ITIL Certified  (Foundation)
+* Sun - Solaris 10 Certified Engineer
+* Sun - Sun Certified Engineer for Sun ONE Directory Server 5.x
+* Microsoft - Managing and Maintaining a Microsoft Windows 2003 Environment
+* Checkpoint - Check Point Certified Security Administrator (CCSA)
+* Comtia - Security+
+* EC-Council - Ethical Hacker
+* ISC - CISSP
+* SANS - GIAC Certified Incident Handler (GCIH Silver)
+* SANS - Reverse Engineering Malware Handler 
+* SANS - GIAC Certified UNIX Security Administrator
+* SANS - GIAC Certified Forensics Analyst (GCFA)
+* Brainbench - Linux Administration (General)
+* Brainbench - Internet Security, Network Security
+* Brainbench - TCP/IP Administration , Information Technology Security

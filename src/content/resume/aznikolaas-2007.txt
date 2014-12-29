@@ -1,0 +1,29 @@
+---
+period: "2007"
+customer: "AZ Nikolaas (Erudict)"
+role: Technical Consultant
+title: Evaluation of an new Identity Management System
+job: true
+---
+
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/az-nikolaas.jpeg" class="left"></div>
+		<div class="span-18 last">
+* In order to improve access to the medical data and applications, AZ Nikolaas started a Request for Proposal for a new Identity management System. They had stated their functional requirements in this document.
+
+* Different vendors proposed different solutions with different architectures. The evaluation of the impact and match of these solutions was difficult because they had no experience with the proposed solutions.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+Oracle Identity Suite,  Sun Identity Server, Novel Identity Suite, Active Directory, IBM Directory Server, LDAP
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* Help point out the technical pro and cons for the solutions
+* Create a functional, technical and financial comparison matrix to visualize the differences
+	</div>
+</div>

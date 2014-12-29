@@ -1,0 +1,130 @@
+--- 
+title:      Coding an Infrastructure Test First
+created_at: 2009-11-18 16:30:41.688870 +01:00
+tags: 
+- unknown
+blog_post: true
+tags: 
+- tdd
+- test driven automation
+- devops
+- infrastructure
+- automation
+- test driven infrastructure
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+<img src='/blog/wp-content/uploads/2009/11/coding-infrastructure-test-first.jpg' class='left'>
+Now that we outlined the *programming languages* for automating [shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) ,[network provisioning](http://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/)
+and [os installation and beyond](http://www.jedi.be/blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/), I bet you as a devops are eager start writing your *infrastructure code*. 
+
+After some time chances are that you will end up with lots and lots of scripts executing in sequence. And then when you change something in a script the whole sequence will fail and you'll have a hard time looking for what caused the problem. A better approach for writing your code is to practice 
+[Test Driven Development](http://en.wikipedia.org/wiki/Test-driven_development). 
+
+### Test Driven <strike>Development</strike> Automation
+In short before writing any code, you first write a test for the code you are writing. Then you run your tests and see that the new test fails.(RED). It is only then that you start writing your code or change your existing code (REFACTOR). When you think the code is done, you run your tests again and see them succeed (GREEN). And then you continue to use this cycle to grow your code. It is important that you chance your code in small increments. For more infor see [Test first guidelines](http://xprogramming.com/xpmag/testfirstguidelines).
+
+### Benefits for the sysadmin
+So how can this help you as a sysadmin? Isn't this more of developer thing? And the answers is a big NO:
+
+- can you remember the last time when you had to apply patches or config file changes to a system. And did you have that *fingers crossed* feeling? Wouldn't it be great that you could install a patch and run a series of tests to see if everything behaved the way it should? 
+- when you get audited : how can you show that the machines you're running comply to your installation guides
+- writing these tests also helps in sharing the knowledge and repeating the validation process every time. Even without your rockstar sysadmin being around
+- the incremental approach also helps in systems overdesign. As project complexity grows, you may notice that writing automated tests gets harder to do. This is your early warning system of overcomplicated design. Simplify the design until tests become easy to write again, and maintain this simplicity over the course of the project.
+
+Yes, but won't this slow me down? Well this is exactly the reaction most developers have to this process. But to me the benefits should be clear, do you rather go for the *fingers crossed* go live or the *verified* state. You will have to find the right balance between writing all tests and writing no tests. 
+
+If you are working on a new project that tries to get something running as quickly as possible as a one shot, you'll probably be under pressure to deliver. It will take some time to reach the skills to get the automation and the tests in your fingers. Still a good way of convincing management is by explaining them that these tests not only for the project phase but can be used during the whole maintenance period. This definitely increased the ROI of writing these tests.
+
+### Setup / Teardown
+Part of a test there usually is a setup and a tear-down part. The idea is to create a state under which you start performing your tests. For applications f.i. this would be to put the right stuff in the database, set the right variables. So how does this translate to machines? Most of the virtualization solutions allow you to do easily take snapshots of both your memory state (savestate) and your disks. So you can easily recreate a certain point in time to start your tests by cloning your systems and running some scripts to change the state (f.i. filling a disk, killing a process) . Another approach could be to take snapshots of your disks using filesystems like ZFS, LVM that easily let you take snapshots. 
+
+This also helps during the coding of your infrastructure: 
+
+- you take a snapshot of your current state
+- you run your code
+- see if the test succeeds 
+- if not OK rollback , if OK save the new state
+
+### Example: a Webserver Test First
+In the following example I will describe the setup of a webserver which serves static pages. Note that there is no *standard* development involved here. It's all about pre-packaged software. 
+
+#### Step 1: Defining the virtual machine
+In this step you would define the *hardware* of your virtual machine: number of CPU's, memory, network interfaces, mac addresses, disks, ... So how do we test this? In the days of physical hardware, the way to verify that systems had all the hardware in it, we booted up a CD and verified using commands that the system contained the correct number of disks.
+
+To avoid writing your own boot CD , you could use something similar to [sysrescueCD](http://www.sysresccd.org/). It has a feature called [autorun](http://www.sysresccd.org/Sysresccd-manual-en_Run_your_own_scripts_with_autorun) that allows you to boot up the disk and execute scripts that are either on a floppy, disk, NFS or Samba share or HTTP server. If you mount this as a virtual CD in your virtual machine, it can boot up the virtual machine and execute test to test if the definition was according to what was specified.
+
+#### Step 2: Prepare IP, DNS, DHCP, TFTP
+Next step is provisioning the network information for your virtual machine. In order to test this, we can easily use the same boot CD approach to verify this via scripts using dhclient, dig, tftpclient. Some might argue that this test is better done from within the OS. Off course testing is when the OS is installed is a more complete tests. Doing this test separate from the installed OS, lets you better distinguish where the error occurs. Is it a problem of the OS driver that there is no IP address or is is a problem with the definition of the DHCP/DNS.
+
+#### Step 3: Minimal Install of OS 
+This is usually done by defining a kickstart/jumpstart template. It would contain the disks partitioning, network configuration, the minimal packages and patches, a set of minimal services enabled (ssh, puppet), selinux enabled , . As you see there is a lot more that can be tested here:
+
+- Is the swap activated correctly
+- Is all memory seen from the OS
+- check if disks partitioning is ok
+- check if disks are mounted correctly 
+- Is it 64/32 bit
+- Are permission set right
+- Is SElinux activated
+- is the NFS share exported: showmount -e 
+- IP: are the interfaces up an did they get the correct settings
+- do some DNS lookups to see if that works
+- Ping the router to see if network is alive
+- Verify the syntax of your sendmail.cf 
+- See if the processes are running (sshd, puppetd) : ps -ef |
+- Check the listeners : netstat -an|grep LISTEN
+- Do a test login with SSH 
+- Running NMAP to see if no other services are activated
+- run nessus to check vulnerabilities
+
+Up until now these tests are simple checks , and probably most people will do similar things in their monitoring. I've talked about [testing being more then monitoring](http://www.jedi.be/blog/2009/11/16/test-driven-automation-and-administration/). Aside from these simple checks you can complementing your monitoring to run scenarios. Also destructive tests like failing a disk or bringing down an interface are probably not the best thing to do in production monitoring ;-)
+
+- test if IP Bonding by executing a failover
+- Verify that syslog works by sending a log request
+- test if your raid system works by killing a disk
+- test if your self healing works by killing a process
+- test a reboot scenario
+- test if your DNS failover works by using iptables to block access to the first DNS server
+- test your backup/restore scenario ;-)
+
+So aren't we re-testing the packages here? The problem here is packages are often tested in isolation from each other and they can only test a limited number of setups. That means it still makes sense to repeat some tests so see if *YOUR* combination of things actually works.  
+
+#### Step 4: Apply recipes for the webserver
+We now have a tested minimal OS running with a configuration mgt system active. Next in line it applying recipes. While discussing these with a number of people , I heard a lot that you don't need tests because these tools work in a declarative mode: if something doesn't work then it's either an error in your recipe or an error in the configuration management software. 
+
+I personally disagree, the argument is similar to why we test even if individual packages are tested: you can write a beautiful recipe to install a webserver but maybe the firewall is preventing you access, maybe your SELinux is blocking things. Or you install a bad apache config file so that it uses the wrong directory to serve. 
+
+Also you can add scenario testing here :
+
+- by running load and see if it actually spawns the number of processes you specified
+- check for loadbalancer pages are available
+- kill the http daemon and see if it recovers
+- check if caching works ok by downloading the file one 
+- check if HTTP/compression works
+- check if lastmodified/ headers are set correctly
+- check if log rotation works ok
+
+### Testing Frameworks
+Programming languages have developed a lot of frameworks over time to help in writing tests. When coding your infrastructure in these languages check what's available. Still there is no test library that is specific to systems testing. The closest are test frameworks for HTTP testing.
+
+Currently this is an emerging field. There are already [a lot of examples in the wild](http://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/). As we adopt more the idea of testable infrastructure, these frameworks will emerge. The most notable is [cucumber-nagios](http://holmwood.id.au/~lindsay/2009/02/23/web-app-integration-testing-for-sysadmins-with-cucumber-nagios/) written by [Lindsay Holmwood](http://twitter.com/auxesis). It brings http testing closer to monitoring and into the sysadmin world. Now you can reuse your tests written in cucumber in your monitoring environment.
+
+After a discussion at [devopsdays 09](http://www.devopsdays.org/ghent09/programme) Lindsay is starting on a similar thing that allows to integrated ssh scripting in this framework, or what he calls [Behavior driven infrastructure through cucumber](http://holmwood.id.au/~lindsay/2009/11/09/behaviour-driven-infrastructure-through-cucumber/)
+ And recently he announced on the [agile system administration mailing list](http://groups.google.com/group/agile-system-administration) that he's joining forces with Adam Jacob of [Opscode](http://www.opscode.com/). So definitely more to come!
+

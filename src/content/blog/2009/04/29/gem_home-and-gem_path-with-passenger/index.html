@@ -1,0 +1,50 @@
+---
+title: "GEM_HOME and GEM_PATH with Passenger"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=713
+created_at: 2009-04-29 10:40:05.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - phusion
+   - rake
+   - passenger
+   - GEM_HOME
+   - apache
+   - mod_rails
+   - gem_path
+---
+<p>We have the habit of using a GEM_HOME and GEM_PATH per environment. This allows you to clearly separate two environments such as development, testing, staging and production.</p>
+<p>Passenger allows you to set the RailsENV accordingly. But it does not allow you to specify the GEM_HOME or GEM_PATH.</p>
+<h3>Option 1: set the ENV before starting apache.</h3>
+<p>To have different sites running , this would require an apache daemon per site. Not ideal.</p>
+<h3>Option 2: set the ENV in the ruby script</h3>
+<p>We can create a ruby-staging, ruby-production script and set the environment in there. And by setting the "<strong>PassengerRuby</strong> /opt/ruby-enterprise-1.8.6-20090201/bin/ruby-staging"
+But as the site states : <em>This option may only occur once, in the global server configuration</em>.</p>
+
+<h3>Option 3: our solution</h3>
+<p>To have rails pickup the setting we can set these environment variables in $RAILS_ROOT/config/environment.rb
+<pre>ENV['GEM_HOME']='/var/www/&lt;environment&gt;.yoursite.com-80/gems'
+ENV['GEM_PATH']='/var/www/&lt;environment&gt;.yoursite.com-80/gems'</pre>
+To make this different for each deployment we add this to the <strong>after_deploy</strong> capistrano task $RAILS_ROOT/config/deploy.rb
+<pre>desc "Keep only 4 releases"
+task :after_deploy do
+ run "cp #{current_release}/config/environment.rb #{current_release}/config/environment.rb-"
+ run "echo ENV[\\'GEM_HOME\\']=\\'#{gemhome}\\' &gt; #{current_release}/config/environment.rb"
+ run "echo ENV[\\'GEM_PATH\\']=\\'#{gemhome}\\' &gt;&gt; #{current_release}/config/environment.rb"
+ run "cat #{current_release}/config/environment.rb- &gt;&gt; #{current_release}/config/environment.rb"
+ run "rm #{current_release}/config/environment.rb-"
+ deploy::cleanup
+end</pre></p>
+Of course we still need to set the gem_home per environment. To have multiple settings we use the <em>capistrano-ext</em> plugin:
+<br>
+in $RAILS_ROOT/config/deploy/&lt;environment&gt;.rb. F.i for production we have
+<pre>set :deploy_to, "/var/www/www.yoursite.com-80/rails"
+set :rails_env, "production"
+set <strong>:gemhome,</strong> "/var/www/www.yoursite.com.be-80/gems"</pre>
+We still have one problem to tackle. Rake itself doesn't use the environment.rb. .To make it pick the GEM_HOME we prepend it to the rake command
+<pre>set <strong>:rake</strong>, "<strong>GEM_HOME</strong>=/var/www/www.yoursite.com-80/gems /opt/ruby-enterprise-1.8.6-20090201/bin/rake"</pre>

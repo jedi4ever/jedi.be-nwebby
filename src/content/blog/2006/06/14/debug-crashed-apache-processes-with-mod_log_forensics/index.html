@@ -1,0 +1,45 @@
+---
+title: "Debug crashed apache processes with mod_log_forensics"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2006/06/14/debug-crashed-apache-processes-with-mod_log_forensics/
+created_at: 2006-06-14 08:50:49.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+---
+<p>More info can be found @
+<a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/docs/2.0/mod/mod_log_forensic.html
+</a>
+</p><p>Each request is logged two times. The first time is <em>before</em> it's
+processed further (that is, after receiving the headers). The second log
+entry is written <em>after</em> the request processing at the same time
+where normal logging occurs.
+</p><p>
+In order to identify each request, a unique request ID is assigned.
+This forensic ID can be cross logged in the normal transfer log using the
+<code>%{forensic-id}n</code> format string. If you're using
+<code class="module"><a href="http://httpd.apache.org/docs/2.0/mod/mod_unique_id.html">mod_unique_id</a></code>, its generated ID will be used.
+</p><p>
+The first line logs the forensic ID, the request line and all received
+headers, separated by pipe characters (<code>|</code>). A sample line
+looks like the following (all on one line):
+<div class="example"><code>
++yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
+HTTP/1.1|Host:localhost%3a8080|User-Agent:Mozilla/5.0 (X11;
+U; Linux i686; en-US; rv%3a1.6) Gecko/20040216
+Firefox/0.8|Accept:image/png, <var>etc...</var>
+</code></div>
+</p><p>The plus character at the beginning indicates that this is the first log
+line of this request. The second line just contains a minus character and
+the ID again:
+<div class="example"><code>
+-yQtJf8CoAB4AAFNXBIEAAAAA
+</code></div>
+</p><p>The <code>check_forensic</code> script takes as its argument the name
+of the logfile. It looks for those <code>+</code>/<code>-</code> ID pairs
+and complains if a request was not completed.
+<div class="top"><a href="http://httpd.apache.org/docs/2.0/mod/mod_log_forensic.html#page-header"><img src="http://httpd.apache.org/docs/2.0/images/up.gif" alt="top" /></a></div>
+</p>

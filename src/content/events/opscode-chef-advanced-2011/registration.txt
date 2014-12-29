@@ -1,0 +1,7 @@
+---
+layout: event
+extension: html
+filter:    erb
+title: Opscode Chef Advanced Training - Registration
+---
+<iframe src="https://spreadsheets.google.com/viewform?formkey=dGt5RFJMWkg3ZDRuS2duTFZjcDNvZkE6MA" width="760" height="1900" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>

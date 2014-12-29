@@ -1,0 +1,77 @@
+---
+title: "SSL Virtual Namebased Hosts with Apache 2.x"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/11/07/ssl-virtual-namebased-hosts-with-apache-2x/
+created_at: 2008-11-07 13:36:12.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - ssl
+   - virtualhosts
+   - apache
+---
+<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/faboslogoapache200150.jpg" />Apache provides a way of hosting multiple sites on one instance. 
+<br>
+To make the difference between lets say www.domain1.org and www.domain2.org you can make:
+<ul><li>the distinction either based upon the ip-address use to connect to the webserver: apache will have a config part that maps one IP to a specific domain name and documents directory. 
+</li><li>or use name based virtual hosting: based upon the name used in the request (actually the Host: in the HTTP/1.1 protocol)&nbsp; , it can make the difference between the two domains.</li></ul>
+<br>
+
+While this works well for HTTP, there is an Issue with HTTP/S: Before the browser actually requests the page, it first has to negotiate the certificate. So this is a chicken-egg problem. It can not send out the correct certificate before he knows the name, and he can not send the name before the SSL handshake.<img src="http://www.jedi.be/blog/wp-content/uploads/2008/11/ssl-cover-logo.jpg" height="97" width="212" />
+<br>
+As the <a href="http://httpd.apache.org/docs/2.0/ssl/ssl_faq.html#vhosts%3Cbr/%3E">Apache 2.x documentation</a> puts it:
+<br>
+<tt>Name-Based Virtual Hosting is a very popular method of identifying different virtual hosts. It allows you to use the same IP address and the same port number for many different sites. When people move on to SSL, it seems natural to assume that the same method can be used to have lots of different SSL virtual hosts on the same server.
+It comes as rather a shock to learn that it is <b>impossible</b>.</tt>
+<br>
+This <i>impossible</i> depends on what you require.... 
+<br>
+<b><u>Getting Apache started on Virtual SSL Hosts
+</u></b>The trick is to configure Apache similar to a HTTP Virtual Host but making it listen on *:443 , the standard SSL port. &nbsp; 
+<tt>  NameVirtualHost *:443
+<br>
+    <VirtualHost *:443>
+        ServerName www.domain1.com
+        SSLEngine on
+        SSLCertificateFile /path/to/www.domain1.com.cert
+        SSLCertificateKeyFile /path/to/www.domain1.com.key
+<br>
+        DocumentRoot /www/vhosts/domain1.com
+   
+   
+   <VirtualHost *:443>
+        ServerName www.domain2.com
+        SSLEngine on
+        SSLCertificateFile /path/to/www.domain2.com.cert
+        SSLCertificateKeyFile /path/to/www.domain2.com.key
+        DocumentRoot /www/vhosts/domain2.com
+&nbsp;
+</tt>
+Apache actually will spit out a warning:
+<br>
+<tt>[warn] Init: You should not use name-based virtual hosts in conjunction with SSL!!</tt>
+<br>
+As you can see the certificate there are multiple certificates specified. But actually Apache will use the first one Only, no matter what you specify.
+This is further described in detail in <a href="http://www.onlamp.com/pub/a/apache/2005/02/17/apacheckbk.html">http://www.onlamp.com/pub/a/apache/2005/02/17/apacheckbk.html</a>
+<br>
+Note: If you fix the IP address of one of the SSL virtual hosts, it will not work anymore.
+<br>
+<u><b>Fixing the certificates errors:
+</b></u><i>
+</i>So if we can only specify one SSL certificate, how do we get the multiple names in it? The recipe depends on what kind of names
+<br>
+<i>site.domain.com and site2.domain.com
+</i>
+This kind of certificate would require a wildcard certificate. You can get <i>wildcard certificates</i> (*.domain.com) from your Certificate Provider. They will often charge you extra for this. Also this might be dangerous too, having all names under one certificate. So take care!
+<a href="http://www.cb1inc.com/2008/09/11/virtual-hosts-and-wildcard-ssl-certificates-with-apache-2.2%20">http://www.cb1inc.com/2008/09/11/virtual-hosts-and-wildcard-ssl-certificates-with-apache-2.2
+</a> 
+<i>site.domain1.com and site.domain2.com (one owner)
+</i>Certificates allow you to specify multiple names in your certificates by using the <i>subjectAlternativeName</i>. The creation process is explained 
+<a href="http://therowes.net/%7Egreg/2008/01/08/creating-a-certificate-with-multiple-hostnames/%20">http://therowes.net/~greg/2008/01/08/creating-a-certificate-with-multiple-hostnames/
+</a> 
+<i>site.domain1.com and site domain2.com (different owners)
+</i>The problem is actually a result of the implementation of Apache standard SSL module. Fixes exist as&nbsp; patches or other modules f.i.&nbsp; the mod_gnutls module. (&nbsp; <a href="http://www.g-loaded.eu/2007/08/10/ssl-enabled-name-based-apache-virtual-hosts-with-mod_gnutls/">http://www.g-loaded.eu/2007/08/10/ssl-enabled-name-based-apache-virtual-hosts-with-mod_gnutls/</a> )

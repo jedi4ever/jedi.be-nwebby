@@ -1,0 +1,27 @@
+---
+job: true
+period: "2000"
+customer: VRT Realaudio Project (KPN Belgium)
+role: Web Developer
+title:  Vrt Realaudio
+---
+
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/vrt.jpeg" class="left"></div>
+		<div class="span-18 last">
+* On popular demand, the VRT decided to make their radio broadcasting available via on the internet. It allready had a windows/realaudio solution to do this. But this system was not flexible and stable enough: start and stop of broadcastings are sent on an RS232 serial line. The idea was to use this signal to detect the start and stops of broadcasts.
+* A web based interface was build using Apache/PHP to schedule these recordings. The new platform was Linux Based. The low level serial interface integration was done using C optimized routines.
+* Not only on demand scheduling of recordings was possible but also the live audio streaming of RVI (Radio Vlaanderen Internationaal) was converted to a linux based solution.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+realaudio, teletext, php, mysql, linux, c, c++
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Developer_
+* Analyze and develop web application (LAMP) and serial integration
+	</div>
+</div>

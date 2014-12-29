@@ -1,0 +1,27 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Advanced Training - Program
+tags: 
+- opscode
+- chef
+- infrastructure as code
+- configuration management
+- devops
+- course
+- training
+dirty: true
+---
+Chef Advanced is a two-day class designed for advanced Chef developers. This class will focus mainly on the Chef APIs. We will also cover how to create Chef providers to be used with non-supported interfaces. This class will include lecture and labs only.
+
+The course goes into more detail about how to achieve fully automated infrastructure as code. Topics include:
+
+* Debugging recipes and working with the interactive console, Shef
+* Writing Ohai Plugins
+* Lightweight resources and providers in depth
+* Data-driven application deployment
+* Working with Cloud Computing services
+* Embedding Chef as a library

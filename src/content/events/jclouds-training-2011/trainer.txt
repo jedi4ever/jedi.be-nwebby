@@ -1,0 +1,16 @@
+---
+layout: event
+extension: html
+title: Jclouds Training - Trainer
+filter:
+- erb
+- markdown
+---
+### About Adrian Cole:
+
+<table><tr><td><a href="http://jclouds.org"><img src='<%= @page.url+"/../adrian_cole.jpeg" %>'></a></td><td>
+
+<p>Adrian founded the open source project <a href="http://jclouds.org">jclouds</a> in March 2009, and is actively engaged in cloud interoperability and devops circles. Recent efforts include vCloud ecosystem engineering at VMware, Java integration at Opscode, and cloud portability efforts at Cloudsoft. Adrian's currently consulting under Cloud Conscious LLC.</p>
+
+<p>He recently became Chief Evangelist at Cloudsoft</p>
+</td></tr></table>

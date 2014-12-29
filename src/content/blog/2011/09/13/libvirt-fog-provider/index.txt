@@ -1,0 +1,587 @@
+---
+title: Libvirt support for fog
+created_at: 2011-09-13 15:35:34.199577 +02:00
+tags:
+- fog
+- libvirt
+blog_post: true
+filter:
+- erb
+- markdown
+related:
+- desc: Libvirt and Vmware Esx
+  url: /blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/
+---
+### Why we did it
+Historically we set out to use [Vagrant](http://vagrantup.com) on the developers laptop. Soon, the complexity of our setup had outgrown the developers laptop and required another solution. As the target platform was based on Amazon EC2, it made sense to create developers environments on EC2. 
+Being spoiled by the simplicity of the Vagrant CLI, we soon found that our team could benefit from a similar CLI for EC2. Therefore we created [Mccloud](https://github.com/jedi4ever/mccloud/). We have been running with it now for some time. 
+
+To make that happen we used [Fog](http://fog.io) a ruby cloud abstraction library. Most of the clouds vendors it supports are the public clouds, like Amazon EC2. It allows you to use the same set of API against multiple clouds.
+
+As the costs of EC2 increased, we wondered if we could create the same flexibility on some internal hardware for our test environment. After reviewing <http://openstack.org> and some other alternatives, we choose to go for a minimalistic approach and using only basic virtualization. The obvious choice for automating was to use [Libvirt](http://libvirt.org) an abstraction library for virtualization platforms like kvm, xen, openvz.
+
+Libvirt has ruby-bindings available, but compared to the fog API, the use looked akward: using XML documents to specify params is not the most developer friendly approach. So the idea was born to integrate the libvirt power into the fog library.
+
+### Setting up libvirt server and client
+Libvirt is a daemon you have to install on a server, it's management is done through a utility called 'virsh'. Describing the installation of libvirt is beyond the scope of this document. But here are some gotcha's we encoutered:
+
+#### Ubuntu Server:
+
+- initially we install machines as lucid, but the official libvirt version in lucid is version 0.7. . We upgraded to maverick as this contained a more recent version libvirt 0.8.3+ .
+- if you connect through the network using a remote transport like ssh, you require to have netbsd compatible version of netcat installed. In the recent versions, this comes automatically with the instalation of the libvirt package.
+
+```shell
+# apt-get install libvirt-bin
+```
+
+- we were using VLAN's and bridged network. We were experiencing delays in DHCP requests in the guests. It turned out that the 'bridge_maxwait 0' solved our issues. So if eth0 is our main interface and eth0.4 our bridged/VLAN interface , our interfaces config looks like this:
+
+```shell
+root@libvirthost:~# cat /etc/network/interfaces
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto eth0
+iface eth0 inet static
+     address 10.33.67.20
+     netmask 255.255.255.0
+     network 10.33.67.0
+     broadcast 10.33.67.255
+     gateway 10.33.67.9
+# dns-* options are implemented by the resolvconf package, if installed
+dns-nameservers 10.33.29.17
+dns-search lab.ourdomain.com
+auto br0
+iface br0 inet static
+     address 10.33.4.13
+     netmask 255.255.255.0
+     network 10.33.4.0
+     broadcast 10.33.4.255
+     bridge_ports eth0.4
+     bridge_stp on
+bridge_maxwait 0
+```
+
+#### Ubuntu local client
+
+- if a user want to able to execute libvirt commands, it needs to be added to the libvirt group.
+- now on the server you can test if it works by connecting to the kvm hypervisor
+
+```shell
+$ virsh -c qemu:///system
+```
+
+- if you need to debug do
+
+```shell
+$ LIBVIRT_DEBUG=debug virsh -c qemu:///system
+```
+
+#### Ubuntu Remote Client:
+
+Libvirt provides a way to remotely login to a libvirt host over different remote transports. We use ssh as transport. This requires the user patrick to have passwordless ssh-login to the host libvirthost and member of the libvirt group.
+
+```shell
+$ virsh -c qemu+ssh://patrick@libvirthost/system
+```
+
+#### Macosx Remote Libvirt Client:
+
+- Installation of libvirt client can be done by using [homebrew](http://mxcl.github.com/homebrew/)
+
+```shell
+$ brew install libvirt
+```
+
+- Connecting to the server will result in an error : "hangup / error event on socket". It turns out that the macosx client assumes the socket resides in /usr/local/lib whereas the ubuntu server has the socket in /var/run/libvirt/libvirt-sock .
+
+```shell
+$ virsh -c qemu+ssh://patrick@libvirthost/system?socket=/var/run/libvirt/libvirt-sock
+```
+
+More info on the remote libvirt URI notation can be [found online](http://libvirt.org/uri.html#URI_remote).
+
+### Setting up Ruby gems (fog/ruby-libvirt)
+The libvirt functionality in fog will be available soon as a gem in version 0.11 . This example uses [rvm](http://beginrescueend.com/rvm/install/) to avoid clutter between other installations. 
+
+To use libvirt fog support requires you to install two gems:
+
+- fog gem: version 1.0.0 or higher
+- ruby-libvirt gem: this is the ruby wrapper around the C-library of libvirt.
+
+To compile the ruby-libvirt gem you require the libvirt developer libraries to be installed.
+
+On ubuntu:
+```shell
+$ sudo apt-get install libvirt-dev
+```
+
+Note that there is another gem called 'libvirt'. Is is another ruby wrapper but it's API is not compatible.
+
+The following transcript creates a gemset called 'fog-demo':
+```shell
+$ mkdir fog-demo
+$ cd fog-demo
+
+$ cat <<<<END > .rvmrc
+#this uses rvm
+rvm_gemset_create_on_use_flag=1
+rvm use 1.9.2
+rvm gemset use fog-demo
+alias fog="bundle exec fog"
+END
+
+$ cd ..
+$ cd fog-demo
+
+$ gem install bundler
+
+$ cat <<<<END > Gemfile
+source 'http://rubygems.org'
+# Use this for direct access to the git latest version
+gem 'fog', :git => "git://github.com/geemus/fog.git", :branch => "master"
+# Change this 
+# gem 'fog',:version => "1.0.0"
+gem 'ruby-libvirt'
+END
+
+# Install the gems as specified in the Gemfile
+$ bundle install
+
+# To allow fog to be executed from this bundle of gems
+$ alias fog="bundle exec fog"
+```
+
+### Configuring fog
+Before you can run the 'fog' command, you need to setup a '.fog' config file. The config file is a yaml file that typically resides in your $HOME directory.
+
+To setup the config file for a default libvirt connection , use the following syntax.
+```shell
+$ cat $HOME/.fog
+:default
+  :libvirt_uri: "qemu+ssh://patrick@libvirthost/system?socket=/var/run/libvirt-sock"
+```
+
+Note1: that you can leave the :libvirt_uri empty, but you do need a .fog file with at least one provider configured.
+
+Note2: for some virtualization (such as vsphere), you have to specify a username and password, you can use the following additional configuration parameters:
+
+- :libvirt_username
+- :libvirt_password
+
+### Using the fog console
+Now you are ready to start the fog console
+```shell
+$ fog
+  Welcome to fog interactive!
+  :default provides Libvirt
+```
+
+If you have specified a default :libvirt_uri, you can now list the volumes with 
+
+```shell
+>> Compute[:Libvirt].volumes
+```
+
+Or to create a fog connection to the libvirt server:
+```shell
+>>  f=Fog::Compute.new({:provider => "libvirt" , 
+:libvirt_uri => "qemu+ssh://patrick@libvirthost/system?socket=/var/run/libvirt-sock"})
+```
+
+If you want to specify more options for the connection , the 'f' object has a '@raw' attribute, and this will expose the underlying Libvirt::Connection directly 
+
+### Available collections
+The current fog libvirt integration also you to manage:
+
+Using the 'f' connection object we just created we can now use
+
+- f.servers.all   : to list domains
+- f.volumes.all   : to list volumes
+- f.pools.all     : to list pools
+- f.networks.all  : to list networks
+- f.interface.all  : to list interfaces
+- f.nodes.all  : to list nodes
+
+Only volume and servers can be created, the others are (for the moment) read-only.
+
+
+### Managing Volumes
+#### Listing all volumes
+To list all available volumes you can type the following command that returns an array of results
+
+```shell
+>> f.volumes.all
+  <Fog::Compute::Libvirt::Volumes
+    [
+      <Fog::Compute::Libvirt::Volume
+        id="/var/lib/libvirt/images/fog-demo.img",
+        pool_name="virtimages",
+        xml="<volume>\n  <name>fog-demo.img</name>\n  <key>/var/lib/libvirt/images/fog-demo.img</key>\n  <source>\n  </source>\n  <capacity>10737418240</capacity>\n  <allocation>10737446912</allocation>\n  <target>\n    <path>/var/lib/libvirt/images/fog-demo.img</path>\n    <format type='raw'/>\n    <permissions>\n      <mode>0744</mode>\n      <owner>106</owner>\n      <group>111</group>\n    </permissions>\n  </target>\n</volume>\n",
+        key="/var/lib/libvirt/images/fog-demo.img",
+        path="/var/lib/libvirt/images/fog-demo.img",
+        name="fog-demo.img",
+        capacity=10737418240,
+        allocation=10737446912,
+        format_type="raw"
+      >]
+  >
+```
+
+#### Filtering volumes
+Three different ways to filter, by :name, by :key or by :path
+
+```shell
+>> f.volumes.all(:name => "fog-demo.img")
+>> f.volumes.all(:key => "/var/lib/libvirt/images/fog-demo.img")
+>> f.volumes.all(:path => "/var/lib/libvirt/images/fog-demo.img")
+```
+
+#### Fetching a specific volume
+To fetch a specific volume you specify the :key value
+
+```shell
+>> v1=f.volumes.get("/var/lib/libvirt/images/fog-demo.img")
+```
+
+#### Cloning a volume
+Given the volume v1, we just found, we can clone this into v2
+
+```shell
+>> v2=v1.clone("fog-demo2.img")
+```
+
+#### Creating a volume
+There are two ways to create a new volume:
+
+The first approach uses a [template](https://github.com/geemus/fog/blob/master/lib/fog/libvirt/models/compute/templates/volume.xml.erb)
+
+```shell
+>> v3=f.volumes.create(:name => "test.img")
+```
+
+
+with the following defaults
+
+```shell
+>> v3=f.volumes.create(:name => "test.img", :allocation => "1G", :capacity => "10G", :format_type => "raw", :pool_name => "default")
+```
+
+The second approach is to specify your own xml file as you would do with the libvirt directly: if you don't like the template for example
+
+```shell
+>> xml_data="<xml....>"
+>> v4=f.volumes.create(:xml => xml_data)
+```
+
+#### Destroying a volume
+To destroy volume 1, do the following
+
+```shell
+>> v1.destroy
+```
+
+#### Accessing raw Libvirt::Domain
+A volume has the "@raw" attribute that allows you to access the Libvirt::Domain object directly in case you have to.
+
+#### Reloading the info of a volume
+The information of a volume can change, the object is only initialized once, if you want to reload the object with the most current info;
+
+```shell
+>> v1.reload
+```
+
+### Managing Servers/Domains
+Similar actions can now be performed on domains. They are mapped to the fog concept of servers.
+
+#### Listing servers
+Listing all the servers will result in an array of results
+
+```shell
+>> f.servers.all
+  <Fog::Compute::Libvirt::Servers
+    [
+     <Fog::Compute::Libvirt::Server
+        id="a6708012-6dd5-26b3-3474-ffd660397d78",
+        xml="<domain type='kvm' id='44'>\n  <name>fog-demo2</name>\n  <uuid>a6708012-6dd5-26b3-3474-ffd660397d78</uuid>\n  <memory>256</memory>\n  <currentMemory>393216</currentMemory>\n  <vcpu>1</vcpu>\n  <os>\n    <type arch='x86_64' machine='pc-0.12'>hvm</type>\n    <boot dev='hd'/>\n  </os>\n  <features>\n    <acpi/>\n    <apic/>\n    <pae/>\n  </features>\n  <clock offset='utc'/>\n  <on_poweroff>destroy</on_poweroff>\n  <on_reboot>restart</on_reboot>\n  <on_crash>destroy</on_crash>\n  <devices>\n    <emulator>/usr/bin/kvm</emulator>\n    <disk type='file' device='disk'>\n      <driver name='qemu' type='raw'/>\n      <source file='/var/lib/libvirt/images/fog-demo2.img'/>\n      <target dev='vda' bus='virtio'/>\n      <alias name='virtio-disk0'/>\n      <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>\n    </disk>\n    <interface type='bridge'>\n      <mac address='52:54:00:23:85:73'/>\n      <source bridge='br0'/>\n      <target dev='vnet0'/>\n      <model type='virtio'/>\n      <alias name='net0'/>\n      <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>\n    </interface>\n    <serial type='pty'>\n      <source path='/dev/pts/0'/>\n      <target port='0'/>\n      <alias name='serial0'/>\n    </serial>\n    <console type='pty' tty='/dev/pts/0'>\n      <source path='/dev/pts/0'/>\n      <target type='serial' port='0'/>\n      <alias name='serial0'/>\n    </console>\n    <input type='mouse' bus='ps2'/>\n    <graphics type='vnc' port='5900' autoport='yes' keymap='en-us'/>\n    <video>\n      <model type='cirrus' vram='9216' heads='1'/>\n      <alias name='video0'/>\n      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0'/>\n    </video>\n    <memballoon model='virtio'>\n      <alias name='balloon0'/>\n      <address type='pci' domain='0x0000' bus='0x00' slot='0x05' function='0x0'/>\n    </memballoon>\n  </devices>\n</domain>\n",
+        cpus=1,
+        cputime=6090390000000,
+        os_type="hvm",
+        memory_size=393216,
+        max_memory_size=256,
+        name="fog-demo2",
+        arch="x86_64",
+        persistent=true,
+        domain_type="kvm",
+        uuid="a6708012-6dd5-26b3-3474-ffd660397d78",
+        autostart=false,
+        state="running"
+      >
+    ]
+  >
+```
+
+
+#### Filtering servers
+Different ways to filter, by :name, by :uuid
+
+<% codify(:lang => "shell") do %>
+>> f.servers.all(:name => "fog-demo2")
+>> f.servers.all(:uuid => "a6708012-6dd5-26b3-3474-ffd660397d78")
+<% end %>
+
+Additional filters can be specified for filtering active or defined domains
+
+<% codify(:lang => "shell") do %>
+>> f.servers.all(:defined => true)
+>> f.servers.all(:active => true)
+<% end %>
+
+#### Fetching a specific server
+To fetch a specific server you specify the :uuid value
+
+<% codify(:lang => "shell") do %>
+>> s1=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
+<% end %>
+
+#### Asking additional info on a server
+The following states for a server will be reported by 
+
+<% codify(:lang => "shell") do %>
+>> s1.state
+<% end %>
+
+"nostate","running","blocked","paused","shutting-down","shutoff","crashed"
+
+To get the vnc_port
+<% codify(:lang => "shell") do %>
+>> s1.vnc_port
+<% end %>
+
+#### Lifecycle of a server
+<% codify(:lang => "shell") do %>
+>> s1.start
+>> s1.pause
+>> s1.resume
+>> s1.shutdown # clean ACPI (requires guest to have ACPI enabled)
+>> s1.stop # alias for shutdown
+>> s1.halt # Force halt
+>> s1.poweroff # Alias for halt
+<% end %>
+
+#### Destroying a server
+<% codify(:lang => "shell") do %>
+>> s1.destroy
+<% end %>
+
+Note: in libvirt speak a destroy equals a forced shutdown. In fog speak a destroy of a server means totally removing it.
+
+If you want to destroy the volume as well
+
+<% codify(:lang => "shell") do %>
+>> s1.destroy(:destroy_volumes => true)
+<% end %>
+
+
+#### Creating a new server
+The first option is to create a server based on a template.(kvm only currently)
+
+<% codify(:lang => "shell") do %>
+>> f.servers.create(:name => "demo2")
+<% end %>
+
+The above will create a server based upon a [kvm-based template](https://github.com/geemus/fog/blob/master/lib/fog/libvirt/models/compute/templates/server.xml.erb)  with the following defaults:
+<% codify(:lang => "shell") do %>
+>> f.servers.create({ :name => "demo2", :persistent => true,
+:cpus => 1, :memory_size => 256*1024 , :os_type => "hvm", 
+:arch => "x64_64", :domain_type => "kvm",
+:network_interface_type => "nat", :network_nat_network => "default"})
+<% end %>
+
+This will also create a volume as described earlier in the volume create section.
+
+Additional parameters exist for the volume are:
+
+- volume_format_type : "raw"
+- volume_capicity : "10G"
+- volume_allocation : "1G"
+- volume_pool_name : "default"
+- volume_name : name of server+suffix
+
+If you want to clone an existing volume for the new server , specify:
+
+- volume_template_name : name of volume to be cloned
+
+For switching from NAT to Bridged use the following options
+
+- network_interface_type : "bridge"
+- network_bridge_name : "br0"
+
+If you don't find the template satisfactory you can also specify the server by xml
+<% codify(:lang => "shell") do %>
+>> xml_data="<xml....>"
+>> s4=f.servers.create(:xml => xml_data)
+<% end %>
+
+
+
+#### Accessing the raw Libvirt::Domain
+In case you need to do more specific manipulation the raw Libvirt::Domain is available as the "@raw" attribute of a server.
+
+### Retrieving the IP-address of a server
+#### Libvirt and Ip-addresses
+Libvirt as opposed to other virtualization solutions such as Xen, Virtualbox, Vsphere has no standard way to retrieve the IP-address of the guest.
+
+You can only retrieve the mac address of a server, but you have to do the translation between mac-address and IP address yourself.
+
+#### Arpwatch a way to track mac/ip-addresses
+We solved that problem by installing arpwatch on the libvirt host. Arpwatch listens on the network and logs pairs of mac-addresses and Ip-addresses it sees passing by.
+
+We first install arpwatch (Ubuntu instructions)
+<% codify(:lang => "shell") do %>
+$ sudo apt-get -y install arpwatch
+
+# Make it listen to the bridged network
+$ sudo sed -i -e 's/ARGS="-N -p"/ARGS="-N -p -i eth0.4"/' /etc/default/arpwatch
+
+$ sudo service arpwatch restart
+<% end %>
+
+Arpwatch stores it's information in a data file (arpwatch.dat), but this is not written until the daemon is stopped/started.
+
+So we configure rsyslogd to log the arpwatch messages to a separate file.
+
+<% codify(:lang => "shell") do %>
+# cat /etc/rsyslog.d/30-arpwatch.conf
+if $programname =='arpwatch' then /var/log/arpwatch.log
+& ~
+<% end %>
+
+This file needs to be readable by all libvirt/fog users that want to retrieve the info from the log file.
+
+#### Ip_address information
+By default the libvirt/fog provider assumes the following ip_command to convert the mac-address into an ip-address.
+
+<% codify(:lang => "shell") do %>
+grep $mac /var/log/arpwatch.log|sed -e "s/new station//"|sed -e "s/changed ethernet address//g" |tail -1 |cut -d ":" -f 4-| cut -d " " -f 3'
+<% end %>
+
+To retrieve the ip_addresses of a server you do:
+<% codify(:lang => "shell") do %>
+>> s.addresses
+<% end %>
+
+To retrieve the first public ip_addresses of a server:
+<% codify(:lang => "shell") do %>
+>> s.ip_address
+<% end %>
+
+In the arp-watch solution it is important that the libvirt host has a way to see the network traffic of the guests passing by.
+
+#### Alternate way to translate mac/ip-addresses
+If you have another way to do the translation of the mac/ip address , you can override this command by: 
+
+- specifying it in the .fog or Fog::Compute.new
+  - :libvirt_ip_command : shell command that has the $mac environment variable to be executed.
+- or by specificying the :ip_command option in the s.addresses() command
+
+#### Waiting for a server to get an Ip-address
+Remember that a fog object needs to get reloaded to get the latest information. When a server boots, it could well be that the machines does not yet have an Ip-address.
+
+<% codify(:lang => "shell") do %>
+>> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
+>> s.start
+# Wait for machine to be booted
+>> s.wait_for { ready?}
+# Wait for machine to get an ip-address
+>> s.wait_for { !ip_address.nil?}
+<% end %>
+
+#### Using +ssh remote transport
+If you are connection to a libvirt server over +ssh transport, the ip_command is executed over ssh, otherwise it will be a local shell execute of the command.
+
+### SSH into a server
+#### SSH-login
+Now that we have an ip-address we can log into the server (username/password)
+<% codify(:lang => "shell") do %>
+>> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
+>> s.username="ubuntu"
+>> s.password="ubuntu"
+<% end %>
+
+or via private key
+
+<% codify(:lang => "shell") do %>
+>> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
+>> s.username="patrick"
+>> s.private_key_path="/Users/patrick/.ssh/id_dsa"
+<% end %>
+
+<% codify(:lang => "shell") do %>
+  s.ssh("uptime")
+<% end %>
+
+#### SSH-tunneling in case of +ssh remote transport
+If you are using +ssh as remote transport, the ssh connection will be tunneled over your ssh connection that connects you to the libvirt-host. So you don't need direct access to the guest, only the libvirthost needs an IP-routing.
+
+#### Bootstrap/Add another public key to an account
+To add the id_dsa.pub public ssh key to the authorized_keys of the user ubuntu, you can do the following
+
+<% codify(:lang => "shell") do %>
+>> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
+>> s.username="ubuntu"
+>> s.password="ubuntu"
+>> s.public_key_path="/Users/patrick/.ssh/id_dsa.pub"
+>> s.setup
+<% end %>
+
+
+### Creating template disks/volumes
+In one of the next posts , I'll show how I have extended [veewee](https://github.com/jedi4ever/veewee) to create standard volumes/images. The trick is to use VNC instead of the Virtualbox keystrokes. More on this later.
+
+### Using it for virtualizations besides kvm
+This is some code , inspired by [this gist by rubiojr](https://gist.github.com/1153856)
+
+<% codify(:lang => "shell") do %>
+require 'rubygems'
+require 'fog'
+
+# Helper to print all the servers
+def print_servers(conn, uri)
+  puts "URI: #{uri}"
+  conn.servers.all.each do |s|
+    puts "  #{s.name}"
+    puts "    Server ID:".ljust(20) + "#{s.id}"
+  end
+  puts "\n"*3
+end
+
+# XEN Community
+uri = 'xen+tcp://thunder08'
+c = Fog::Compute.new( { :provider => 'Libvirt', :libvirt_uri => uri })
+print_servers c, uri
+
+# ESX
+uri = 'esx://thunder03/?no_verify=1'
+c = Fog::Compute.new( { :provider => 'Libvirt', :libvirt_uri => uri,
+    :libvirt_username => 'root', :libvirt_password => 'temporal' }
+)
+print_servers c, uri
+
+# KVM
+uri = 'qemu+tcp://thunder11/system'
+c = Fog::Compute.new( { :provider => 'Libvirt', :libvirt_uri => uri, })
+print_servers c, uri
+<% end %>
+
+
+### Feedback
+I love feedback, the provider is currently in a working state, but was clearly targeted at running KVM. Also creation and changing of objects can be enhanced.  The code is out there.
+
+If you have thoughts, ideas, improvements, do let me know.
+

@@ -1,0 +1,15 @@
+---
+layout: event
+extension: html
+filter: 
+- erb
+- markdown
+title: Opscode Chef Fundamentals Training - Location
+dirty: true
+---
+
+The training is kindly hosted by <a href="http://www.ibbt.be">IBBT</a>. 
+
+IBBT Gaston Crommenlaan 8 bus 102, 9050 Gent, Belgium +32-09 331 48 00
+
+<iframe width="425" height="350" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.be/maps?f=q&amp;source=s_q&amp;hl=nl&amp;geocode=&amp;q=IBBT&amp;sll=51.023712,4.022405&amp;sspn=0.01297,0.020106&amp;ie=UTF8&amp;hq=IBBT&amp;hnear=&amp;ll=51.034486,3.746338&amp;spn=2.418168,4.669189&amp;z=7&amp;output=embed"></iframe><br /><small><a href="http://maps.google.be/maps?f=q&amp;source=embed&amp;hl=nl&amp;geocode=&amp;q=IBBT&amp;sll=51.023712,4.022405&amp;sspn=0.01297,0.020106&amp;ie=UTF8&amp;hq=IBBT&amp;hnear=&amp;ll=51.034486,3.746338&amp;spn=2.418168,4.669189&amp;z=7" style="color:#0000FF;text-align:left">Grotere kaart weergeven</a></small>

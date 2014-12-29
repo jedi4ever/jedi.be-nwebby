@@ -1,0 +1,106 @@
+---
+title:      Curriculum Vitae - Patrick Debois
+created_at: 2009-09-14 17:11:09.082858 +02:00
+filter:     erb
+dirty:      true
+layout:    resume
+extension: html
+---
+<center><h1><%= h(@page.title) %></h1></center>
+<hr>
+<div class="span-6 colborder ">
+
+<%= render(:partial => 'availability') %>
+<%= render(:partial => 'contactdetails') %>
+</div>
+<div class="span-17 last">
+<p>During 15 years of consultancy, I've assumed different roles within large enterprises ranging from developer, network specialist, system administrator, tester and project manager.  And because I've lived and experienced each role, I can talk to both manager, developer and IT people. Each in their own language. This allows me to <span class='pullquote'
+>break past silo-based organizational boundaries</span>, resulting in a smoother project delivery.</p>
+<br>
+<p>I currently specialize in <span class='pullquote'>applying Agile techniques in infrastructure</span> integration projects or what is sometimes called devops; agile techniques used in development have an impact on the way operations organizes it work. Similar, operations and sysadmins are becoming programmers because of the virtualization and automation trend where everything is managed through an API following the principle of 'infrastructure as code'</p> 
+
+<p>The only way to respond to the increasing business demands, is to <span class='pullquote'>improve the flow from projects to operations</span>. It is essential to keep up with the competition. So when was the last time you deployed to production without fear for a catastrophe?</p>
+</div>
+<hr>
+<center><h1>Experience by Role</h1></center>
+<center><img src='visual-cv.png'></center>
+
+<hr style="page-break-after: always;">
+<center><h1><%= h(@page.title) %></h1></center>
+<hr>
+<div class="span-8 first">
+<%= render(:partial => 'references') %>
+</div>
+<div class="span-8">
+<%= render(:partial => 'memberships') %>
+</div>
+<div class="span-8 last">
+<%= render(:partial => 'courses') %>
+</div>
+
+<div class="span-8 first">
+<%= render(:partial => 'presentations') %>
+</div>
+<div class="span-8">
+<%= render(:partial => 'certifications') %>
+</div>
+<div class="span-8 last">
+<%= render(:partial => 'education') %>
+</div>
+
+<div class="span-8 first">
+<%= render(:partial => 'conferences') %>
+</div>
+<div class="span-8 last">
+<%= render(:partial => 'publications') %>
+</div>
+
+
+<hr style="page-break-after: always;">
+<center><h1><%= h(@page.title) %></h1></center>
+<hr>
+
+<h2>Detailed Work Experience</h2>
+<%
+  counter=0
+  jobs = @pages.find(:all , :in_directory => @page.dir, :recursive => true,
+      :sort_by => "period", :reverse => true, :job => true)
+
+
+  paginate(jobs, 30) do |job|
+  counter=counter+1
+  
+-%>
+
+		<div class="job">
+		  <h3><%= job.title %> (<%= job.period %>)</h3>
+
+		  <i><% if (!job.technology.nil?)
+					technologies=Array.new
+
+					type=job.technology.class
+					if (type==Array) 
+						job.technology.each do |t|
+							technologies=technologies | t.split(',')
+						end
+					else 
+						technologies=job.technology.split(',')
+					end
+			
+					technologies.each do |tech|
+					tech=""
+			 %>
+				 		<%= tech %>
+  
+		<% 			end
+				end %></i>
+
+		  <div class="body">
+		    <%= render(job) %>
+		  </div>
+		</div>
+	<hr>
+	
+<% end -%>
+<%= link_to("Prev", @pager.prev) if @pager.prev? %>
+<%= link_to("Next", @pager.next) if @pager.next? %>

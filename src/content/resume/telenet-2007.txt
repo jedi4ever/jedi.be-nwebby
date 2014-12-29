@@ -1,0 +1,42 @@
+---
+job: true
+period: "2007"
+customer: Telenet (ACA-IT)
+role: Technical Consultant
+title: Implementing a Distributed Application Policy Management
+---
+
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/telenet.jpeg" class="left"></div>
+		<div class="span-18 last">
+* Telenet as a telecom operator , has a lot of partners integrating with internal processes. 
+The first signs of user management were solved using custom inhouse built solutions and have integration with ADAM/Active Directory.  The scope of this project is to replace these systems with an industry based identity and access management and open solution. 
+
+* The OpenSSO solution is based upon Sun Access Manager solution. The internal application landscape demanded a more distributed policy management.
+
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+Oracle Identity Suite, Weblogic, Sun Identity Server, Sun Access Manager, Solaris, Zones, Active Directory, Oracle Database, Vmware
+
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* Evaluate the different solutions within the context through proof of concepts
+
+_Tester_
+* verify failover mechanism
+* verify operation documentation
+* verify loadtesting
+* verify data integrity
+
+_Sysadmin_
+* Integrate the design with the internal backup, monitoring and testing environments
+* setup different test environments
+
+	</div>
+</div>

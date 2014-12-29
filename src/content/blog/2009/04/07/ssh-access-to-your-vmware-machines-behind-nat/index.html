@@ -1,0 +1,86 @@
+---
+title: "SSH access to your Vmware machines behind NAT"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=688
+created_at: 2009-04-07 10:19:01.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - nat
+   - vmware
+   - winscp
+   - sshd
+   - mod_proxy_connect
+   - vmnet8
+   - ssh
+   - http
+   - corkscrew
+   - putty
+   - nat.conf
+---
+In our virtual test lab, we have only one official internal IP and we use NAT for our virtual Machines. As described in <a href="http://www.jedi.be/blog/2009/03/03/using-apache-as-a-reverse-proxy-to-access-tomcat-in-virtual-machines/">"using apache as a reverse proxy to access tomcat in virtual-machines"</a> , it is easy to setup an http proxy to have access to the web services on the virtual machines as well. But developers need more then http access, they want to ssh into their virtual machine.
+<br>
+Vmware standard solution is to map the ssh ports behind the NAT to ports on the Vmware Server machine using the NAT.conf in /etc/vmware/vmnet8/nat/nat.conf . While this works, for each machine you need to remap this nat file and also have to restart vmware to reread this file. Here we propose another solution using apache as proxy for SSH access.
+<br>
+Our setup look like this: developers have putty, winscp and want to connect to the Virtual Machine1 and 2
+<pre>Developers         ----&gt;   Vmware Server ----&gt; Virtual Machine 1
+ Putty, Winsp                Apache                  SSHD (ip-vm1)
+                              with       ----&gt; Virtual Machine 2
+                            Mod_Proxy                SSHD (ip-vm2)
+                           (ip-server)</pre>
+To setup apache as reverse proxy you need to have mod_ssl installed.
+<pre># yum install mod_ssl</pre>
+Create a file <em>ssh-proxy.conf</em> in /etc/httpd/conf.d/
+<pre>&lt;virtualhost *:443&gt;
+        ServerAdmin webmaster@localhost
+<br>
+        ProxyRequests On
+        ProxyVia On
+<br>
+        #Add ports you want to be able to connect to through your proxy here
+        AllowCONNECT 22
+<br>
+        DocumentRoot /var/www/html
+        &lt;Directory /&gt;
+                Options FollowSymLinks
+                AllowOverride None
+        &lt;/Directory&gt;
+         ErrorLog /var/log/httpd/proxy-error.log
+        TransferLog /var/log/httpd/proxy-transfer.log
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel notice
+&lt;/virtualhost&gt;</pre>
+Activate the proxy_module and proxy_connect module in your <em>/etc/httpd/httpd.conf </em>
+<pre>LoadModule proxy_balancer_module modules/mod_proxy.so
+LoadModule proxy_connect_module modules/mod_proxy_connect.so</pre>
+Now you can restart your apache and it should be running now
+<pre># apachectl restart</pre>
+To use it with putty: (as described in <a href="http://the.earth.li/~sgtatham/putty/0.60/htmldoc/Chapter4.html#config-proxy">http://the.earth.li/~sgtatham/putty/0.60/htmldoc/Chapter4.html#config-proxy</a>
+<ul>
+	<li>Create a connection as usual to connect to <em>ip-vm1</em></li>
+	<li>Set the proxy for this connection to , type = HTTP, proxy = <em>ip-server, port = 443
+</em></li>
+</ul>
+To use it for winscp: (as described in <a href="http://winscp.net/eng/docs/ui_login_proxy">http://winscp.net/eng/docs/ui_login_proxy</a>
+<ul>
+	<li>Create a connection as usual to connect to <em>ip-vm1</em></li>
+	<li>Set the proxy for this connection to , type = HTTP, proxy = <em>ip-server, port = 443</em></li>
+</ul>
+To use it with commandline (on MacOSX) ssh: <a href="http://blog.strotos.com/?p=15">http://blog.strotos.com/?p=15</a>
+<ul>
+	<li><em></em></li>
+	<li>compile it with : ./configure -host=apple; make ; make install</li>
+	<li>adapt your .ssh file: <em>
+</em>
+<ul>
+	<li><em>Hostname namefor-ip-vm1</em></li>
+	<li><em>Host ip-vm1</em></li>
+	<li><em>ProxyCommand /usr/local/bin/corkscrew ip-server 443 %h %p </em></li>
+</ul>
+</li>
+</ul>

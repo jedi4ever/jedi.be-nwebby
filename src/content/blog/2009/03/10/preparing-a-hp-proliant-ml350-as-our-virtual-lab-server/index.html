@@ -1,0 +1,153 @@
+---
+title: "Preparing a HP Proliant ML350 as our Virtual Lab Server"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=620
+created_at: 2009-03-10 10:06:31.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - gpt
+   - xen
+   - lilo
+   - centos
+   - grub
+   - E200I
+   - proliant
+   - hp
+---
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/hp-proliant-ml350-server1.jpg"><img title="hp-proliant-ml350-server1" class="alignleft size-full wp-image-624" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/hp-proliant-ml350-server1.jpg" height="96" alt="" width="187" /></a>The hardware we will use is a HP Proliant ML350. It contains:
+<ul>
+	<li>2 x QuadCore processor 2.50Ghz = 8CPU's</li>
+	<li>E200i raidcontroller : 6 x 1TB disk</li>
+	<li>1 HP NetXtreme II network controller</li>
+	<li>32 GB memory</li>
+</ul>
+<em>Enable Virtualization in the Bios:</em>
+<br>
+To allow virtualization features of the CPU to be used, we have to enable the VTx flag in the bios. This is off by default.
+<br>
+<em>Disk Configuration</em>
+<br>
+The chassis contains 6 disks, so we could have made a Raid5 from this disks, therefore getting the most of storage. Still we decided to split it up in 2 disks (in Mirror) + 4 disks (Raid5). The reason we did this has to do with grub and the incompatibility with a GPT table: to allow the OS to use a partition larger then 2 TB, we require the GPT label on a disk. Lilo can handle this, but GRUB as a bootloader can not (at least not out of the box). Lilo on the other hand is not compatible with XEN, which we can use for virtualization.
+<br>
+The results:
+<ul>
+	<li> 2 disks (HW Mirror) + grub as a bootloader (/boot (100MB), swap (16GB), / (100GB), /var (the rest)</li>
+	<li>4 disks (HW Raid5)  + gpt as a partition table (/data full capacity)</li>
+</ul>
+We settled on ext2 for /boot and ext3 for all other filesystems. While xfs or reiserfs tend to be faster, ext3 has the reputation of being reliable and are supported out of the box in Centos. This will also make data migrations easier if we decide to change the operating system later.
+<br>
+When installing the OS we do not partition the /data partition but do it manually when everything is installed.
+<br>
+<em>Distribution</em>
+<br>
+Of course we have a lot of options here, SLES, Debian, Redhat. We found that most of the virtualization tools we wanted to use (cobbler, koan, spacewalk, puppet, func), we more standardly supported by the Redhat variant OS. So we decided on using Centos 5.2 x86_64 as our distribution.
+<br>
+<em>Packages</em>
+<br>
+When installing we choose to only install the base group + virtualization. This installs indeed the basis + everything required for Xen.
+<br>
+Because we selected this option, Centos default installs the kernel-xen and not the standard kernel. So we have to install this afterwards ( #yum -y install kernel). If you don't use the xen-kernel install but use the standard kernel, there are two files that need extra attention:
+<ul>
+	<li>/etc/sysconfig/kernel: specify the kernel that is the default. This defines after an upgrade what kernel will be updated and selected</li>
+	<li>/boot/grub/grub.conf: select the kernel that you want to boot by default</li>
+</ul>
+<em>Options</em>
+<br>
+We decided to enable selinux and firewalling because this will give as better understanding on which files and network connections are used.
+<br>
+<em>Manual partition /data</em>
+<br>
+As said before, /data is larger then 2TB. This requires the disk to be labeled as GPT. After this has been done, fdisk SHOULD NOT be used to change anything on the disk. Use parted instead.
+<br>
+This transcript will show the process:
+<ul>
+	<li> starting from an already partioned disk as standard partition using fdisk -&gt; 2199GB</li>
+	<li>using parted for 100% capacitity -&gt; 800GB</li>
+	<li>changed with mklabel to GPT -&gt; 3TB</li>
+</ul>
+[root@myserver ~]# parted  /dev/cciss/c0d1
+GNU Parted 1.8.1
+Using /dev/cciss/c0d1
+Welcome to GNU Parted! Type 'help' to view a list of commands.
+(parted) p
+<br>
+Model: Compaq Smart Array (cpqarray)
+Disk /dev/cciss/c0d1: 3001GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+<br>
+Number  Start   End     Size    Type     File system  Flags
+1      0.51kB  2199GB  2199GB  primary  ext3         boot
+<br>
+(parted) rm 1
+<br>
+(parted) mkpart primary
+File system type?  [ext2]? ext3
+Start? 0
+End? 100%
+(parted) print
+<br>
+Model: Compaq Smart Array (cpqarray)
+Disk /dev/cciss/c0d1: 3001GB
+Sector size (logical/physical): 512B/512B
+Partition Table: msdos
+<br>
+Number  Start   End    Size   Type     File system  Flags
+1      32.3kB  801GB <strong> 801GB</strong> primary
+<br>
+(parted) <strong>mklabel gpt</strong>
+Warning: The existing disk label on /dev/cciss/c0d1 will be destroyed and all
+data on this disk will be lost. Do you want to continue?
+Yes/No? Yes
+New disk label type?  [msdos]? gpt
+(parted) print
+<br>
+Model: Compaq Smart Array (cpqarray)
+Disk /dev/cciss/c0d1: <strong>3001GB</strong>
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+<br>
+Number  Start  End  Size  File system  Name  Flags
+<br>
+(parted) <strong>mkpart</strong>
+Partition name?  []? data
+File system type?  [ext2]? ext3
+Start? 0
+End? 100%
+(parted) print
+<br>
+Model: Compaq Smart Array (cpqarray)
+Disk /dev/cciss/c0d1: 3001GB
+Sector size (logical/physical): 512B/512B
+Partition Table: gpt
+<br>
+Number  Start   End     Size    File system  Name  Flags
+1      17.4kB  3001GB  3001GB               data
+<br>
+(parted) quit
+Information: Don't forget to update /etc/fstab, if necessary.
+<br>
+[root@myserver ~]# fdisk -l /dev/cciss/c0d1
+<br>
+WARNING: GPT (GUID Partition Table) detected on '/dev/cciss/c0d1'! The util fdisk doesn't support GPT. Use GNU Parted.
+<br>
+Disk /dev/cciss/c0d1: 3000.5 GB, 3000513552384 bytes
+255 heads, 63 sectors/track, 364791 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+<br>
+Device Boot      Start         End      Blocks   Id  System
+/dev/cciss/c0d1p1               1      267350  2147483647+  ee  EFI GPT
+<br>
+#Now the disk is ready to be formatted
+<br>
+[root@myserver ~]# <strong>mkfs.ext3 /dev/cciss/c0d1p1</strong>
+<br>
+#gpt tables don't work with /LABEL in fstab, so you might need to specify the full path in there:
+<br>
+/dev/cciss/c0d1p1       /data                   ext3    defaults        1 2
+<strong></strong>

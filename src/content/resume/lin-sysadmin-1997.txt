@@ -1,0 +1,37 @@
+---
+period: "1997 - 1999"
+customer: Ministerie Vlaamse Gemeenschap Departement Leefmilieu en Infrastructuur (NCR)
+role: System Administrator/Technical Consultant
+title: Departement Leefmilieu en Infrastructuur Intranet/Internet
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/mvg.jpg" class="left"></div>
+		<div class="span-18 last">
+* Being spread all over Flanders, the departement LIN decided that a web based environment was appropriate for their 4000 employees.
+* At all locations Sun Solaris systems were installed acting as DNS, BOOTP, POP3 and SMTP servers. Their CC-Mail systems were converted to these local POP3 mail servers.
+* The NIS+ environment was integrated with the LDAP environment. Accounts and passwords were being synched between Windows, LDAP and NIS+ by a custom made Metadirectory application.
+* Centrally, an internet connectivity infrastructure was installed based upon Checkpoint Firewall, Mail Relays, ISC DNS Servers, Netscape Proxy and LDAP Servers.
+* Several applications were developed based upon ColdFusion and Java programming. They interacted with an informix database and ArcInfo (GIS) data stores.  
+* Also during this period we had to migrate all IT infrastructure to another building. This involved several migrations due to DNS  and IP changes.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+CCMail, ArcInfo, ESRI GIS, Coldfusion , java, sendmail , ldap, DHCP
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Sysadmin_
+
+* Design, setup and adminstrate Sun Solaris, NIS+, Netscape LDAP, DNS, POP3, SMTP, Checkpoint Firewall servers.
+* Develop and administrate Coldfusion based GIS based applications
+
+_Project Management_
+* Coordinate a team of developers for Coldfusion/Java/Gis applications
+* Followup external development parties
+* Coordinate intranet team
+	</div>
+</div>

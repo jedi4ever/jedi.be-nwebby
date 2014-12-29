@@ -1,0 +1,176 @@
+--- 
+title: Downloading - Uploading to a Vsphere Datastore
+created_at: 2010-12-12 14:58:29.725095 +01:00
+tags: 
+- vmware
+- datastore
+- vmfs
+- curl
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+In previous blogposts [I've setup a fresh Vmware ESX Server](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) and [Created an ISO file for an Ubuntu Automated Install](http://www.jedi.be/blog/2010/12/10/creating-custom-ubuntu-autoinstall-cdroms-with-puppet/) . 
+
+To be able to boot a new Virtual Machine from this isofile, we first need to make it available in a Datastore on the server:
+
+1. The first option is to use the Vsphere Client to upload the file, but that would not be much of an automation
+2. An alternative is to use scp to transfer files to the vsphere server. The datastore typically resides under /vmfs/volumes/<datastorename>
+3. Since ESX 3.5 , there is a third way by uploading files over http. This is the option we will further explore
+
+#### The theory: 
+HTTP Access to vSphere Server Files is described in Appendix C of the [programming guide - PDF](http://www.vmware.com/support/developer/vc-sdk/visdk41pubs/vsp41_vsdk_prog_guide.pdf) that you can download from the [VMware vSphere Web Services SDK Documentation](http://www.vmware.com/support/developer/vc-sdk/) .
+
+To access a file store you would use a URL like this
+<% codify(:shell) do %>
+http-method http[s]://server/folder[[/path]?dcPath=path[&dsName=name]]
+<% end %>
+where: 
+
+- dsName : name of the datastore, *datastore1* on a standard installation
+- dcPath: name of the datacenter, *ha-datacenter* on a standard installation 
+- path: a path under your datastore  
+- folder: this is a special prefix to indicate that we are doing datastore access. For config files you would use /config instead of folder.
+
+With this URL, you would use the different methods GET, HEAD, PUT, or DELETE to interface with it.
+
+#### The practice, problem...
+I found a simple shell script describing the uploading via curl at [http://blogs.vmware.com/esxi/2010/01/scripting-datastore-access.html](http://blogs.vmware.com/esxi/2010/01/scripting-datastore-access.html)
+
+When I execute that script against my ESX 4.1, the script would just hang. No http error, just hang. 
+
+I found a [mention of someone with a similar problem](http://communities.vmware.com/thread/290562) . Apparently this worked in 4.0 but something had changed in 4.1 
+
+#### Debugging the problem:
+I started interfacing directly with curl now. --insecure to overcome the self-signed certificate 
+
+<% codify(:shell) do %>
+$ curl -H "Expect:" -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
+* About to connect() to 192.168.2.240 port 443 (#0)
+*   Trying 192.168.2.240... connected
+* Connected to 192.168.2.240 (192.168.2.240) port 443 (#0)
+* SSLv3, TLS handshake, Client hello (1):
+* SSLv3, TLS handshake, Server hello (2):
+* SSLv3, TLS handshake, CERT (11):
+* SSLv3, TLS handshake, Server finished (14):
+* SSLv3, TLS handshake, Client key exchange (16):
+* SSLv3, TLS change cipher, Client hello (1):
+* SSLv3, TLS handshake, Finished (20):
+* SSLv3, TLS change cipher, Client hello (1):
+* SSLv3, TLS handshake, Finished (20):
+* SSL connection using AES256-SHA
+* Server certificate:
+* 	 subject: C=US; ST=California; L=Palo Alto; O=VMware, Inc; OU=VMware ESX Server Default Certificate; emailAddress=ssl-certificates@vmware.com; CN=esx4-server.example.org; unstructuredName=1288860765,564d7761726520496e632e
+* 	 start date: 2010-11-04 08:52:45 GMT
+* 	 expire date: 2022-05-05 08:52:45 GMT
+* 	 common name: esx4-server.example.org (does not match '192.168.2.240')
+* 	 issuer: O=VMware Installer
+* 	 SSL certificate verify result: unable to get local issuer certificate (20), continuing anyway.
+* Server auth using Basic with user 'root'
+> PUT /folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1 HTTP/1.1
+> Authorization: Basic cm9vdDpwaXBvcG8=
+> User-Agent: curl/7.19.7 (universal-apple-darwin10.0) libcurl/7.19.7 OpenSSL/0.9.8l zlib/1.2.3
+> Host: 192.168.2.240
+> Accept: */*
+> Content-Length: 205
+> Expect: 100-continue
+<% end %>
+
+And here it hung. I first thought that it was because it used the Expect: 100-continue, so I tried to disable it.
+
+<% codify(:shell) do %>
+curl -H "Expect:" -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
+<% end %>
+
+And also using HTTP/1.0
+<% codify(:shell) do %>
+curl -0 -H -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
+<% end %>
+
+To see what was happening on the server side, I looked at /var/log/vmware/hostd.log : 
+
+<% codify(:shell) do %>
+[2010-12-11 15:17:35.128 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Search Path = [datastore1] Spec = (vim.host.DatastoreBrowser.SearchSpec) {
+ dynamicType = <unset>, 
+ query = (vim.host.DatastoreBrowser.Query) [
+    (vim.host.DatastoreBrowser.FolderQuery) {
+       dynamicType = <unset>, 
+    }, 
+    (vim.host.DatastoreBrowser.Query) {
+       dynamicType = <unset>, 
+    }
+ ], 
+ details = (vim.host.DatastoreBrowser.FileInfo.Details) {
+    dynamicType = <unset>, 
+    fileType = true, 
+    fileSize = false, 
+    modification = false, 
+    fileOwner = false, 
+ }, 
+ searchCaseInsensitive = <unset>, 
+ matchPattern = (string) [
+    "      "myiso\.iso"
+ ], 
+ sortFoldersFirst = <unset>, 
+}
+[2010-12-11 15:17:35.128 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::SearchInt
+[2010-12-11 15:17:35.128 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::GetLocalpathFromDatastorepath
+[2010-12-11 15:17:35.129 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Verify
+[2010-12-11 15:17:35.130 F5CEEB90 error 'App'] AdapterServer caught exception: 5e38fb28
+[2010-12-11 15:17:35.130 F5CEEB90 error 'App'] Backtrace:
+<% end %>
+
+After re-reading the [blogpost mentioning the problem](http://communities.vmware.com/thread/290562), someone mentioned that in the [Vsphere 4.1 Vmware CLI documentation](http://www.vmware.com/support/developer/vcli/vcli41/doc/reference/vifs.html) it stated the following: 
+
+<% codify(:shell) do %>
+--put | -p <local_path> <remote_path>
+Uploads a file from the machine on which you run the vCLI commands to the ESX/ESXi host. This operation uses HTTP PUT. This command can replace existing host files but cannot create new files.
+<% end %>
+
+By experimenting I found out that the HTTP API can not upload to the root folder of a datastore. Hmm, but the API did not mention anything about creating a directory, only uploading files. When the subdirectory was created, the curl command would work perfectly.
+
+<% codify(:shell) do %>
+[2010-12-11 16:32:40.335 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::SearchInt
+[2010-12-11 16:32:40.335 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::GetLocalpathFromDatastorepath
+[2010-12-11 16:32:40.336 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Verify
+[2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] HTTP Response: Complete (processed 0 bytes)
+[2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] User agent is 'VMware VI Client/4.0.0'
+[2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] HTTP Response: Client: NeedsContentLength: false UnderstandsChunking: true CanKeepAlive: true (PresetContentLength 0)
+<% end %>
+
+#### Solving the problem:
+Luckily TIMTOWTD (There's more than one way to do it) was on my side!
+
+**Introducing the Mob API**
+
+The creation of directories can be done through the Mob API which I remember from the article  [http://www.doublecloud.org/2010/02/introducing-a-tiny-yet-powerful-api-to-manage-and-automate-vsphere/](http://www.doublecloud.org/2010/02/introducing-a-tiny-yet-powerful-api-to-manage-and-automate-vsphere/) . 
+
+He also mentioned a Vijava rest interface to use it . To see a sample check out [http:vijava.svn.sourceforge.net/viewvc/vijava/trunk/src/com/vmware/vim/rest/sample/RestAppDemo.java?view=markup](http:vijava.svn.sourceforge.net/viewvc/vijava/trunk/src/com/vmware/vim/rest/sample/RestAppDemo.java?view=markup)
+
+You can connect to the Mob API using your browser with the URL https://<yourserver>/mob . This gives you a very nice interface to execute things on your server. 
+
+**Create Directories**
+To make a directory you would post to
+
+`https://192.168.2.240/mob/?moid=ha%2dnfc%2dfile%2dmanager&method=makeDirectory`
+
+and POST the the form parameters: 
+
+<% codify(:shell) do %>
+name=[datastore1] isodir
+datacenter=<datacenter type="Datacenter" xsi:type="ManagedObjectReference">ha-datacenter</datacenter>
+createParentDirectories=true
+<% end %>
+
+**Remove Files**
+Similarly you can use it do delete a file, execute a POST to 
+
+`https://192.168.2.240/mob/?moid=ha%2dnfc%2dfile%2dmanager&method=deleteFile`
+
+with the following form params
+
+<% codify(:shell) do %>
+name=[datastore1] isodir/myiso.iso
+datacenter=<datacenter type="Datacenter" xsi:type="ManagedObjectReference">ha-datacenter</datacenter>
+<% end %>

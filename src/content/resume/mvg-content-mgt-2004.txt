@@ -1,0 +1,32 @@
+---
+job: true
+period: "2004"
+customer: Ministerie Vlaamse Gemeenschap (EDS/Telindus)
+role: System Architect/Technical Analyst
+title: Content management and Logging Analysis
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/eds.jpeg" class="left"></div>
+		<div class="span-18 last">
+* As a fundamental part of the Internet portal (www.vlaanderen.be) the content management and the web statistics solutions were re-designed.
+* A business and technical analysis were conducted for the needs for the involved parties.
+* A report of current problems, solutions and design recommendations was delivered based upon Fatwire/Open Market content management and Webtrends logging analysis.
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+Fatwire, Open Market, Sun Application Server, Jboss, Tomcat, j2EE , Webtrends
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Architect_
+* analyze current problems, needs for content management and web statistics
+* propose a new design and future enhancements with a focus on redundancy and high availability
+
+_Project Manager_
+* Provide a future project plan, estimate and costing.
+
+</div>
+</div>

@@ -1,0 +1,25 @@
+{{ >/htmlheader }}
+{{ >/header }}
+
+<div class="span-15 colborder ">
+  <div class="span-15 first last">
+    <h2 >{{ page.title }} </h2>
+  </div>
+  <div class="span-15  first last ">
+    {{ >content }}
+  </div>
+</div>
+
+<div class="span-7 box last">
+  <h3>Event Info</h3>
+  <%= render(:partial => '_event-menu') %>
+</div>
+
+<div class="span-7 box last">
+  {{ >/corporate-menu }}
+</div>
+
+<div class="span-24  first last" id="footer">
+</div>
+
+{{ >/htmlfooter }}

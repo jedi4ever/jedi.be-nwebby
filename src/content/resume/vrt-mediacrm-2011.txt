@@ -1,0 +1,72 @@
+---
+period: "2011"
+customer: VRT Medialab
+role: Consultant
+title: Media CRM-Square
+job: true
+layout: job
+technology: 
+   - amazon ec2, cloudformation , amazon s3, autoscaling, elastic loadbalancing
+   - ubuntu, windows
+   - collectd, nagios
+   - virtualbox, vmware
+   - flume, hadoop, hbase, sqoop
+   - redis, mysql, postgresql
+   - ruby, java, perl, jenkins, rails, nodejs , eventmachine, cucumber
+   - opscode chef, fog, vagrant, mccloud 
+roles: technical consultant
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/medialab.jpeg" class="left"></div>
+		<div class="span-18 last">
+This project explores the possibilities of a 'second screen' application. While watching television (first screen), more and more people are simultaneous connected and interacting with the internet using their tablet/computer (second screen).
+
+The MediaSquare application captures the social interaction between the viewer and the show. Think a twitter/facebook like interaction for a television show. Additionally, applications/content relevant to the show are integrated. 
+
+In the MediaCRM application, all this interaction is captured in a data-warehouse to act as a customer relationship (CRM) for further analysis. This allows suggestions for viewers based on past behavior, their friends behavior, resulting in targeted information.
+
+An additional dimension was added by encoding an additional (hidden) signal into the broadcast signal, so external devices (Ipad) could auto-detect through the microphone, which TV-show the user is currently watching and the exact position/time in the show. Now the level of interaction could also depend on the content and time in the show: f.i. a quiz could be displayed at only a certain point.
+
+The main difference between this and a traditional website, is that this kind of data collection is extremely bursty: the ramp-up period is much higher and this requires measures for both scaling and performance. The target for performance is a million updates/ 5 seconds. And for the scaling both up and down scaling are important to allow only allocation of resources necessary, making a perfect fit for cloud use.
+
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+
+* amazon ec2, cloudformation , amazon s3, autoscaling, elastic loadbalancing
+* Operating Systems: ubuntu, windows
+* Monitoring: collectd, nagios
+* Virtualization: virtualbox, vmware
+* Automation: opscode chef, fog, mccloud, vagrant
+* Datawarehousing: flume, hadoop, hbase, sqoop
+* Databases: redis, mysql, postgresql
+* Development: ruby, java, perl, jenkins, rails, nodejs , eventmachine, grails, java
+* Testing: cucumber, blitz.io, jmeter, ab, tsung
+	</div>
+	<div class="span-11 last">
+	
+*Tasks:*
+_Technical Consultant_
+* Benchmark different solutions for collection 1 million updates/5 seconds: both Rails/Ruby and Nodejs
+* Design and implement the scaling architecture of enduser data collection through Hbase/Hadoop
+* Development of performant application (nodejs) for collection enduser data
+* Design and implement the scaling architecture of log collection through flume
+
+* Deployment of Grails, Python applications
+
+* Automation of provisioning through a config management system (Chef)
+* Automation of demo-setup through a vagrant/mccloud
+
+* Setup Continuous Integration environment based on Jenkins
+
+* Rails 3, Javascript, HTML, performance tuning 
+* Load Testing and benchmarking of Rails Application
+* Assist in the main architecture/design event handling of data aggregation 
+
+* Automate deployment to Amazon cloud (EC2, Elastic Loadbalancing, CloudScaling, Cloudformation)
+* Deploy monitoring solution for managing the environment
+
+	</div>
+</div>

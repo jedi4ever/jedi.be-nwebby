@@ -1,0 +1,73 @@
+---
+title: Continuous Integration for the world - Agile 2011
+created_at: 2011-09-06 12:10:04.148241 +02:00
+tags:
+- agile2011
+- continuous integration
+- utah
+- chef
+- mccloud
+- ec2
+- fog
+- veewee
+- devops
+blog_post: true
+filter:
+- erb
+- markdown
+---
+In 2008 at Agile Toronto, I did a session on Agile Infrastructure. This is where I met [Andrew Shafer](http://stochasticresonance.wordpress.com/) (working at Reductive Labs). There wasn't that much attention for it back then, we were still figuring out the impact and ideas. Now 3 years later, I was keen on doing a follow-up at the big Agile2011 conference in Utah. 
+
+I had the pleasure to co-present with the illustrious [Julian Simpson (aka Build Doctor)](http://www.build-doctor.com/). 
+
+The talk was based on showing off a few of the tools that are currently used in the devops space and pointing out the similarities between the release process of code and the release process of servers:
+
+- [Demo of veewee](#veewee) : creating a Just Enough Operating system 
+- [Demo of Vagrant](#vagrant): spinning up an ubuntu box
+- [Demo of Chef](#chef): provisioning the box with an apache server
+- [Demo of Cucumber-Nagios](#cucumber-nagios): testing the provisioned box with jenkins and cucumber-nagios
+- [Demo of Mccloud](#mccloud): repeating the same process on ec2 instead of Virtualbox
+
+Thanks to the concept of infrastructure as code and virtualization, we can define and build our infrastructure based on textfiles. Those files can be version-controlled and tested like regular code. The artefact (ami, image), can then be deployed on an infrastructure. The following image gives you an overview on the similarities.
+
+<img src='{{ page.url }}/ci-software-and-server.png'>
+
+Some people have asked for an overview on how all these tools relate to each-other. Therefore I started with the following overview to make understandable. I'd love to hear your comments on it.
+
+<img src='{{ page.url }}/how-it-fits-together.png'>
+
+
+<div style="width:425px" id="__ss_9147720"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/ci-for-the-world-agile-2011" title="CI for the world - Agile 2011">CI for the world - Agile 2011</a></strong><object id="__sse9147720" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=presentation-agile-2011-slides-only-110906061357-phpapp02&stripped_title=ci-for-the-world-agile-2011&userName=jedi4ever" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed name="__sse9147720" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=presentation-agile-2011-slides-only-110906061357-phpapp02&stripped_title=ci-for-the-world-agile-2011&userName=jedi4ever" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/jedi4ever">Patrick Debois</a>.</div></div>
+
+#### Demo of veewee creating Just Enough Operating System
+<a name="veewee"></a>
+<iframe width="425" height="349" src="http://www.youtube.com/embed/gR28-aHX_nU?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+<br>
+
+#### Demo of vagrant spinning up an ubuntu box
+<a name="vagrant"></a>
+
+<iframe width="425" height="349" src="http://www.youtube.com/embed/O_FiL1yb6_s?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+<br>
+
+
+#### Demo of chef on vagrant spinning up an apache webserver
+<a name="chef"></a>
+
+<iframe width="425" height="349" src="http://www.youtube.com/embed/XRvhXLOKerQ?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+<br>
+
+
+#### Demo of cucumber-nagios testing the deployment of the webserver
+<a name="cumber-nagios"></a>
+
+<iframe width="425" height="349" src="http://www.youtube.com/embed/b5RwnuIEaJI?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+<br>
+
+
+#### Demo of mccloud for doing vagrant-alike deployment on ec2
+<a name="mccloud"></a>
+
+<iframe width="425" height="349" src="http://www.youtube.com/embed/2ixTk4Uj23c?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>
+<br>
+

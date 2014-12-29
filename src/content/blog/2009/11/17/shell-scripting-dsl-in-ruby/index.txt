@@ -1,0 +1,344 @@
+--- 
+title: Shell Scripting DSL in Ruby
+created_at: 2009-11-17 08:54:11.220358 +01:00
+tags: 
+- ruby 
+- shell scripting
+- sysadmin
+- ssh
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+<img src='/blog/wp-content/uploads/2009/11/in-the-beginning-was-the-commandline.jpg' class='left'> Over time I've written my fair share of shell scripts to automate installations of new machines. It usually involves automating the execution of a series of commands over ssh sessions. There exist a lot of excellent tools out there to manage the execution on several machines. 
+
+Some of the tools I've tried over time: [func](https://fedorahosted.org/func/), [clusterIT](http://clusterit.sourceforge.net/) , [pssh](http://www.theether.org/pssh/) , [java ssh](http://www.jscape.com/articles/scripting_ssh_sessions_using_java.html), [paramiko](http://my-mili.eu/2009/2/6/paramiko-scripting-ssh-with-python) , [Fabric](http://docs.fabfile.org/). Most of them are python based, and as my daily programming language is becoming ruby, I started looking at the ways on how to integrate using shell scripts in Ruby. This article will list the things I've learned during this journey.
+
+If you would ask a modern sysadmin, he would tell you that I should start writing recipes using [puppet](http://reductivelabs.com/products/puppet/) or [chef](http://wiki.opscode.com/display/chef/Home). These tools server their purpose really well, but sometimes you want to script something  without installing all the daemon stuff. 
+
+### Executing local commands
+I learned that [Ruby has 6 ways to execute shell commands](http://tech.natemurray.com/2007/03/ruby-shell-commands.html) using various options (Exec, System, Backticks, IO#popen, Open3#popen3, Open4#popen4). The Open4#open4 is the most comprehensive as it allows to check the exit code, wait for the command to finish. 
+
+While researching I found other useful libraries for doing local stuff:
+
+- the sysutils library - <http://sysutils.rubyforge.org/> : allows to retrieve local machine information.
+- Rak - <http://rak.rubyforge.org/>: A grep replacement for ruby 
+- Rush - <http://rush.heroku.com/> : rush is a replacement for the unix shell (bash, zsh, etc) which uses pure Ruby syntax.
+- AutomateIt - <http://automateit.org/> : It provides a surprisingly simple, yet powerful, way to manage files, packages, services, networks, accounts, roles, templates and more
+
+### Executing remote commands
+For automating SSH stuff in Ruby, the defacto standard is the Net::SSH, Net::SFTP , Net::SCP library  <http://net-ssh.rubyforge.org/> used in various ruby deploy tools. While this will suit most of your commands I found it *missing* the following features:
+
+- Use of the Proxy Command when initiating the remote session
+- Recursive copying of directories : you need to iterate yourself over the dir
+
+Other Ruby tools I've found :
+
+- Rye - <http://code.google.com/p/rye/> : Safely run SSH commands on a bunch of machines 
+- Server_remote - <http://github.com/tobias/server_remote>:  provides easy access to remote servers.
+- Capistrano - <http://www.capify.org/index.php/Capistrano> : letting you easily and reliably automate tasks that used to require login after login and a small army of custom shell scripts.
+- AutomateIT- <http://automateit.org/> : open source tool for automating the setup and maintenance of servers, applications and their dependencies.
+
+It took me some time to find out how to get the exit code of a remote command using Net-SSH. The blogpost  
+[Ruby > How can I get command's result code, which executing via ssh] (http://www.ruby-forum.com/topic/188328) was most helpful. 
+
+Non Ruby Tools that look interesting:
+
+- Control Tier - <http://controltier.org>
+- UnifiedSessionsManager - ctys - <http://www.unifiedsessionsmanager.eu/>
+
+### Synchronize directories (Rsync)
+To transfer and synchronize large directories , I normally use rsync over ssh instead of scp or sftp. The following links describe efforts to get the rsync command ported to ruby.
+
+- Rsync - <http://github.com/RichGuk/rrsync>
+- Cheapest rsync replacement (with Ruby) - <http://snippets.dzone.com/posts/show/1812>
+- Ruby Rsync Library - <http://rubyforge.org/projects/six-rsync/>
+
+### Testing Scripts
+Inspired by the post [How to run and test shell scripts from Ruby](http://exploretesting.blogspot.com/2008/08/how-to-run-and-test-shell-scripts-from.html
+), I understood when executing a command (local or remote), you always need to check the exit code to see if it executed ok.
+
+### Rolling my own approach
+As much as I like these tools, they are often a ruby implementation of command line command. The result is that they often provide less features as their commandline equivalent. Also by abstracting the commands, a sysadmin used to executing commands by shell, looses touch with the original commands execute on the machines.
+
+- Command.execute () : executes a command (local or remote) , if the exitcode is not what expected
+- Command.test () : executes a command and checks the result and returns a boolean
+- Command.comment () : displays the comment 
+- Command.show () : executes the command and shows the result (stdout, stderr)
+- Command.rsync () : synchronizes two directories
+- Command.transfer () : transfers a file to a local or remote location
+- Command.patch () : applies a patch to given file
+- Command.execute_when_ssh_available () : same as execute but checks first if ssh is up
+- Command.execute_when_tcp_available () : checks if a port is up
+
+The difference in approach is that underhood, I still use the full commands , so that when running the script, I can log the actual commands and see that what's happening. This kind of log will make much more sense to a sysadmin and can easily generate an installation manual for a machine.  
+
+### The resulting code might look like this:
+
+<% codify(:lang => "ruby", :line_numbers => "inline") do %>
+require "rubygems"
+require "term/ansicolor"
+include Term::ANSIColor
+require "net/ssh"
+require "net/scp"
+require "net/sftp"
+
+class CommandResult
+  attr_reader :pid, :stdin, :stdout, :stderr, :status
+  
+  def initialize(pid, stdin, stdout, stderr, status)
+    @pid=pid
+    @stdin=stdin
+    @stdout=stdout
+    @stderr=stderr
+    @status=status
+  end
+end
+
+class Command
+
+  def self.patch(src, dest, options ={})
+    #channel.exec 
+    defaults= { :port => "22", :exitcode => "0", :user => "root"}
+    options=defaults.merge(options) 
+    filename=File.basename("#{src}")
+    Command.transfer("#{src}","/tmp/#{filename}", options)
+    Command.execute("cat /tmp/#{filename}| patch -i - -u #{dest}", options)    
+  end
+  
+   def self.transfer(src, dest, options = {})
+    defaults= { :port => "22", :exitcode => "0", :user => "root"}
+    options=defaults.merge(options) 
+    configfile="#{ENV['VM_STATE']}/.ssh/ssh_config.systr"
+ 
+    Command.comment("copying #{src} to #{dest}")
+    Command.execute("scp -F '#{configfile}' -P #{options[:port]} #{src} #{options[:user]}@#{options[:machine]}:#{dest}")
+  end
+  
+  def self.rsync(src, dest, options = {})
+    defaults= { :port => "22", :exitcode => "0", :user => "root"}
+    options=defaults.merge(options) 
+    configfile="#{ENV['VM_STATE']}/.ssh/ssh_config.systr"
+    system("rsync -avz -e 'ssh -F #{configfile} -p #{options[:port]}' #{src} #{options[:user]}@#{options[:machine]}:#{dest}")
+  end
+  
+  def self.comment(text, options= {})
+    print bold
+    puts text.indent(2)
+    print reset
+    system "say #{text}"
+  end
+  
+  def self.show(command, options= {} )
+      defaults= { :exitcode => "*" }
+      options=defaults.merge(options) 
+	  result=self.execute(command,  options).status
+  end
+  
+  def self.test(command, options= {} )
+    defaults= { :exitcode => "0" }
+      options=defaults.merge(options) 
+      #TODO: ERROR we need to pass options to execute!
+    result=self.execute(command,  { :exitcode => "*" }).status
+    if (result.to_s != options[:exitcode])
+      return false
+    else
+      return true
+    end
+  end
+  
+  def self.execute(command, options = {} )
+    defaults= { :port => "22", :exitcode => "0", :user => "root"}
+      options=defaults.merge(options) 
+      @pid=""
+      @stdin=command
+      @stdout=""
+      @stderr=""
+      @status=-99999
+  
+      print blue
+      puts "Command: "+command
+      print reset
+            
+    if options[:machine]
+      #this is a remote machine so we should ssh into the box
+      configfile="#{ENV['VM_STATE']}/.ssh/ssh_config.systr"
+      
+      Net::SSH.start(options[:machine], options[:user], :password => "pipopo", :paranoid => false,  :config => configfile ) do |ssh|
+      
+        # open a new channel and configure a minimal set of callbacks, then run
+        # the event loop until the channel finishes (closes)
+        channel = ssh.open_channel do |ch|
+          ch.exec "#{command}" do |ch, success|
+            raise "could not execute command" unless success
+
+            # "on_data" is called when the process writes something to stdout
+            ch.on_data do |c, data|
+              @stdout+=data
+              puts data
+            end
+
+            # "on_extended_data" is called when the process writes something to stderr
+            ch.on_extended_data do |c, type, data|
+              @stderr+=data
+              puts data
+            end
+
+            #exit code 
+            #http://groups.google.com/group/comp.lang.ruby/browse_thread/thread/a806b0f5dae4e1e2
+            channel.on_request("exit-status") do |ch, data|
+              exit_code = data.read_long
+              @status=exit_code
+              if exit_code > 0                
+                puts "ERROR: exit code #{exit_code}"
+              else
+                puts "success"
+              end
+            end
+
+            channel.on_request("exit-signal") do |ch, data|
+              puts "SIGNAL: #{data.read_long}"
+            end
+            
+            ch.on_close { puts "done!" }
+            #status=ch.exec "echo $?"
+          end
+        end
+
+        channel.wait
+      end
+    else
+      status = Open4::popen4(command) do |pid, stdin, stdout, stderr|
+        @pid=pid
+        @stdin=command
+        @stdout=""
+        @stderr=""
+      
+        while(line=stdout.gets) 
+          @stdout+=line
+          puts line
+
+        end
+      
+        while(line=stderr.gets) 
+          @stderr+=line
+          puts line
+        end
+
+        unless @stdout.nil? 
+          @stdout=@stdout.strip
+        end
+        unless @stderr.nil? 
+          @stderr=@stderr.strip
+        end
+
+      end
+      @status=status.to_i
+    end
+
+    result=CommandResult.new(@pid,@stdin,@stdout,@stderr,@status)
+
+	#coloring http://www.ruby-forum.com/topic/141589
+    if (@status!=0)
+      print red
+    else
+      print green
+    end
+    puts result.stdout.indent(2)  
+    puts result.stderr.indent(2)
+    print reset
+     80.times { print "-"}
+    puts ""
+    
+    if (@status.to_s != options[:exitcode] )
+      if (options[:exitcode]=="*")
+        #its a test so we don't need to worry
+      else
+        raise "Exitcode was not what we expected"
+      end
+      
+    end
+    
+    return result
+  end
+
+end
+
+def execute_when_ssh_available(ip="localhost", options = {  } , &block)
+
+    defaults={ :port => 22, :timeout => 2 , :gw_machine => '' , :gw_port => '22' , :gw_user => 'root' , :user => 'root', :password => ''}
+
+    options=defaults.merge(options)
+    configfile="#{ENV['VM_STATE']}/.ssh/ssh_config.systr"
+    pp options
+  begin
+    Timeout::timeout(options[:timeout]) do
+      connected=false
+      while !connected do
+        begin
+          puts "trying connection"
+          Net::SSH.start(ip, :user => options[:user], :port => options[:port] ,:password => options[:password], :paranoid => false,:timeout => options[:timeout], :config => configfile) do |ssh|
+            block.call(ip);
+            return true
+
+          end
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Errno::ECONNABORTED, Errno::ECONNRESET, Errno::ENETUNREACH
+          sleep 5
+        end
+      end
+    end
+  rescue Timeout::Error
+    raise 'ssh timeout'
+  end
+
+  return false
+end
+
+
+#after the machine boots
+def execute_when_tcp_available(ip="localhost", options = { } , &block)
+
+    defaults={ :port => 22, :timeout => 2 , :pollrate => 5}
+
+    options=defaults.merge(options)
+
+  begin
+    Timeout::timeout(options[:timeout]) do
+      connected=false
+      while !connected do
+        begin
+          puts "trying connection"
+          s = TCPSocket.new(ip, options[:port])
+          s.close
+          block.call(ip);
+          return true
+        rescue Errno::ECONNREFUSED, Errno::EHOSTUNREACH
+          sleep options[:pollrate]
+        end
+      end
+    end
+  rescue Timeout::Error
+    raise 'timeout connecting to port'
+  end
+
+  return false
+end
+
+
+<% end %>
+
+

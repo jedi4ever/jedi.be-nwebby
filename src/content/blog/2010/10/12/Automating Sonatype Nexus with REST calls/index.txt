@@ -1,0 +1,204 @@
+---
+title: "Automating Sonatype Nexus with REST API"
+created_at: 2010-10-12 21:40:46.576078 +02:00
+tags: 
+- nexus
+- rest
+- API
+blog_post: true
+extension: html
+filter: 
+- erb
+- markdown
+---
+<a href="http://nexus.sonatype.org"><img src='{{ page.url }}/nexus.png'></a> A lot of java developers make use of Maven to control dependency hell of external libraries. This pull out the libraries from internet repositories. From a configuration management point of view you want to control access to these external repositories. <a href="http://nexus.sonatype.org">Sonatype Nexus</a> is a tool that allows you to control this by: 
+
+- proxying and/or caching internet packages/repositories
+- providing a repository for your own artefacts (no you don't store jars and wars in your version control system like svn or git)
+
+#### Download it (Manual, sorry)
+There exist two version of Nexus (community and professional versions). The community edition is free for usage. The professional version works for a trial period of 30 days. 
+
+You can get it at 
+[http://www.sonatype.com/nexus-professional.html](http://www.sonatype.com/nexus-professional.html). Choose one of the package format and when you sign up, they will send you an email with a download link.
+
+- nexus-professional-webapp-1.8.0-bundle.tar.gz (31 MB)
+- nexus-professional-webapp-1.8.0-bundle.zip (31 MB)
+
+#### Scripted Installation
+```shell
+$ NEXUS_VERSION=1.8.0
+$ mkdir nexus
+$ cd nexus
+$ NEXUS_HOME=`pwd`
+$ wget http://www.sonatype.com/<your download link>/product-nexus-pro
+$ mv product-nexus-pro nexus-professional-webapp-$NEXUS_VERSION-bundle.zip
+$ unzip nexus-professional-webapp-$NEXUS_VERSION-bundle.zip
+```
+
+This create two directories
+
+- nexus-professional-web-app-$NEXUS_VERSION : this is where all the binaries are stored
+- sonatype-work : this is where all the actual instance information/configuration is stored
+
+#### Initial configuration
+The initial nexus configuration can be found in nexus-professional-webapp-$NEXUS_VERSION/conf/plexus.properties
+
+Before we start it, we can change the configure like this:
+
+- the port nexus listens on: default is 8081, use _application-port_ in _plexus.properties_ to override
+- the IP address nexus listens on: defaults to 0.0.0.0 , all interfaces . Use _application-host_ in _plexus.properties_ to override
+- the location where all the files are stored, the default is the _sonatype-work_ directory. We can relocate it by setting _nexus-work_ in the _plexus.properties_ file or by using the environment variable PLEXUS_NEXUS_WORK. 
+
+```shell
+$ cd $NEXUS_HOME/nexus-professional-webapp-$NEXUS_VERSION/conf
+$ NEXUS_PORT=8081
+$ sed -i -e 's/^application-port=8081/application-port=$NEXUS_PORT/' plexus.properties
+
+$ NEXUS_IP=0.0.0.0
+$ sed -i -e 's/^application-host=0.0.0.0/application-host=$NEXUS_IP/' plexus.properties
+
+$ NEXUS_WORK=`pwd`/"sonatype-work"
+$ echo "nexus-work=$NEXUS_WORK" >> plexus.properties
+```
+
+You can find more information at the [documentation in the nexus book](http://www.sonatype.com/books/nexus-book/reference/ch03s10.html#fig-installing_conf-dir)
+
+#### Start the server
+Now that we have configured the network setting we can start the server. 
+
+```shell
+$ cd $NEXUS_HOME/nexus-professional-webapp-$NEXUS_VERSION
+$ ./bin/jsw/macosx-universal-64/nexus start
+```
+
+#### About the REST support in Nexus
+REST documentation for Nexus seems to be in a flux as indicated on the webpage
+[https://docs.sonatype.com/display/NX/Nexus+Rest+API](https://docs.sonatype.com/display/NX/Nexus+Rest+API) . This page lists the different REST commands including their GET, POST, PUT and DELETE options. 
+
+#### Simple GET requests to find out information
+```shell
+$ curl http://localhost:8081/nexus/service/local/status 
+$ curl http://localhost:8081/nexus/service/local/repositories
+```
+
+```text
+<status>
+  <data>
+    <appName>Sonatype Nexus Maven Repository Manager</appName>
+ ....
+  </data>
+</status>
+```
+
+
+#### Authenticated REST  - GET requests
+The default username & password is admin/admin123 . [http://java.dzone.com/articles/working-custom-maven](http://java.dzone.com/articles/working-custom-maven) suggested that we can just use basic authentication. So to get a list of all the users we can do:
+
+```shell
+$ curl -X GET -u admin:admin123 http://localhost:8081/nexus/service/local/users
+```
+
+<% codify(:lang => "text") do %>
+<users-list>
+  <data>
+	....
+    <users-list-item>
+      <resourceURI>http://localhost:8081/nexus/service/local/users/admin</resourceURI>
+      <userId>admin</userId>
+      <name>Administrator</name>
+      <status>active</status>
+      <email>changeme@yourcompany.com</email>
+      <roles>
+        <role>admin</role>
+      </roles>
+    </users-list-item>
+  </data>
+</users-list>
+<% end %>
+
+#### Authenticated REST - POST requests
+The next thing I wanted to try is to change the default password of admin. I could have just update the _security.xml_ in the sonatype-work/nexus/conf/ directory. But hey, the REST documentation mentioned it has an API for that (using /users_changepw) . 
+
+My first attempt was to send things in JSON format
+
+<% codify(:lang => "shell") do %>
+cat <<EOF |curl -v -d @- -H "Accept: application/json" \
+-H "Content-Type: application/json" -X POST -u admin:admin123 \
+http://localhost:8081/nexus/service/local/users_changepw
+{
+  	"userId":"admin",
+  	"oldPassword":"admin1234",
+  	"newPassword":"newone"
+}
+EOF
+<% end %>
+
+But it kept complaining about Invalid XML format; weird as I was using JSON 
+<% codify(:lang => "shell") do %>
+<h3>Invalid XML, unable to parse using XStream</h3>
+<p>You can get technical details
+<a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">here</a>.<br>
+Please continue your visit at our <a href="/">home page</a></p>
+<% end %> 
+
+From the error, I found that it used [XStream library](http://xstream.codehaus.org/) to marshal the XML requests into Java Object. 
+
+So my next attempt was to use XML instead of JSON:
+
+<% codify(:lang => "shell") do %>
+cat <<THEEND |curl -v -d @- -H "Accept: application/xml" \
+-H "Content-Type: application/xml" -X POST -u admin:admin123 \ http://localhost:8081/nexus/service/local/users_changepw
+<userId>admin</userId>
+<oldPassword>admin1234</oldPassword>
+<newPassword>newone</newPassword>
+THEEND
+<% end %>
+
+Still no luck, so the next step was to look in the nexus source code to see what was happening. I found some hints at : 
+
+- [The source of NexusApplication.java](http://svn.sonatype.org/nexus/tags/nexus-1.2.0.1/nexus-rest-api/src/main/java/org/sonatype/nexus/rest/NexusApplication.java)
+- [A non existing nexus-rest-api class documentation](http://webcache.googleusercontent.com/search?q=cache:FH3C2YeLQ90J:https://grid.sonatype.org/ci/view/Nexus/job/Nexus/label%3Dubuntu/ws/trunk/nexus/nexus-rest-api/target/classes/docs/data_ns0.html+api+rest+nexus&cd=26&hl=nl&ct=clnk&gl=be&client=firefox-a)
+- [Using Nexus and the Nexus REST API for implementing a software update tool](http://www.martinahrer.at/2010/05/25/using-nexus-and-the-nexus-rest-api-for-implementing-a-software-update-tool/)
+
+It seems that xstream uses aliases to map the xml commands: 
+
+<% codify(:lang => "java") do %>
+xstream.alias( "user-request", UserResourceRequest.class );
+xstream.alias( "user-response", UserResourceResponse.class );
+xstream.alias( "user-forgotpw", UserForgotPasswordRequest.class );
+xstream.alias( "user-changepw", UserChangePasswordRequest.class );
+<%end %>
+
+So the XML has to include the correct tag first + data after it: 
+<% codify(:lang => "xml") do %>
+<?xml version="1.0" encoding="UTF-8"?>
+<user-changepw>
+        <data>
+                <userId>admin</userId>
+                <oldPassword>admin123</oldPassword>
+                <newPassword>newone</newPassword>
+        </data>
+</user-changepw>
+<% end %>
+
+<% codify(:lang => "shell") do %>
+$ cat <<EOF |curl -v -d @- -H "Accept: application/xml" \
+-H "Content-Type: application/xml" -X POST -u admin:admin123 \
+http://localhost:8081/nexus/service/local/users_changepw
+<?xml version="1.0" encoding="UTF-8"?>
+<user-changepw>
+        <data>
+                <userId>admin</userId>
+                <oldPassword>admin123</oldPassword>
+                <newPassword>newone</newPassword>
+        </data>
+</user-changepw>
+<% end %>
+
+And finally this succeeded.
+
+#### Final Thoughts
+I really like the fact that you can script about anything on Nexus. The only things that I would suggest them to update is both the documentation. Also the http status codes are often not correct: I got 201 Created and nothing had happened. But then again, they mentioned things were under flux...
+
+

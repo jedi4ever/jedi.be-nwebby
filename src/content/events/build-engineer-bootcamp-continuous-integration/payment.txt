@@ -1,0 +1,35 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Build Engineer Bootcamp - Payment
+---
+Training registration is for two days and includes the training material, coffee, thee, soft drinks, water and 2 lunches . 
+
+Traveling and lodging expenses are not included.
+
+The registration fee for attending the training on **2 and 3 November 2010**:
+
+* Early Bird: € 840 (excl. Taxes/VAT) - Valid Until 15 October 2010 
+* Regular Fee: € 940 (excl. Taxes/VAT)
+
+We provide two options for payment
+
+#### Option 1: Bank payment (preferred)
+Jedi BVBA, 
+Quote 29, 
+9290 Berlare, Belgium 
+
+Bank (Belgium): BNP Paribas , Emiel Hertecantlaan 20, 9290 Berlare, Belgium 
+
+* Belgium: BNP Paribas 293-0198783-85
+* EU zone: IBAN BE89 2930 1987 8385 BIC GEBABEBB
+
+_Mention CI Bootcamp + Participant name(s)_
+
+#### Option 2: Payment via Paypal/Visa
+<a href="mailto:Patrick.Debois@jedi.be?subject=Build+Engineer+Bootcamp+Paypal+Request">Drop me an email</a> with your details and I will send you a Paypal request.
+
+*Your registration is only valid if payment has been received.*

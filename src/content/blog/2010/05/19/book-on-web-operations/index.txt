@@ -1,0 +1,24 @@
+--- 
+title: New Book on Web Operations
+created_at: 2010-05-19 15:10:06.632862 +02:00
+tags: 
+- webops
+- web operations
+- monitoring
+- devops
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+In the beginning of this year I was lucky to be asked by [John Allspaw](http://www.kitchensoap.com/) <i>former Chief Engineer at Flickr</i> and Jesse Robins <i>CEO at Opscode</i> to write a chapter on Monitoring for the upcoming book on Web Operations. When he told me the names working on the book, I felt really excited and humble among these great names of industry. I want to thank all the people helping me review my chapter. It was a great learning experience and now I know how bad my English is as a non-native speaker.
+
+The book will be released at the [Oreilly Velocityconf 2010](http://en.oreilly.com/velocity2010) and whatever money it will raise will go to [826 Valencia National Foundation](http://www.826national.org/) . 
+<table>
+<tr><td><img src='/blog/wp-content/uploads/2010/05/webops-cover.jpg' alt="Book Cover Web Operations"></td>
+<td>
+
+Pre/Order your copy at <a href="http://oreilly.com/catalog/0636920000136/">Oreilly</a> ,  <a href="http://www.amazon.com/Web-Operations-Keeping-Data-Time/dp/1449377440/ref=sr_1_1?ie=UTF8&s=books&qid=1274275728&sr=8-1">amazon.com</a> or whatever bookshop you want.
+
+</td></tr>
+</table>

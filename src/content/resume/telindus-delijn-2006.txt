@@ -1,0 +1,30 @@
+---
+job: true
+period: "2006"
+customer: Telindus
+role: Technical Architect
+title: Request For Proposal for Identity and Access Management
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/telindus.jpeg" class="left"></div>
+		<div class="span-18 last">
+* The bus company "De Lijn" made a Request For Proposal for Identity and Access Management. Together with Telindus and ACA-IT we responded to this proposal.
+
+* The proposal was an integration for their internal offices and their public portal environment. A specific part was the integration of Network Intelligence for log consolidation and auditing. The solution was tightly coupled with the Sun Identity and Access management stack.
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+j2ee, sun identity server, sun access manager, alteon loadbalancers
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* Responsible for technical sizing and integration of all the components
+</div>
+
+
+
+

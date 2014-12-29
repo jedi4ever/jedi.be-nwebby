@@ -1,0 +1,86 @@
+---
+title: Devops from a sysadmin perspective
+created_at: 2011-12-07 07:35:34.199577 +02:00
+blog_post: true
+tags:
+- devops
+- lisa
+- sysadmin
+filter:
+- erb
+- markdown
+---
+<br>
+This year [LISA (Large Installation System Administration) 2011 Conference](http://www.usenix.org/events/lisa11/index.html) has a theme on "devops". 
+
+The LISA crowd has been practicing automation for a long time, and many of them just look at devops as something they have always been doing.
+
+So they have asked me to write an article for [Usenix ;Login magazine](http://www.usenix.org/publications/login/) to explain devops from a sysadmin perspective. As [the article](http://www.usenix.org/publications/login/2011-12/index.html) requires a subscription ,I'm re-posting it here for others to enjoy :)
+
+<hr>
+### Introduction
+While [there is not one true definition of devops (similar to cloud)][0], four of it's key-points resolve around [Culture, Automation, Measurement and Sharing (CAMS)][1]. In this article we will show how this affects the traditional thinking of the sysadmin.
+
+As a sysadmin you are probably familiar with the Automation and Measurement part: it has been good and professional practice to script/automate work to make things faster and repeatable. Gathering metrics and doing monitoring is an integral part of the job to make sure things are running smoothly.
+
+### The pain
+For many years, operations (of which the sysadmin is usually part) has been seen as an endpoint in the software delivery process: developers code new functionality during a project in isolation from operations and once the software is considered finished, it is presented to the operations departement to run it.
+
+During deployment a lot of issues tend to surface: some typical examples are the development and test environment not being representative to the production environment, or that not enough thought has been given to backup and restore strategies. Often it is too late in the project to change much of the architecture and structure of the code and it gives way to many fixes and ad-hoc solutions. This friction has created a disrespect between the two groups: developers feel that operations knows nothing about software, and operation feel that developers know nothing about running servers. Management tends to keep those two groups in isolation from each other, keeping the interaction at the minimum required. The result is a ['wall of confusion'][2]
+
+### Culture of collaboration
+Historically two drivers have fuelled devops: the first one was Agile Development which led in many companies to many more deployment than operations was used to. The second one was Cloud and large scale web operations , where the scale required a much closer collaboration between development and operations.
+
+When things really go wrong, organizations often create a multi-disciplined task force to tackle production problems. Truth is that in today's IT, environments have become so complex that they can't be understood by one person or even one group. Therefore instead of separating developers and operations as we used to do, we need to bring them together more closely:  we need more practice, and the motto should be "if it's hard do it more often".
+
+Devops recognizes that software only provides value if it's running production and running a server without software does not provide value either. Development and operations are both working to serve the customer not for running their own department.
+
+Although many sysadmins have been collaborating with other departments, it has never been seen as a strategic advantage. The cultural part of devops, seeks to promote this constant collaboration across silos, in order to better meet the business demands. It goes for 'friction-less' IT and promotes the cross-departmental/cross-disciplinary approach.
+
+A good place to get started with collaboration are places where the discussion often escalates: deployment, packaging, testing, monitoring, building environments. These places can be seen as [boundary objects][3]: places where every silo has it's own understanding of. These are exactly the places where technical debt accumulates so they should contain real pain issues.
+
+### Culture of sharing
+Silo's exist in many forms in the organization, not only between developers and operations. In some organizations there are even silos inside of operations: network, security, storage, servers avoid collaboration and each work in their own world. This has been referred to as the Ops-Ops problem. So in geek-speak devops is actually a wildcard for *dev*ops* collaboration.
+
+Devops doesn't mean all sysadmins need to know how to code software now, or all developers need to know how to install a server. By collaborating constantly, both groups can learn from each other, but can also rely on each other to do the work. A similar approach has been promoted by Agile between developers and testers. Devops can be seen as the extend of bringing system administrators into the Agile equation.
+
+Starting the conversation sometimes takes courage but think about the benefits: you get to learn the application as it grows, and you can actively shape it by providing your input during the process. A sysadmin has a lot to offer to the developers: f.i. you have the knowledge of how production looks like, therefore you can build representative environment in test/dev. You can be involved in loadtesting, failover testing. Or you can setup a monitoring system that developmers can use to see what's wrong. Give access to production logs so developers can understand real world usage.
+
+A great way to share information and knowledge is by pairing together with developer or collegues: while you are deploying code he comments on what the impact is on the code and allows you to directly ask questions. This interaction is of great value to understand both worlds better.
+
+### Revisiting Automation
+Like specified in the [Agile Manifesto][4], devops values "Individuals and interactions over processes and tools". The great thing about tools is that they are concrete and can have a direct benefit as opposed to culture. It was hard to grasp the impact of Virtualization and Cloud unless you started doing it. Tools can shape the way we work and consequently change our behavior.
+
+A good example is Configuration Management and Infrastructure as code. A lot of people rave about it's flexibility and power for the automation. If you look beyond the effect of saving time, you will find that it also has a great sharing aspects: It has created a 'shared' language that allows you can know exchange the way you manage systems with collegues and even outside your company by publishing recipes/cookbooks on github. Because we know use concepts as version control and testing we have a common problemspace with developers. And most importantly the automation is freeing us from the trivial stuff and allows us to discuss and focus on the [stuff that really matters.][5]
+
+### Revisiting Metrics
+[Measuring][6] the effects of collaboration can't be done by measuring the number of interactions, after all more interaction doesn't mean a better party. [It's similar to a black hole , you have to look at the objects nearby.][7] So how do you see that things are improving? As an engineer you collect metrics about number of incidents, failed deploys, number of succesful deploys, number of tickets. Instead of keeping these information in their own silo, you radiate this to the other parts of the company so they could learn from them. Celebrate successes and failure and learn from them.  Doing post-mortems with all parties involved and improve on it. Again this changes the focus of metrics and monitoring from only fast fixing to feedback to the whole organization. Aim to optimize the whole instead of only your own part.
+
+### The secret sauce
+Several of the 'new' companies have been front-runners in these practices. Google with their [two-pizza team approach][8], Flick with their [10 deploys a day][9] where front runners in the field, but also more traditional companies like National Instruments are seeing the value from this culture of collaboration. They see collaboration as the ['secret sauce'][10], that will set them apart from their competition. Why? Because it recognizes the individual not as a resource but as resourceful to tackle the challenges that exist in this complex world called IT.
+
+Links index:
+
+1. [Patrick Debois's Devopsdays Melbourne Keynote][0]
+2. [John Willis, What devops means to me][1]
+3. [Damon Edwards,  what is devops][2]
+4. [Israel Gat, boundary objects in devops][3]
+5. [Agile Manifesto][4]
+6. [Ernest Mueller, Originality and Operations][5]
+7. [Cliff Stoll, The Cuckoos Egg][6]
+8. [Andrew Shaefer, Israel Gat, Patrick Debois Velocity Conference 2011 Devops Metrics"][7]
+9. [Amazon Architecture][8]
+10. [John Allspaw, 10 deploys per day - dev and ops cooperation at flickr][9]
+11. [Jesse Robbins, Operations is a competitive advantage][10]
+
+[0]: http://www.jedi.be/blog/2011/09/06/devopsdays-melbourne-keynote/ "Patrick Debois's Devopsdays Melbourne Keynote"
+[1]: http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/ "John Willis, What devops means to me"
+[2]: http://dev2ops.org/blog/2010/2/22/what-is-devops.html "Damon Edwards,  what is devops"
+[3]: http://theagileexecutive.com/2010/07/06/boundary-objects-in-devops/ "Israel Gat, boundary objects in devops"
+[4]: http://agilemanifesto.org/ "Agile Manifesto"
+[5]: http://blog.cutter.com/2011/09/11/originality-and-operations/ "Ernest Mueller, Originality and Operations"
+[6]: http://en.wikipedia.org/wiki/The_Cuckoo's_Egg_(book) "Cliff Stoll, The Cuckoos Egg"
+[7]: http://www.jedi.be/blog/2011/09/06/velocityconf-devops-metrics/ "Patrick Debois, Israel Gat, Andrew Shaefer Velocity Conference 2011 Devops Metrics"
+[8]: http://highscalability.com/amazon-architecture "Amazon Architecture"
+[9]: http://www.slideshare.net/jallspaw/10-deploys-per-day-dev-and-ops-cooperation-at-flickr "John Allspaw, 10 deploys per day - dev and ops cooperation at flickr"
+[10]: http://radar.oreilly.com/2007/10/operations-is-a-competitive-ad.html "Jesse Robbins, Operations is a competitive advantage"

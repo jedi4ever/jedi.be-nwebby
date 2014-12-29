@@ -1,0 +1,45 @@
+---
+period: "2010"
+customer: MMIS
+role: Technical Consultant
+title: Datacenter Automation
+job: true
+layout: job
+technology: 
+   - vmware esx, big IP - f5, ubuntu, zabbix, mysql, pxe-boot, puppet, mcollective, syslog-ng
+   - ruby, java, maven, hudson, vijava, bamboo
+roles: technical consultant
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/mmis.png" class="left"></div>
+		<div class="span-18 last">
+Virtual machines are more commonly used to segment applications and services. This typically induces 'Image Sprawl'. The project was to manage the wild grow of these diverging platforms.
+
+* To manage this problem puppet was introduced as a configuration management tool. 
+* As a side effect, backup licenses were not required anymore for the virtual machines that could be recreated from scratch and did not contain production data. * This totally adhered to the 'infrastructure as code' principles. 
+* In addition to the OS and middleware automation, the creation of the virtual machines and routing on the Vmware ESX was automated using the java vijava API.
+* Further integration with the application development cycle was done by integrating maven, nexus and Puppet J2EE war deployment.
+* Integration with BigIP loadbalancing during creation of new machines
+
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+vmware esx, big IP - f5, ubuntu, zabbix, mysql, pxe-boot, puppet, mcollective, syslog , ruby, java, maven, hudson, vijava
+	</div>
+	<div class="span-11 last">
+	
+*Tasks:*
+_Technical Consultant_
+* define new Ubuntu JEOS platform Maverick
+* introduce concept of configuration management and infrastructure as code
+* introduce mindset of devops to increase collaboration between devs and operations
+* code j2ee vmware esx automation
+* write puppet recipes for zabbix, syslog-ng, tomcat, mysql, bind, 
+* integrating mcollective with puppet
+* maven deployment to tomcat applications
+* integration with the continuous integration bamboo environment
+* setup code repository for infrastructure as code concept
+	</div>
+</div>

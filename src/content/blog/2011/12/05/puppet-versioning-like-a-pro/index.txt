@@ -1,0 +1,153 @@
+---
+title: Puppet versioning like a pro
+created_at: 2011-12-05 10:35:34.199577 +02:00
+tags:
+- puppet
+- git
+- mercurial
+- productivity
+blog_post: true
+related:
+- desc: Puppet Editing like a pro
+  url: /blog/2011/12/05/puppet-editing-like-a-pro/
+filter:
+- erb
+- markdown
+---
+**A big thanks to [Atlassian](http://www.atlassian.com) for allowing me to post this series!!**
+
+There is *NO reason*, not to use a version control system while developing puppet manifest/modules. Stating that should be an open door. It allows you to go back in time, share things more easily and track your changes. There is a lot of information out there on how to work with git or any other system. But here a few tips that might help you developing modules:
+
+### Tip 1 : give each module it's own repo and use a superproject to join
+In a lot of blogposts and even in the excellent [Pro Puppet book](http://www.amazon.co.uk/Pro-Puppet-James-Turnbull/dp/1430230576) I see people checking in their entire *environment* directory into version control.
+
+I'm all for version control but if you manage your *modules* dir as one flat repository, you loose the way to easily update and share modules from the forge. In essence you are doing a copy that starts living it's own life.
+
+The idea goes like this:
+
+    /etc/puppet/environments/development/modules (super-project repo)
+      -- puppet-apache (sub-project repo)
+      -- puppet-mysql (sub-project repo)
+      ...
+
+The super-project repo will contain links to the submodules it uses. This allows the reuse of the sub-project repos in different super-projects. F.i. puppet-modules-team1, puppet-modules-team2 could be superprojects and use different sub-modules.
+
+#### Using Git
+Git has the concept of submodules that allows you to link a parent repository with subprojects. Further detailed documentation can be found at <http://book.git-scm.com/5_submodules.html>
+
+Using this approach with puppet is nicely described at <https://we.riseup.net/riseup+tech/puppet-git-submodules>, with some tips at <https://labs.riseup.net/code/documents/7>
+
+I was always scared away of using submodules, because things like checking in the superproject first and forgetting the submodule, makes part of it unusable. Let alone adding the submodule directoy with a 'slash' has bitten me a few times.
+
+It's a good approach but it requires being awake :)
+
+#### Using Mercurial
+At [Atlassian](http://www.atlassian.com) we heavily use [Mercurial version control](http://mercurial.selenic.com/). So I learned the power of [Mercurial](http://mercurial.selenic.com/wiki/Subrepository?action=show&redirect=subrepos#Synchronizing_in_subrepositories) .
+
+
+To create a development repo with a specific apache submodule
+
+    $ cd /etc/puppet/environments/
+    $ hg init development
+    $ cd development/
+    $ mkdir modules
+    $ echo 'modules/apache = [git]git://github.com/puppet-modules/puppet-apache.git' > .hgsub
+    $ hg add .hgsub
+    $ git clone git://github.com/puppet-modules/puppet-apache.git modules/apache
+    $ hg ci -mapache
+
+Now if we are checking this out to our test environment, we'll see that it automatically checks out the submodules.
+
+
+    $ cd /etc/puppet/environments
+    $ hg clone development/ test
+    updating to branch default
+    resolving manifests
+    getting .hgsub
+    getting .hgsubstate
+    cloning subrepo modules/apache from git://github.com/puppet-modules/puppet-apache.git
+    remote: Counting objects: 177, done.
+    remote: Compressing objects: 100% (94/94), done.
+    remote: Total 177 (delta 59), reused 168 (delta 52)
+    Receiving objects: 100% (177/177), 22.97 KiB, done.
+    Resolving deltas: 100% (59/59), done.
+    2 files updated, 0 files merged, 0 files removed, 0 files unresolved
+
+I found this workflow:
+
+- less scary: no way to wrongly add directories
+- it's handy that you can add both svn, git and hg subrepositories
+- submodules are checked out by default (no git submodules init, update)
+
+_Note:_
+
+- by default hg wants to commit to all subrepos when commiting to the super-project repo. This Recursive commits can be disabled with the local **ui.commitsubrepos** configuration setting introduced in Mercurial 1.8.
+- More information on Mercurial subrepositories can be found at: <http://mercurial.selenic.com/wiki/Subrepository?action=show&redirect=subrepos#Synchronizing_in_subrepositories>
+- Or for a complete run through : <http://www.accidentalhacker.com/using-mercurial-subrepositories/>
+
+
+### Tip 2: Think about your git workflow
+In many of the examples you'll see people just commit to the 'master' branch. This works of course but if you are working on different modules/features, it's best to think about your git workflow. There are a lot of blogpost describing how to work in feature branches. Still I found it hard to remember the commands for branching, deleting old branches and so on.
+
+Thanks to [Tim Dysinger](http://dysinger.net/) I learned about [Gitflow](https://github.com/nvie/gitflow).
+
+It's basicly git helpers that take away a lot of the pain for working on hotfixes, features, releases.
+The usage is pretty easy:
+
+    # Create the master/developer/release/hotfix branches
+    $ git flow init
+
+    # Start working on a feature (branched from develop)
+    $ git flow feature start feature1
+    ... do some work
+    $ git add ...somework...
+    $ git commit -m "somework feature1"
+
+    # This will merge feature1 back to develop
+    $ git flow feature finish feature1
+
+    # Now lets start a release
+    $ git flow release start release1
+    ... do some work
+    $ git add ...somework...
+    $ git commit -m "release1"
+
+    # This will merge release1 into master
+    $ git flow release finish release1
+
+The whole idea is described in details at <http://nvie.com/posts/a-successful-git-branching-model/> . And the following video will show you how it works.
+
+<iframe src="http://player.vimeo.com/video/16018419?title=0&amp;byline=0&amp;portrait=0" width="550" height="344" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+More information can also be found at:
+
+- <http://alblue.bandlem.com/2011/11/git-tip-of-week-git-flow.html>
+- <http://yakiloo.com/getting-started-git-flow/>
+
+### Tip 3: Use pre/post-commit hooks
+Even with the [awesome editor support we previously described](http://jedi.be/blog/2011/12/05/puppet-editing-like-a-pro/), it's still easy to miss a semi-column, or have an incorrect puppet syntax.
+
+#### Using pre-commits
+It's good practice to verify the syntax of your puppet manifests before comitting them to version control. This is well described on the [puppetlabs version control page](http://projects.puppetlabs.com/projects/1/wiki/Puppet_Version_Control).
+
+In essence before you commit, it will execute <pre>puppet --parseonly</pre> to check if the syntax is correct.
+
+#### Using post-commits
+A lesser used technique is to run the same check on post-commit:
+
+Instead of running your master repository out of /etc/puppet/environment [PROD], you checkin to an intermediate repository [CHECK].
+
+    developer -> LOCAL REPO (pre-commit) -> push -> CHECK REPO -> (post-commit) -> PROD REPO
+
+In the post commit you can:
+
+- also verify the syntax in case someone didn't check before commiting.
+- if all successfull push the repo to the PROD directories
+
+This helps overcome the problem that your puppetmaster does a run while the repo is an incorrect state.
+
+More details are described at [Git workflow and Puppet Environments](http://puppetlabs.com/blog/git-workflow-and-puppet-environments/)
+
+
+### More to come
+The next post will be about different ways to test your puppet manifests

@@ -1,0 +1,28 @@
+---
+title: Devopsdays Downunder 2011 - Keynote
+created_at: 2011-09-06 10:54:04.148241 +02:00
+tags:
+- melbourne
+- devopsdays
+- devops
+blog_post: true
+filter:
+- erb
+- markdown
+---
+At the first [devopsdays in Ghent 2009](http://devopsdays.org/events/2009-ghent/) we were extremely lucky to have [Lindsay Holmwood](http://holmwood.id.au/~lindsay/) present. 
+
+I had to skip the first devopsdays downunder. So I was honoured to be asked by Lindsay to do a [keynote on devops in Melbourne](http://devopsdownunder.org/).
+
+It was a great conference and I really enjoyed meeting several of my twitter-buddies in the flesh. If you have the chance, go to it next year!
+All talks were recorded, you can find them on [the programme page on the website](http://devopsdownunder.org/programme/)
+
+The talk became a kind of FAQ response about devops. There are many questions and ideas that pop-up on the internet that are often the same. With my keynote I hope to address many of them in a consistent way.
+
+Enjoy my presentation slides:
+
+<div style="width:425px" id="__ss_8658278"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/devopsdays-downundervfinal" title="Devopsdays downunder-vfinal" target="_blank">Devopsdays downunder-vfinal</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/8658278" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>
+
+Also a great video that was captured:(especially me waving hands :)
+
+<iframe src="http://player.vimeo.com/video/28291845?title=0&amp;byline=0&amp;portrait=0" width="400" height="225" frameborder="0"></iframe><p><a href="http://vimeo.com/28291845">Devops Downunder - Patrick Debois Keynote</a> from <a href="http://vimeo.com/devopsdownunder">DevOps Down Under</a> on <a href="http://vimeo.com">Vimeo</a>.</p>

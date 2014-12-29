@@ -1,0 +1,34 @@
+---
+period: "2004 - 2005"
+customer: "Eurocontrol (ACA-IT)"
+role: System Architect/Technical Project Manager
+title: Internet Portal Project
+dirty: false
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/aca-it.jpeg" class="left"></div>
+		<div class="span-18 last">
+* For maintenance reasons the One Sky Extranet Stakeholders Portal infrastructure was upgraded. 
+* While doing the upgrade,  a complete high availability design was done for further implementation. 
+* The portal identity services were integrated with the customer meta-directory environment of 10.000 stakeholders. 
+* All systems (production and test) used were based upon Sun Solaris and primary programming language was Java.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+active directory, sun identity management, sun portal server, radius server, secure-id, j2ee, sun application server, sun portal server, solaris, java, portlets
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* To design the technical solution for portal upgrade with a focus on high availability
+* Integration of corporate LDAP management with the Identity Management solution
+
+_Project Manager_
+
+* Respond to the RFP with a technical proposal, project plan and pricing
+* Coordinate and follow-up technical implementation of the portal upgrade project
+</div>

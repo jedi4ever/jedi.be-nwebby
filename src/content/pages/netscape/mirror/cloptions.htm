@@ -1,0 +1,259 @@
+<HTML>
+<HEAD>
+<TITLE>Communicator Command Line Options</TITLE>
+<META NAME="AUTHOR" CONTENT="Greg Potter">
+
+<META NAME="keywords" CONTENT="configuration customize customization
+client command line options startup deploy deployment rollout"></HEAD>
+
+<BODY BGCOLOR="ffffff" TEXT="#000000">
+
+<CENTER><B>A<FONT SIZE="-1">PPLYING </FONT> N<FONT SIZE="-1">ETSCAPE </FONT>
+T<FONT SIZE="-1">ECHNOLOGY</FONT>
+</B>
+<H2><FONT SIZE="+3">C</FONT>OMMAND 
+<FONT SIZE="+3">L</FONT>INE 
+<FONT SIZE="+3">O</FONT>PTIONS
+</H2>
+</CENTER>
+<HR NOSHADE="NOSHADE">
+<P>On Windows platforms you can control which Communicator components open
+initially, and what they do when they open, with command line configuration
+options. There are also some command line options that apply to Communicator on
+the UNIX platform. </P>
+<H2>Windows 3.1x and Windows 95</H2>
+<P><B>Options Syntax</B></P>
+<CENTER>
+<TABLE BORDER="1" WIDTH="90%">
+<TR>
+<TD><B>Result</B></TD>
+<TD><B>Command</B></TD>
+<TD><B>Parameters</B></TD></TR>
+<TR>
+<TD>Open the Composer and load a particular HTML document </TD>
+<TD><TT>-EDIT</TT> 
+</TD>
+<TD> <TT>[file_name]</TT> 
+</TD></TR>
+<TR>
+<TD>Open Navigator and optionally display a local HTML document 
+</TD>
+<TD>&nbsp;</TD>
+<TD> <TT>[file_name]</TT> 
+</TD></TR>
+<TR>
+<TD>Open Navigator regardless of any conflicting preferences</TD>
+<TD> <TT>-BROWSER</TT> 
+</TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open the Inbox</TD>
+<TD> <TT>-INBOX</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open a specific folder as you would the Inbox</TD>
+<TD> <TT>-FOLDER</TT></TD>
+<TD> <TT>[foldername]</TT></TD></TR>
+<TR>
+<TD>Open the Collections window to see all folders</TD>
+<TD> <TT>-FOLDERS</TT></TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open the Address Book 
+</TD>
+<TD><TT>-ADDRESS</TT> 
+</TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Import an LDIF file into the Address Book 
+</TD>
+<TD><TT>-IMPORT</TT> 
+</TD>
+<TD> <TT>[LDIF_file_name]</TT> 
+</TD></TR>
+<TR>
+<TD>Open Netscape Messenger</TD>
+<TD> <TT>-MAIL</TT></TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open the Collections window and go to the first subscribed discussion 
+</TD>
+<TD> <TT>-NEWS</TT> 
+</TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open the Composer </TD>
+<TD><TT>-COMPOSE</TT></TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Open the Composer with attachments 
+</TD>
+<TD><TT>-COMPOSE</TT></TD>
+<TD> <TT>[@attachments] || [-attachment]</TT> 
+</TD></TR>
+<TR>
+<TD>Open the Composer, automatically inserting message and attachments 
+</TD>
+<TD><TT>-COMPOSE</TT> 
+</TD>
+<TD> <TT>[message @attachments]</TT><BR> <TT>[message -attachment]</TT> 
+</TD></TR>
+<TR>
+<TD>Open the Composer, without a document 
+</TD>
+<TD><TT>-EDIT</TT> 
+</TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Set the online or offline startup mode 
+</TD>
+<TD>&nbsp;</TD>
+<TD><TT>[OFF|ON]</TT></TD></TR>
+<TR>
+<TD>Run Communicator using a particular user's profile (<TT>profile.cfg</TT> 
+file)  </TD>
+<TD><TT>-P</TT></TD>
+<TD><TT>[user's profile name]</TT> </TD></TR>
+<TR>
+<TD>Before Communicator opens, ask the user to fill out a new profile </TD>
+<TD><TT>-NEW_PROFILE</TT></TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Before Communicator opens, display the Profile Manager so the user can 
+choose the correct identity </TD>
+<TD><TT>-PROFILE_MANAGER</TT></TD>
+<TD>&nbsp;</TD></TR></TABLE></CENTER>
+<P><B>Parameter Definitions</B></P>
+<CENTER>
+<TABLE BORDER="1" WIDTH="90%">
+<CAPTION></CAPTION>
+<TR>
+<TD><TT><B>message</B></TT> 
+</TD>
+<TD>The name of a message file, including its full path. The default search 
+location is the temp directory. 
+</TD></TR>
+<TR>
+<TD><TT><B>attachments</B></TT> 
+</TD>
+<TD>The name of an attachments list file, including its full path. The default 
+search location is the temp directory. 
+</TD></TR>
+<TR>
+<TD><TT><B>foldername</B></TT> 
+</TD>
+<TD>The exact name of the folder to open. 
+</TD></TR>
+<TR>
+<TD><TT><B>file_name</B></TT> 
+</TD>
+<TD>The full path to the HTML document. 
+</TD></TR>
+<TR>
+<TD><TT><B>URL</B></TT> 
+</TD>
+<TD>The URL of the page to display. 
+</TD></TR>
+<TR>
+<TD><TT><B>LDIF_file_name</B></TT> 
+</TD>
+<TD>The full path to the LDIF file. 
+</TD></TR>
+<TR>
+<TD><TT><B>ON</B></TT> 
+</TD>
+<TD>The online mode flag.  
+</TD></TR>
+<TR>
+<TD><TT><B>OFF</B></TT> 
+</TD>
+<TD>The offline mode flag.  
+</TD></TR>
+<TR>
+<TD><TT><B>user's profile name</B></TT></TD>
+<TD>The individual user's name as it appears in the Profile Manager </TD></TR></TABLE></CENTER>
+<P><B>Syntax Rules</B></P>
+<UL>
+<LI>File names or paths with spaces have to be enclosed in quotes; for example,
+ &quot;My Documents&quot;.</LI>
+<LI>The commands and parameters aren't case sensitive.</LI>
+<LI>The dash (-) delimits an action type.</LI>
+<LI>Blank spaces ( ) separate actions from parameters and parameters from each
+other.</LI>
+<LI>The at symbol (@) delimits the names of attachment file lists.</LI>
+<LI>The dash (-) delimits the names of single attachment files.</LI></UL>
+<P><B>Windows 3.1 Differences</B></P>
+<UL>
+<LI>Command lines begin with <TT>drive:\netscape\navstart</TT> rather than the
+path to <TT>netscape.exe</TT>. </LI>
+<LI>Command options (arguments) for <TT>navstart.exe</TT> have to begin with a
+ fully qualified path to <TT>netscape.exe</TT>. For example, to run Netscape 
+Messenger the command line could be <TT>C:\programs\netscape\navstart.exe &quot;c:\programs\netscape\netscape.exe&quot;
+ -MAIL</TT></LI>
+<LI>You can have additional options on the same command line following the
+guidelines described above. </LI></UL>
+<HR WIDTH="100%">
+<H2>UNIX</H2>
+<P><B>Options Syntax</B></P>
+<CENTER>
+<TABLE BORDER="1" WIDTH="90%">
+<TR>
+<TD><B>Result</B></TD>
+<TD><B>Command</B></TD>
+<TD><B>Parameters</B></TD></TR>
+<TR>
+<TD>List all command line options</TD>
+<TD> <TT>-help</TT></TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Position and size the Messenger and Collabra windows </TD>
+<TD> <TT>-geometry</TT> </TD>
+<TD><TT>=WxH+X+Y (the default is 620x950+630+40)</TT> </TD></TR>
+<TR>
+<TD>Use a specific server visual </TD>
+<TD> <TT>-visual</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Install a private colormap </TD>
+<TD> <TT>-install</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Use the default colormap </TD>
+<TD> <TT>-no-install</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Set the maximum number of colors to allocate for images (when not using
+<TT>-install</TT>) </TD>
+<TD> <TT>-ncols</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Force 1-bit-deep image display </TD>
+<TD> <TT>-mono</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Set a specific X resource </TD>
+<TD> <TT>-xrm</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>Execute a command in an       already running Netscape process </TD>
+<TD> <TT>-remote</TT> </TD>
+<TD>&nbsp;</TD></TR>
+<TR>
+<TD>The ID of an X window to send the <TT>-remote</TT> commands (if 
+unspecified, the first window found is used) </TD>
+<TD> <TT>-id</TT> </TD>
+<TD>&nbsp;</TD></TR></TABLE></CENTER>
+<P></P>
+<HR WIDTH="100%">
+<P><B>A Note About Kiosk Mode</B></P>
+<P>Previous versions of Netscape Navigator offered a kiosk mode using a -k
+switch to open the browser without navigation features so users could be
+confined to the content displayed. Netscape Communicator replaces this feature
+with canvas mode, which uses JavaScript to expand your control over the
+appearance and features of the browser window. See the discussion of
+<A
+HREF="http://home.netscape.com/comprod/products/communicator/layers/canvas_syntax.html" TARGET=_top>Canvas
+Mode Syntax</A> for more information. </P>
+<P></P>
+<HR WIDTH="100%">
+<P ALIGN="CENTER"><FONT SIZE="-1">970702.1152</FONT></P></BODY></HTML>

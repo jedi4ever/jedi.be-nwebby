@@ -1,0 +1,33 @@
+--- 
+title:  Devops - The War Is Over - if You Want It
+created_at: 2010-11-27 17:50:05.802104 +01:00
+tags: 
+- devops
+- itil
+- scrum
+- xpdays
+- scrumnl
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+
+
+<div style="width:425px" id="__ss_5904996"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/devops-the-war-is-over-if-you-want-it" title="Devops: The War is over - If you want it">Devops: The War is over - If you want it</a></strong><object id="__sse5904996" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=devops-the-war-is-over-101125072559-phpapp02&stripped_title=devops-the-war-is-over-if-you-want-it&userName=jedi4ever" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed name="__sse5904996" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=devops-the-war-is-over-101125072559-phpapp02&stripped_title=devops-the-war-is-over-if-you-want-it&userName=jedi4ever" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/jedi4ever">Patrick Debois</a>.</div></div>
+
+<table>
+<tr><td>
+<img src='{{ page.url }}/scrumnl.gif'><br><br>
+<img src='{{ page.url }}/xpdays-2010.png'>
+</td><td>
+<p>These are the slides of my presentations a the <a href="http://www.meetup.com/nlscrum/calendar/14630427/">Scrum NL: Scrum Operations</a> and the presentations at <a href="http://xpdays.net/Xpday2010/sessions/Why%20Devops.html">Xpdays 2010: Devops why should developers care</a>.</p>
+</td></tr></table>
+
+<p>The presentation is created out of three parts:
+
+<ul>
+<li>An introductory story
+<li>A comparison on the technical level of infrastructure as code with coding software practices
+<li>Pointing out the similarities between challenges that Agile Methods and ITIL have.
+</ul></p>

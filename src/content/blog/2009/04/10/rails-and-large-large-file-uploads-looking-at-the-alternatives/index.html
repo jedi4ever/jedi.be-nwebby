@@ -1,0 +1,519 @@
+---
+title: "Rails and Large, Large file Uploads: looking at the alternatives"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=696
+created_at: 2009-04-10 15:30:13.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - rails metal
+   - rails
+   - multipart
+   - mongrel
+   - passenger
+   - file upload
+   - large upload
+   - webrick
+   - mod_rails
+   - merb
+   - http
+---
+Uploading files in rails is a relatively easy task. There are a lot of helpers to manage this even more flexible, such as attachment_fu or paperclip. But what happens if your upload *VERY VERY LARGE* files (say 5GB) in rails, do the standard solutions apply? The main thing is that we want to avoid load file in memory strategies and avoid multiple temporary file writes.
+<br>
+This document describes our findings of uploading these kind of files in a rails environment. We tried the following alternatives:
+<br>
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/send_large_files.jpg"><img title="send_large_files" class="alignright size-medium wp-image-698" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/send_large_files-300x253.jpg" height="172" alt="" width="205" /></a>
+<ul>
+	<li>Using Webrick</li>
+	<li>Using Mongrel</li>
+	<li>Using Merb</li>
+	<li>Using Mongrel Handlers</li>
+	<li>Using Sinatra</li>
+	<li>Using Rack Metal</li>
+	<li>Using Mod_Rails aka Passenger</li>
+	<li>Non-Rails Alternatives</li>
+</ul>
+(original image from <a href="http://www.masternewmedia.org">http://www.masternewmedia.org</a>/)
+<br>
+And i'm afraid, the new is not that good. For now....
+<br>
+
+<br>
+<span>A simple basic Upload Handle (to get started)</span>
+<br>
+Ok , let's make a little upload application . (loosely based upon <a href="http://www.tutorialspoint.com/ruby-on-rails/rails-file-uploading.htm">http://www.tutorialspoint.com/ruby-on-rails/rails-file-uploading.htm</a>
+<br>
+Install rails (just to show you the version I used)
+<pre>$ gem install rails
+Successfully installed rake-0.8.4
+Successfully installed activesupport-2.3.2
+Successfully installed activerecord-2.3.2
+Successfully installed actionpack-2.3.2
+Successfully installed actionmailer-2.3.2
+Successfully installed activeresource-2.3.2
+Successfully installed rails-2.3.2
+<br>
+$ gem install sqlite3-ruby
+$ rails upload-test
+$ cd upload-test
+$ script/generate controller Upload
+      exists  app/controllers/
+      exists  app/helpers/
+      create  app/views/upload
+      exists  test/functional/
+      create  test/unit/helpers/
+      create  app/controllers/upload_controller.rb
+      create  test/functional/upload_controller_test.rb
+      create  app/helpers/upload_helper.rb
+      create  test/unit/helpers/upload_helper_test.rb</pre>
+The first step is to create controller that has two actions, on 'index' it will show a form "uploadfile.html.erb' and the action 'upload'  will handle the upload
+<pre>#app/controller/upload_controller.rb
+class UploadController &lt; ApplicationController
+  def index
+     render :file =&gt; 'app/views/upload/uploadfile.html.erb'
+  end
+  def upload
+    post = Datafile.save(params[:uploadform])
+    render :text =&gt; "File has been uploaded successfully"
+  end
+end</pre>
+The second create the view to have file upload form in the browser. Note the multipart parameter to do a POST
+<pre>#app/views/upload/uploadfile.html.erb
+&lt;% form_for :uploadform, :url =&gt; { :action =&gt; 'upload'}, :html =&gt; {:multipart =&gt; true}  do |f| %&gt;
+  &lt;%= f.file_field :datafile %&gt;&lt;br /&gt;
+  &lt;%= f.submit 'Create' %&gt;
+&lt;% end %&gt;</pre>
+Last is to create the model , to save the uploaded file to public/data. Note the orignal_filename we use to
+<pre>#app/models/datafile.rb
+class Datafile &lt; ActiveRecord::Base
+  def self.save(upload)
+    name =  upload['datafile'].original_filename
+    directory = "public/data"
+    # create the file path
+    path = File.join(directory, name)
+    # write the file
+    File.open(path, "wb") { |f| f.write(upload['datafile'].read) }
+  end
+end</pre>
+<p></p>
+<br>
+Before we startup we create the public/data dir
+<pre>$ mkdir public/data
+$ ./script server webrick
+=&gt; Booting WEBrick
+=&gt; Rails 2.3.2 application starting on http://0.0.0.0:3000
+=&gt; Call with -d to detach
+=&gt; Ctrl-C to shutdown server
+[2009-04-10 13:18:27] INFO  WEBrick 1.3.1
+[2009-04-10 13:18:27] INFO  ruby 1.8.6 (2008-03-03) [universal-darwin9.0]
+[2009-04-10 13:18:27] INFO  WEBrick::HTTPServer#start: pid=5057 port=<strong>3000</strong></pre>
+Point your browser to http://localhost:3000/upload and you can upload a file.
+If all goes well, there should be a file public/data with the same name as your file that your uploaded.
+<br>
+<span>Scripting a large Upload</span>
+<br>
+Browser have their limitations for file uploads. Depending on if your working on 64Bit OS, 64 Bit Browser , you can upload larger files. But 2GB seems to be the limit.
+<br>
+For scripting the upload we will use curl to do the same thing. To upload a file called large.zip to our form, you can use:
+<pre>curl -Fuploadform['datafile']=@large.zip http://localhost:3000/upload/upload</pre>
+If you would use this, rails would throw the following error: "ActionController::InvalidAuthenticityToken (ActionController::InvalidAuthenticityToken):"
+<br>
+As described in <a href="http://ryandaigle.com/articles/2007/9/24/what-s-new-in-edge-rails-better-cross-site-request-forging-prevention">http://ryandaigle.com/articles/2007/9/24/what-s-new-in-edge-rails-better-cross-site-request-forging-prevention</a> is is used to protect rails against cross site request forging. We need to have rails skip this filter.
+<pre>#app/controller/upload_controller.rb
+class UploadController &lt; ApplicationController
+<strong>skip_before_filter :verify_authenticity_token</strong></pre>
+<span>Webrick and Large File Uploads
+</span>
+<br>
+Webrick is the default webserver that ships with rails. Now let's upload a large file and see what happens.
+<br>
+Ok, it's natural that this takes longer to handle. But if you zoom on the memory usage of your ruby process, f.i. with top
+<pre> 7895 ruby        16.0%  0:26.61   2    33    144  559M   188K   561M   594M</pre>
+====&gt; <strong>Memory GROWS</strong>: We see that the ruby process is growing and growing. I guess it is because webrick loads the body in a string first.
+<pre>#gems/rails-2.3.2/lib/webrick_server.rb
+def handle_dispatch(req, res, origin = nil) #:nodoc:
+    data = StringIO.new
+    Dispatcher.dispatch(
+      CGI.new("query", create_env_table(req, origin), StringIO.new(req.body || "")),
+      ActionController::CgiRequest::DEFAULT_SESSION_OPTIONS,
+      data
+    )</pre>
+=====&gt; <strong>Files get written to disk Multiple time</strong>s for the Multipart parsing: When the file is upload, you see message appearing in the webrick log. It has a file in /var/folder/EI/....
+<pre>Processing UploadController#upload (for ::1 at 2009-04-09 13:51:23) [POST]
+  Parameters: {"commit"=&gt;"Create", "authenticity_token"=&gt;"rf4V5bmHpxG74q6ueI3hUjJzwhTLUJCp9VO1uMV1Rd4=", "uploadform"=&gt;{"datafile"=&gt;#&lt;File:/var/folders/EI/EIPLmNwOEea96YJDLHTrhU+++TI/-Tmp-/RackMultipart.7895.1&gt;}}
+[2009-04-09 14:09:03] INFO  WEBrick::HTTPServer#start: pid=7974 port=3000</pre>
+It turns out, that the part that handles the multipart, writes the files to disk in the <em>$TMPDIR</em>. It creates files like
+<pre>$ ls $TMPDIR/
+RackMultipart.7974.0
+RackMultipart.7974.1</pre>
+Strange, two times? We only uploaded one file? I figure this is handled by the rack/utils.rb bundled in action_controller. Possible related is this bug described at <a href="https://rails.lighthouseapp.com/projects/8994/tickets/1904-rack-middleware-parse-request-parameters-twice">https://rails.lighthouseapp.com/projects/8994/tickets/1904-rack-middleware-parse-request-parameters-twice</a>
+<pre>#gems/actionpack-2.3.2/lib/action_controller/vendor/rack-1.0/rack/utils.rb
+    # Stolen from Mongrel, with some small modifications:
+      def self.parse_multipart(env)
+    write multi</pre>
+<span>Optimizing the last write to disk</span>
+<br>
+Instead of
+<pre># write the file
+File.open(path, "wb") { |f| f.write(upload['datafile'].read) }</pre>
+We can use the following to avoid writing to disks our selves
+<pre>FileUtils.mv upload['datafile'].path, path</pre>
+This makes use from the fact that the file is allready on disk, and a file move is much faster then rewriting the file.
+<br>
+Still this might not be usable in all cases: If your TMPDIR is on another filesystem then your final destination, this trick won't help you.
+<br>
+<span>Mongrel and Large File Uploads
+</span>The behaviour of Webrick allready was discussed on the mongrel mailinglist <a href="http://osdir.com/ml/lang.ruby.mongrel.general/2007-10/msg00096.html">http://osdir.com/ml/lang.ruby.mongrel.general/2007-10/msg00096.html</a>
+And is supposed to be fixed. So let's install mongrell
+<pre>$ gem install mongrel
+Successfully installed gem_plugin-0.2.3
+Successfully installed daemons-1.0.10
+Successfully installed fastthread-1.0.7
+Successfully installed cgi_multipart_eof_fix-2.5.0
+Successfully installed mongrel-1.1.5
+$ mongrel_rails start</pre>
+Ok, let's start the upload again using our curl:
+<br>
+======&gt; <strong>Memory does not grow</strong>: that's good news.
+<br>
+======&gt; <strong>4 file writes! for 1 upload</strong> : because Mongrel does not keep the upload in memory, it writes it to a tempfile in the $TMPDIR. Depending on the size of the file, &gt; MAX_BODY it will create a tempfile or just a string in memory
+<pre>lib/mongrel/const.rb
+        # This is the maximum header that is allowed before a client is booted.  The parser detects
+        # this, but we'd also like to do this as well.
+    MAX_HEADER=1024 * (80 + 32)
+<br>
+    # Maximum request body size before it is moved out of memory and into a tempfile for reading.
+    MAX_BODY=MAX_HEADER
+<br>
+lib/mongrel/http_request.rb
+        # must read more data to complete body
+        if remain &gt; Const::MAX_BODY
+          # huge body, put it in a tempfile
+          @body = Tempfile.new(Const::MONGREL_TMP_BASE)
+          @body.binmode
+        else
+          # small body, just use that
+          @body = StringIO.new
+        end</pre>
+In our tests, we saw that aside from the RackMultipart.&lt;pid&gt;.x files, there is additional file written in $TMPDIR: mongrel.&lt;pi&gt;.0
+<br>
+That means that for 5 GB, we now have 4x 5GB : 1 mongrel + 2 RackMultipart + 1 final file (depending on the move or not)= 20 GB
+<br>
+======&gt; <strong>Not reliable , predictable results</strong>?
+<br>
+Also, we saw the upload sometimes: mongrel did not create the RackMultiparts but CGI.&lt;pid&gt;.0 . Unsure what the reasons is.
+<span>Merb and Large File Uploads</span>
+<br>
+One of the solutions you see for handling file uploads is using Merb, the main reason that there is less blocking of your handlers.
+<ul>
+	<li><a href="http://www.idle-hacking.com/2007/09/scalable-file-uploads-with-merb/">http://www.idle-hacking.com/2007/09/scalable-file-uploads-with-merb/</a></li>
+	<li><a href="http://devblog.rorcraft.com/2008/8/25/uploading-large-files-to-rails-with-merb">http://devblog.rorcraft.com/2008/8/25/uploading-large-files-to-rails-with-merb</a></li>
+	<li><a href="http://blog.vixiom.com/2007/06/29/merb-on-air-drag-and-drop-multiple-file-upload/">http://blog.vixiom.com/2007/06/29/merb-on-air-drag-and-drop-multiple-file-upload/</a></li>
+</ul>
+Let's try this:
+<pre>$ gem install merb
+Successfully installed dm-aggregates-0.9.11
+Successfully installed dm-validations-0.9.11
+Successfully installed randexp-0.1.4
+Successfully installed dm-sweatshop-0.9.11
+Successfully installed dm-serializer-0.9.11
+Successfully installed merb-1.0.11</pre>
+Let's create the merb application:
+<pre>$ merb-gen app uploader-app
+$ cd uploader-app</pre>
+We need to create the controller, but this a bit different from our original controller:
+<ul>
+	<li> the file is called upload.rb instead of upload_controller.rb</li>
+	<li>removed the skip_before</li>
+	<li>in Merb it is Application and not ApplicationController</li>
+</ul>
+<pre>#app/controllers/upload.rb
+class Upload &lt; Application
+    def index
+       render :file =&gt; 'app/views/upload/uploadfile.rhtml'</pre>
+<pre>             end
+      def upload
+            post = Datafile.save(params[:uploadform])
+            render :text =&gt; "File has been uploaded successfully"
+      end
+end</pre>
+The model looks like this:
+<ul>
+	<li>Remove the ActiveRecord</li>
+	<li>include DataMapper::Resource</li>
+	<li>original_filename does not exist: merb passes it in the variable filename</li>
+	<li>tempfile is also changed on how merb passes the temporary file</li>
+</ul>
+<pre>#app/models/datafile.rb
+class Datafile
+include DataMapper::Resource
+  def self.save(upload)
+   name =  upload['datafile']['filename']
+   directory = "public/data"
+  # create the file path
+   path = File.join(directory, name)
+   # write the file
+      File.open(path, "wb") { |f| f.write(upload['datafile']['tempfile'].read) }
+   end</pre>
+We create the public/data
+<pre>$    mkdir public/data</pre>
+And start merb .
+<pre>$ merb
+ ~ Connecting to database...
+ ~ Loaded slice 'MerbAuthSlicePassword' ...
+ ~ Parent pid: 57318</pre>
+<pre> ~ Compiling routes...
+ ~ Activating slice 'MerbAuthSlicePassword' ...</pre>
+<pre>merb : worker (port 4000) ~ Starting Mongrel at port 4000</pre>
+When you start the upload, a merb worker becomes active.
+<br>
+=====&gt; <strong>No memory increases : good!</strong>
+<pre>merb : worker (port 4000) ~ Successfully bound to port 4000</pre>
+=====&gt; <strong>3 Filewrites: 1 mongrel + 1 merb + 1 final write</strong>
+<br>
+Mongrel first start writing its mongrel.&lt;pid&gt;.0 in our $TMPDIR/
+<pre>merb : worker (port 4000) ~ Params: {"format"=&gt;nil, "action"=&gt;"upload", "id"=&gt;nil, "controller"=&gt;"upload", "uploadform"=&gt;{"datafile"=&gt;{"content_type"=&gt;"application/octet-stream",
+ "size"=&gt;306609434, "tempfile"=&gt;#&lt;File:/var/folders/EI/EIPLmNwOEea96YJDLHTrhU+++TI/-Tmp-/Merb.13243.0&gt;, "filename"=&gt;"large.zip"}}}
+merb : worker (port 4000) ~</pre>
+After that Merb handles the multipart stream and writes once in $TMPDIR/Merb.&lt;pid&gt;.0
+<br>
+<span>Sinatra and Large Files:</span>
+<br>
+Sinatra is a simple framework for describing the controllers yourself. Because it seemed to have direct access to the stream, I hoped that i would be able to stream it directly without the MultiPart of Rack.
+<ul>
+	<li><a href="http://technotales.wordpress.com/2008/03/05/sinatra-the-simplest-thing-that-could-possibly-work/">http://technotales.wordpress.com/2008/03/05/sinatra-the-simplest-thing-that-could-possibly-work/</a></li>
+	<li><a href="http://m.onkey.org/2008/11/10/rails-meets-sinatra">http://m.onkey.org/2008/11/10/rails-meets-sinatra</a></li>
+	<li><a href="http://www.slideshare.net/jiang.wu/ruby-off-rails">http://www.slideshare.net/jiang.wu/ruby-off-rails</a></li>
+	<li><a href="http://sinatra-book.gittr.com/">http://sinatra-book.gittr.com/</a></li>
+</ul>
+First step install sinatra:
+<pre>$ gem install sinatra
+Successfully installed sinatra-0.9.1.1
+1 gem installed
+Installing ri documentation for sinatra-0.9.1.1...
+Installing RDoc documentation for sinatra-0.9.1.1...</pre>
+Create a sample upload handler:
+<pre>#sinatra-test-upload.rb
+require 'rubygems'
+require 'sinatra'
+post '/upload' do
+        File.open("/tmp/theuploadedfile","wb") { |f| f.write(params[:datafile]['file'].read) }
+end</pre>
+<pre>$ ruby upload-sinatra.rb
+== Sinatra/0.9.1.1 has taken the stage on 4567 for development with backup from Mongrel
+<br>
+So instead of 3000 it listens on 4567</pre>
+====&gt; <strong>No memory increase: good!</strong>
+<br>
+====&gt; <strong>4 file writes:</strong> Again we see 4= 1 Mongrel.&lt;pid&gt;.* + 2 x Multipart.&lt;pid&gt;.* + 1 file write
+<br>
+<span>Using Mongrel handlers to bypass other handlers
+</span>
+<br>
+Up until now, we have the webserver, the multipart parser  and the final write. So how can we skip the webserver or the multipart writing to disk and not consuming all the memory.
+<br>
+I found another approach by using a standalone mongrel handler:
+<ul>
+	<li><a href="http://rubyenrails.nl/articles/2007/12/24/rails-mvc-aan-je-laars-lappen-met-mongrel-handlers">http://rubyenrails.nl/articles/2007/12/24/rails-mvc-aan-je-laars-lappen-met-mongrel-handlers</a></li>
+	<li><a href="http://www.ruby-forum.com/topic/128070">http://www.ruby-forum.com/topic/128070</a></li>
+</ul>
+This allows you to interact with the incoming stream before Rack/Multipart kicks in.
+<br>
+Let's create an example Mongrel Handler. It's just the part that shows you that you can access the request directly:
+<pre>require 'rubygems'
+require 'mongrel'
+<br>
+class HelloWorldHandler &lt; Mongrel::HttpHandler
+    def process(request, response)
+<br>
+    puts request.body.path
+          response.start(200) do |head,out|
+                  head['Content-Type'] = "text/plain"
+                        out &lt;&lt; "Hello world!"
+                            end
+    end
+    def request_progress (params, clen, total)
+    end
+end
+<br>
+Mongrel::Configurator.new do
+    listener :port =&gt; 3000 do
+          uri "/", :handler =&gt; HelloWorldHandler.new
+            end</pre>
+<pre>      run; join
+end</pre>
+=====&gt;<strong>No memory increase: good!</strong>
+<br>
+=====&gt;<strong>1 FILE and direct access, but still needs multipart parsing:</strong>
+<br>
+It turns out that request.body.path is the mongrel.&lt;pid&gt;.0 file , giving us directly access to the first uploaded file.
+<pre>request.body.path = /var/folders/EI/EIPLmNwOEea96YJDLHTrhU+++TI/-Tmp-/mongrel.93690.0</pre>
+<span>
+</span>
+<br>
+<span>Using Rails Metal</span>
+Metal is an addition to Rails 2.3 that allows you to bypass the rack.
+<ul>
+	<li><a href="http://soylentfoo.jnewland.com/articles/2008/12/16/rails-metal-a-micro-framework-with-the-power-of-rails-m">http://soylentfoo.jnewland.com/articles/2008/12/16/rails-metal-a-micro-framework-with-the-power-of-rails-m</a></li>
+	<li><a href="http://railscasts.com/episodes/150-rails-metal">http://railscasts.com/episodes/150-rails-metal</a></li>
+	<li><a href="http://www.pathf.com/blogs/2009/03/uploading-files-to-rails-metal/">http://www.pathf.com/blogs/2009/03/uploading-files-to-rails-metal/</a></li>
+	<li><a href="http://www.ruby-forum.com/topic/171070">http://www.ruby-forum.com/topic/171070</a></li>
+</ul>
+<pre># Allow the metal piece to run in isolation
+require(File.dirname(__FILE__) + "/../../config/environment") unless defined?(Rails)
+class Uploader
+  def self.call(env)
+    if env["PATH_INFO"] =~ /^\/uploader/
+      puts env["rack.input"].path
+<br>
+      [200, {"Content-Type" =&gt; "text/html"}, ["It worked"]]
+    else
+      [400, {"Content-Type" =&gt; "text/html"}, ["Error"]]
+    end
+  end
+end</pre>
+<p></p>
+<br>
+Similar to the Mongrel HTTP Handler, we can have access to the mongrel file upload by
+<pre> env["rack.input"].path = actually the /var/folders/EI/EIPLmNwOEea96YJDLHTrhU+++TI/-Tmp-/mongrel.81685.0</pre>
+If we want to parse this, we can pass the env to the Request.new but this kicks in the RackMultipart again.
+<pre>request = Rack::Request.new(env)
+      puts request.POST
+      #uploaded_file = request.POST["file"][:tempfile].read</pre>
+=====&gt;<strong>No memory increase: good!</strong>
+<br>
+=====&gt;<strong>1 FILE and direct access, but still needs multipart parsing</strong>
+<br>
+=====&gt;<strong>Can still run traditional rails and metal rails in the same webserver</strong>
+<br>
+<span>
+</span>
+<br>
+<span>Using Mod_rails aka Passenger</span>
+<br>
+Mod_rails seems to become the new standard for running rails applications without the blocking hassle using plain apache as a good stable proven technology.
+<br>
+One of the main benefits that it doesn't block the handler to send response back until the complete request is handled. Sounds like good technology here!
+<ul>
+	<li><a href="http://www.pathf.com/blogs/2009/03/uploading-files-to-rails-metal/">http://www.pathf.com/blogs/2009/03/uploading-files-to-rails-metal/</a></li>
+</ul>
+<pre>curl -v -F datafile['file']=@large.zip http://localhost:80/
+ * About to connect() to localhost port 80
+ *   Trying 127.0.0.1... connected
+ * Connected to localhost (127.0.0.1) port 80
+ &gt; POST /datafiles HTTP/1.1
+ &gt; User-Agent: curl/7.15.5 (x86_64-redhat-linux-gnu) libcurl/7.15.5 OpenSSL/0.9.8b zlib/1.2.3 libidn/0.6.5
+ &gt; Host: localhost
+ &gt; Accept: */*
+ &gt; Content-Length: 421331151
+ &gt; Expect: 100-continue
+ &gt; Content-Type: multipart/form-data; boundary=----------------------------1bf75aea2f35
+ &gt;
+ &lt; HTTP/1.1 100 Continue</pre>
+Setting up mod_rails is beyond the scope of this document. So we assume you have it working for your rails app.
+<br>
+in my /etc/httpd/conf/httpd.conf
+<pre>LoadModule passenger_module /opt/ruby-enterprise-1.8.6-20090201/lib/ruby/gems/1.8/gems/passenger-2.1.3/ext/apache2/mod_passenger.so
+PassengerRoot /opt/ruby-enterprise-1.8.6-20090201/lib/ruby/gems/1.8/gems/passenger-2.1.3
+PassengerRuby /opt/ruby-enterprise-1.8.6-20090201/bin/ruby</pre>
+Mod_rails has a nice setting that you can specify your Tmpdir per virtual host:
+<br>
+See <a href="http://www.modrails.com/documentation/Users%20guide.html#_passengertempdir_lt_directory_gt">http://www.modrails.com/documentation/Users%20guide.html#_passengertempdir_lt_directory_gt</a> for more details
+<blockquote>
+<br>
+5.10. PassengerTempDir &lt;directory&gt;
+<div class="paragraph">
+<br>
+Specifies the directory that Phusion Passenger should use for storing temporary files. This includes things such as Unix socket files, buffered file uploads, etc.</div>
+<div class="paragraph">
+<br>
+This option may be specified once, in the global server configuration. The default temp directory that Phusion Passenger uses is <em>/tmp</em>.</div>
+<div class="paragraph">
+<br>
+This option is especially useful if Apache is not allowed to write to /tmp (which is the case on some systems with strict SELinux policies) or if the partition that /tmp lives on doesn’t have enough disk space.</div></blockquote>
+Ok let's start the upload and see what happens:
+<br>
+=====&gt; <strong>Memory goes up!</strong>
+<pre># ./passenger-memory-stats
+ -------------- Apache processes ---------------
+ PID    PPID   Threads  VMSize    Private  Name
+ -----------------------------------------------
+ 30840  1      1        184.3 MB  0.0 MB   /usr/sbin/httpd
+ 30852  30840  1        186.2 MB  ?        /usr/sbin/httpd
+ 30853  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30854  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30855  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30856  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30857  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30858  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ 30859  30840  1        184.3 MB  ?        /usr/sbin/httpd
+ ### Processes: 9
+ ### Total private dirty RSS: 0.03 MB (?)</pre>
+<pre>---------- Passenger processes -----------
+ PID    Threads  VMSize     Private   Name
+ ------------------------------------------
+ 30847  4        14.1 MB    0.1 MB    /opt/ruby-enterprise-1.8.6-20090201/lib/ruby/gems/1.8/gems/passenger-2.1.3/ext/apache2/ApplicationPoolServerExecutable 0
+/opt/ruby-enterprise-1.8.6-20090201/lib/ruby/gems/1.8/gems/passenger-2.1.3/bin/passenger-spawn-server  /opt/ruby-enterprise-1.8.6-20090201/bin/ruby
+<strong>/tmp/passenger.30840/info/status.fifo</strong>
+ 30848  1        87.7 MB    ?         Passenger spawn server
+ 30888  1        123.6 MB   0.0 MB    Passenger ApplicationSpawner: /home/myrailsapp
+ 30892  1        <strong>1777.4 MB  847.5 MB</strong>  Rails: /home/myrailsapp
+ ### Processes: 4
+ ### Total private dirty RSS: <strong>847.62 MB</strong> (?)</pre>
+Very strange: in the /opt/ruby-enterprise-1.8.6-20090201/lib/ruby/gems/1.8/gems/passenger-2.1.3/ext/apache2/Hooks.cpp
+of the passenger source
+<pre>     expectingUploadData = ap_should_client_block(r);
+     if (expectingUploadData &amp;&amp; atol(lookupHeader(r, "Content-Length"))
+             &gt; UPLOAD_ACCELERATION_THRESHOLD) {
+          uploadData = receiveRequestBody(r);
+     }</pre>
+the part expectionUploadData is the one that sends the
+<pre> &gt; Expect: 100-continue</pre>
+But is seems curl, isn't handling this request, it keeps on streaming the file, ignoring the response.
+<br>
+To avoid having mod_Rails sending this, we can fall back to http/1.0 using <strong>-0</strong> on the curl options.
+<pre>$ curl -v <strong>-0 </strong>-F datafile['file']=@large.zip http://localhost:80
+* About to connect() to localhost port 80
+*   Trying 127.0.0.1... connected
+* Connected to localhost (127.0.0.1) port 80
+&gt; POST /uploader/ <strong>HTTP/1.0</strong>
+&gt; User-Agent: curl/7.15.5 (x86_64-redhat-linux-gnu) libcurl/7.15.5 OpenSSL/0.9.8b zlib/1.2.3 libidn/0.6.5
+&gt; Host: localhost
+&gt; Accept: */*
+&gt; Content-Length: 421331151
+&gt; Content-Type: multipart/form-data; boundary=----------------------------1b04b7cb6566</pre>
+Now the correct mechanism happens.
+<pre>/tmp/passenger.1291/backends/backend.g0mi40ARBFbEdb08pxB3uzyh3JJyfR1eaI9xPuQwyLEd3NjQ24rbpSBb9FrZfNX5WI5VYQ</pre>
+====&gt;<strong> Memory doesn't go up: good! (again)</strong>
+<br>
+====&gt; Same number of files = 1 /tmp/passenger + similar to previous examples
+<br>
+<span>The alternatives: (non-rails)
+</span>
+<br>
+The problem so far, is mainly a problem of implementation, there is no reason why streaming a file upload would not be possible in rails.
+<br>
+The correct hooks for streaming the file directly to a handler without temporary files or memory, are currently just not there.
+<br>
+I hope eventually we will see an Upload streaming API (similar to the download Stream API) and a streamable Multipart handler.
+<br>
+<em>Alternative 1: have the webserver handle our stream directly</em>
+<ul>
+	<li><a href="http://apache.webthing.com/mod_upload/"> http://apache.webthing.com/mod_upload/</a>: a apache module for doing uploads directly in the webserver</li>
+	<li><a href="http://www.motionstandingstill.com/nginx-upload-awesomeness/2008-08-13/"> http://www.motionstandingstill.com/nginx-upload-awesomeness/2008-08-13/</a>: a nginx module for doing uploads</li>
+</ul>
+<em>Alternative 2: Write our own httpserver in ruby:</em>
+<p>Using a Raw HTTP Server, Plain sockets to implement webserver,<a href="http://lxscmn.com/tblog/?p=25 "> http://lxscmn.com/tblog/?p=25 </a></p>
+<br>
+<em>Alternative 3: Use apache commons fileupload component in java</em>
+<br>
+This component is exactly what we need in rails/ruby. <a href="http://commons.apache.org/fileupload/">http://commons.apache.org/fileupload/
+</a>
+<br>
+Up until now, this is what we will use. It has streamable API for both the incoming AND the multiparts!
+<br>
+Read more at <a href="http://www.jedi.be/blog/2009/04/10/java-servlets-and-large-large-file-uploads-enter-apache-fileupload/">http://www.jedi.be/blog/2009/04/10/java-servlets-and-large-large-file-uploads-enter-apache-fileupload/</a>

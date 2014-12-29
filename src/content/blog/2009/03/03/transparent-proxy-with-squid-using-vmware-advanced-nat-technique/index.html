@@ -1,0 +1,115 @@
+---
+title: "Transparent Proxy with Squid using Vmware Advanced NAT technique"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=595
+created_at: 2009-03-03 17:00:20.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - vmnet1
+   - nat
+   - iptables
+   - vmware
+   - packages
+   - rpm
+   - vmnet8
+   - transparent
+   - squid
+   - proxy
+---
+This article describes how you can setup a transparent proxy with squid for your vmware virtual machines using Advanced NAT techniques.
+<br>
+There are two options to have virtual machines use a Squid for proxying and caching downloads:
+<ol>
+	<li><strong>Proxy:</strong> configure all applications such as yum, yast using their proxy setting f.i. using http_proxy env variable</li>
+	<li><strong>Transparant Proxy:</strong> use a transparent proxy server that automatically catches all traffic on port 80 and redirects it to a squid proxy</li>
+</ol>
+The first options is difficult to manage and you need to have a good knowledge of all proxy configurations of the applications. The second is as says 'transparent' and scales better.
+<br>
+The most traditional approach for implementing option 2 is by setting up a squid box somewhere in the network and have a system where all the traffic passes redirect traffic to that box. While this is certainly a recommended setup, it does requires an additional box to do the job. In this solution the squid will be running on the box hosting all the vmware machines.
+<br>
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png"><img title="vmware-advanced-nat-with-squid" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png" height="778" alt="" width="1071" /></a>
+<br>
+But first things first, lets install squid (we used 2.5Stable 12). More info at <a href="http://www.wains.be/index.php/2006/12/18/transparent-squid/">http://www.wains.be/index.php/2006/12/18/transparent-squid/
+</a>
+<br>
+# yum install squid
+<br>
+Edit the config  (/etc/squid/squid.conf) to make it act as caching proxy
+<br>
+<em>#caching large files for ISO and other stuff</em>
+maximum_object_size 40960000 KB
+<em>#enable access from hosts in vmnet1</em>
+acl our_vmnet1_network src 192.168.1.0/24
+http_access allow our_vmnet1
+<em>#virtual port for squid</em>
+httpd_accel_port 80
+<em>#enable proxy accelarator</em>
+httpd_accel_with_proxy on
+<em>#enable correct headers for transparent proxy</em>
+httpd_accel_uses_host_header on
+<br>
+And then start squid
+<br>
+#/etc/init.d/squid start
+<br>
+and logs go into /var/squid/access.log
+<br>
+So what are our options for the virtual machines networking?
+<ol>
+	<li><strong>Using a bridged network</strong>: bridging makes virtual machines appear on the same network as the server hosting the virtual machines, so vmnet0 will be on the same network as eth0</li>
+	<li><strong>Using a NAT network</strong>: the nat interface of vmware actually is maintained by the vmnet-natd process. Traffic does not passes the network stack so that we can change it with iptables Redirect</li>
+	<li><strong>Using a Host-Only network:</strong> this is normally not an option because traffic on a host-only network interface is supposed not to leave the box. Still we can make this to work with a bit of extra work.</li>
+</ol>
+The image shows for option the route the packets take. As option 1 &amp; 2 are not really an option for us, we will concentrate on option 3.
+<br>
+<em>Step 0: make vmnet1 available so that we can use it at the vmware server level</em>
+<br>
+# vmnet-netifup  -d /var/run/vmnet1.pid /dev/vmnet1 vmnet1
+<br>
+now vmnet1 shows up if we do an ifconfig vmnet1 and give it the IP
+<br>
+<em>Step 1: setting the correct gateway and DNS settings for vmnet1</em>
+<br>
+As vmnet1 normally does not have a gateway, the <em>/etc/vmware/vmnet1/dhcpd/dhcpd.conf</em> does not contain the following settings
+<br>
+option domain-name-servers IP-from-your-DNS;
+option domain-name "your-domain.com";
+option routers 192.168.1.10;
+<br>
+The 192.168.1.10 is the IP address you assigned using the manual ipconfig . It has nothing todo with the vmnet1 ip-address that you during the vmware-config.pl to your vmnet1 interface. See <em>/etc/vmware/config</em>, vmnet1.hostonlyaddress= "192.168.1.1" setting.
+<br>
+<em>Step 2: enable forwarding</em>
+<br>
+now that we have two interface we can play with, we can enable the forwarding
+<br>
+# echo 1 &gt; /proc/sys/net/ipv4/ip_forward
+# iptables -A FORWARD -i vmnet1 -j ACCEPT
+# iptables -A FORWARD -i eth0 -j ACCEPT
+<br>
+<em>Step 3: redirect traffic on destination port 80 to 3128 (Squid)</em>
+<br>
+# iptables -t nat -A PREROUTING -i vmnet1  -p tcp --dport 80 -s 192.168.1.0/24 -j REDIRECT --to-port 3128
+<br>
+<em>Step 4: masquerade traffic coming from virtual </em>
+<br>
+# iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+<br>
+<em>Step 5: if you're  using a firewall check that you enabled port 3128</em>
+<br>
+# iptables -L -t nat
+<br>
+# iptables -L
+<br>
+errors will go into /var/log/firewall
+<br>
+Now check that when your hosts go the internet, their accesses are logged in the /var/squid/access.log
+<br>
+P.S. While the whole excercise was done to cache f.i. yum and other packages during installation, I found that most of the repositories don't play nicely with the http-headers thereby causing MISSES in the cache.
+<br>
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png">
+</a>

@@ -1,0 +1,104 @@
+---
+title: "Dancing with Selenium, Firefox 3 and Safari on Mac OSX"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/10/15/dancing-with-selenium-firefox-3-and-safari-on-mac-osx/
+created_at: 2008-10-15 11:19:10.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Java related
+   - Agile: Development, Testing and Infrastructure
+tags:
+   - safari
+   - firefox
+   - selenium
+---
+I must say, Selenium is fun to play with but not really an out of the box experience. At least not the Selenium-RC part.
+<br>
+I've downloaded the "Selenium Remote Control 1.0 beta-1" version to try it out and created a small java app to run it directly from java.
+<br>
+Sample Code:
+<pre class="java">SeleniumServer server = null;
+ DefaultSelenium browser=null;
+try {
+ 	//create a selenium server on port 4444 and enable multiwindow support (=true);
+       server=new SeleniumServer(4444,false,true);
+	server.start();
+        //create a new browser and point it to the selenium server on 4444
+	//use firefox in *chrome mode to use the captureEntirePageScreenShot function
+	browser=new DefaultSelenium("localhost", 4444, "*chrome", "http://www.jedi.be");
+	browser.start();
+	browser.windowMaximize();browser.setBrowserLogLevel("debug");
+browser.open("http://www.jedi.be");
+browser.captureEntirePageScreenshot("/tmp/snapshot.png");
+} catch (Exception e) {	e.printStackTrace()	if(server!=null) {
+server.stop();
+	}
+	if(browser!=null) {
+browser.stop()
+	}
+}</pre>
+<strong><span>Firefox 2.x: mostly OK
+</span></strong>
+This worked ok for most of my test URL's my Firefox 2 : Build identifier: Mozilla/5.0 (Macintosh; U; Intel Mac OS X; en-US; rv:1.8.1.17) Gecko/2008082910 Firefox/2.0.0.17.For some sites it would print out an error saying:
+<pre>//5:48:53.018 INFO - Got result: ERROR: Selenium failure.
+Please report to the Selenium Users forum at http://forums.openqa.org,
+with error details from the log window.
+The error message is: Component returned failure code: 0x80004005 (NS_ERROR_FAILURE)
+[nsIDOMCanvasRenderingContext2D.drawWindow] on session
+6f08be65c1ec452b851337adda9590bb</pre>
+It would this on simple pages and would often keep doing this for the next pages as well. The way the screens are captured is that selenium makes use of the canvas element and tries to make a image out of it using the drawWindow command.
+<br>
+I considered that this might be a problem for firefox 2.x so I decided to upgrade to Firefox 3.x
+<br>
+<strong><span>Firefox 3.x: first hangs then fixed</span></strong>
+I went to download the firefox 3 app and replaced my /Application/Firefox.app with the new version. I re-ran the same code and Firefox 3 would just hang printing a message:
+<pre>Preparing Firefox profile...</pre>
+It turns out that the plugins Selenium puts in to the default profile it creates, still contain the maxVersion of 2.x. I followed the procedure on <a href="http://www.spacevatican.org/2008/9/27/selenium-and-firefox-3"> http://www.spacevatican.org/2008/9/27/selenium-and-firefox-3</a>
+and updated the install.rdf files within the selenium-server.jar and this would launch my firefox3 happily.
+<br>
+Alas, the same error:
+<pre>returned failure code: 0x80004005 (NS_ERROR_FAILURE)
+[nsIDOMCanvasRenderingContext2D.drawWindow] on session
+6f08be65c1ec452b851337adda9590bb</pre>
+But I still had another browser on my Macbook, on to Safari...
+<br>
+<strong><span>Safari: launch error, popups and crash ...</span></strong>
+launch error
+<br>
+Quickly change the line *chrome to *safari and the code would crash complaining about:
+<pre>cp: /Library/Preferences/SystemConfiguration/preferences.plist.old: Permission denied</pre>
+This file is not present, but Selenium is trying to make a backup of the network preferences using the network-setup command. It seems if this ever fails the preferences file can become corrupt.
+<br>
+I deleted the file, but it would not help, only making another error. Beware: deleting the file looses all your preferences. I ran the network preferences and it was empty. I rebooted and this file was recreated and I could now run the program and have Safari launch itself. But after another crash it would again complain about the permission denied. I again deleted the file but also decided to run.
+<br>
+Another mail suggested to run fix permissions:
+<pre># diskutil repairPermissions /
+Started verify/repair permissions on disk disk0s2 Macintosh HD
+[ | 0%..10%..20%......................................... ]</pre>
+And this would help, as for now.
+<br>
+popups blocked
+<br>
+Now Safari was launched but the TestRunner would not execute anything. The log window revealed:
+<pre>error(1224061648997): Couldn't open app window; is the pop-up blocker enabled?</pre>
+So I opened the Safari and changed the preference to allow pop-ups. And this got me further.
+<br>
+crashes
+<br>
+But then it crashes when Safari tries to make the snapshot saying:
+<pre>Undefined value on session 7b5337cdfcb842f3a69cdfdf3a8cb591</pre>
+It showed that maybe because I was test driving URL's outside my initial domain www.jedi.be, this would only be possible with *chrome , *iehta or running in proxy injection mode.
+<br>
+I added
+<pre>server.setProxyInjectionMode(true);</pre>
+But it would complain about:
+<pre>WARN - no transformation seen for key @SESSION_ID@</pre>
+This seems to be a bug in the 1.0-beta-1 . And there is a fix:
+<ul>
+	<li><a href="http://jira.openqa.org/browse/SRC-515">http://jira.openqa.org/browse/SRC-515</a></li>
+	<li><a href="http://clearspace.openqa.org/thread/15059">http://clearspace.openqa.org/thread/15059</a></li>
+</ul>
+I'll stil have to figure this out....

@@ -1,0 +1,317 @@
+---
+title: Puppet unit testing like a pro
+created_at: 2011-12-05 12:35:34.199577 +02:00
+tags:
+- puppet
+- rspec
+- cucumber
+- testing
+- lint
+blog_post: true
+filter:
+- erb
+- markdown
+related:
+- desc: Puppet editing like a pro
+  link: http://jedi.be/blog/2011/12/05/puppet-editing-like-a-pro
+- desc: Puppet versioning like a pro
+  link: http://jedi.be/blog/2011/12/05/puppet-versioning-like-a-pro/
+---
+**A big thanks to [Atlassian](http://www.atlassian.com) for allowing me to post this series!!**
+
+In our [previous blogpost on Puppet Versioning](http://jedi.be/blog/2011/12/05/puppet-versioning-like-a-pro/), we described the most basic check to see if a puppet manifest was valid. We used the parseonly function to see if it would compile.
+
+Until know this means we have only have _if the compiler is happy_, not that it performs _the function it needs to do._ In 2009 after the [first devopsdays](http://devopsdays.org/events/ghent09) I wrote a collection of [Test Driven Infrastructure Links](http://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/) . This was obviously inspired by [Lindsay Holmwood's talk on cucumber-nagios](http://auxesis.github.com/cucumber-nagios/).
+
+On the Opscode chef front, [Stephen Nelson-Smith](http://agilesysadmin.net/) wrote a great book [Test-driven Infrastructure with Chef](http://www.cucumber-chef.org/) on how to do this. Also see the [cuken project](https://www.relishapp.com/hedgehog/cuken/docs/about-cuken-s-reusable-steps) where re-usable cucumber steps are grouped.
+
+Because we are using Puppet here at Atlassian, I was out to understand the current state of puppet testing.
+A lot can already be found at <http://puppetlabs.com/blog/testing-modules-in-the-puppet-forge/>
+
+Note that I've purposely named this blog 'Puppet **unit** testing', as the tests I'm describing now, don't run against an actual system. Therefore it's hard to test the actual behavior.
+
+<hr>
+### Tip 1: cucumber-puppet
+Inspired by [Lindsay Holmwood's talk on cucumber-nagios](http://auxesis.github.com/cucumber-nagios/) and [Ohad Levy's manitest](https://github.com/ohadlevy/manitest) [Nikolay Sturm](http://blog.nistu.de/) created [*cucumber-puppet*](https://github.com/nistude/cucumber-puppet)
+
+In his post on [Thoughts on testing puppet manifests](http://blog.nistu.de/2010/08/23/thoughts-on-testing-puppet-manifests/) he explains that the idea of writing tests is NOT about duplicating the code, and he identified the most common problems he was facing are:
+
+- catalog does not compile: syntax errors, missing template files, ..
+- catalog does compile, but cannot be applied: unreachable or non-existent resources, missing file resources in repo
+- catalog does applies, but is faulty: faulty files, due to empty manifests variables or wrong values, missing dependencies (wrong order ...), files are installed without ensuring a directory ...
+
+An important advice is: 
+
+> Resource specifications can be useful for documentation purposes or refactorings. However, there is a risk of reimplementing your Puppet manifest, so be wary.
+
+    $ cd puppet-mymodule
+    $ gem install cucumber-puppet
+
+Write features per module, this is the structure we are aiming at:
+
+    module
+      +-- manifests
+      +-- lib
+      +-- features
+           +-- support
+           |     +-- hooks.rb
+           |     +-- world.rb
+           +-- catalog
+           +-- feature..
+
+Generate a cucumber-puppet world:
+
+    $ cucumber-puppet-gen world
+    Generating with world generator:
+         [ADDED]  features/support/hooks.rb
+         [ADDED]  features/support/world.rb
+         [ADDED]  features/steps
+
+    # Adjust the paths to your modules and manifests
+    $ cat features/support/hooks.rb
+    Before do
+      # adjust local configuration like this
+      # @puppetcfg['confdir']  = File.join(File.dirname(__FILE__), '..', '..')
+      # @puppetcfg['manifest'] = File.join(@puppetcfg['confdir'], 'manifests', 'site.pp')
+      # @puppetcfg['modulepath']  = "/srv/puppet/modules:/srv/puppet/site-modules"
+
+      # adjust facts like this
+      @facts['architecture'] = "i386"
+    end
+
+    # Nothing exciting here
+    $ cat features/support/world.rb
+
+    require 'cucumber-puppet/puppet'
+    require 'cucumber-puppet/steps'
+
+    World do
+      CucumberPuppet.new
+    end
+
+Generating a policy feature:
+
+    $ cucumber-puppet-gen policy
+    Generating with policy generator:
+         [ADDED]  features/catalog
+
+    # Notice the <hostname>.example.com.yaml
+    # These files contain the facts to test your catalog against
+    # 
+    $ cat features/catalog/policy.feature 
+    Feature: General policy for all catalogs
+      In order to ensure applicability of a host's catalog
+      As a manifest developer
+      I want all catalogs to obey some general rules
+
+      Scenario Outline: Compile and verify catalog
+        Given a node specified by "features/yaml/<hostname>.example.com.yaml"
+        When I compile its catalog
+        Then compilation should succeed
+        And all resource dependencies should resolve
+
+        Examples:
+          | hostname  |
+          | localhost |
+
+ To do an actual run:
+
+    $ cucumber-puppet features/catalog/policy.feature 
+    Feature: General policy for all catalogs
+      In order to ensure applicability of a host's catalog
+      As a manifest developer
+      I want all catalogs to obey some general rules
+
+      Scenario Outline: Compile and verify catalog                            # features/catalog/policy.feature:6
+        Given a node specified by "features/yaml/<hostname>.example.com.yaml" # cucumber-puppet-0.3.6/lib/cucumber-puppet/steps.rb:1
+        When I compile its catalog                                            # cucumber-puppet-0.3.6/lib/cucumber-puppet/steps.rb:14
+        Then compilation should succeed                                       # cucumber-puppet-0.3.6/lib/cucumber-puppet/steps.rb:48
+        And all resource dependencies should resolve                          # cucumber-puppet-0.3.6/lib/cucumber-puppet/steps.rb:28
+
+        Examples: 
+          | hostname  |
+          | localhost |
+          Cannot find node facts features/yaml/localhost.example.com.yaml. (RuntimeError)
+          features/catalog/policy.feature:7:in `Given a node specified by "features/yaml/<hostname>.example.com.yaml"'
+
+    Failing Scenarios:
+    cucumber features/catalog/policy.feature:6 # Scenario: Compile and verify catalog
+
+    1 scenario (1 failed)
+    4 steps (1 failed, 3 skipped)
+    0m0.006s
+
+List of commands:
+
+    Generators for cucumber-puppet
+
+    Available generators
+        feature                          Generate a cucumber feature
+        policy                           Generate a catalog policy
+        testcase                         Generate a test case for the test suite
+        testsuite                        Generate a test suite for puppet features
+        world                            Generate cucumber step and support files
+
+    General options:
+        -p, --pretend                    Run, but do not make any changes.
+        -f, --force                      Overwrite files that already exist.
+        -s, --skip                       Skip files that already exist.
+        -d, --delete                     Delete files that have previously been generated with this generator.
+            --no-color                   Don't colorize the output
+        -h, --help                       Show this message
+            --debug                      Do not catch errors
+
+
+He has also added support for testing [exported-resources](http://blog.nistu.de/2011/09/04/testing-exported-resources-with-cucumber-puppet/).
+
+- I found it not very clear from the documentation, I better understood the basics while watching [a good video tutorial on cucumber-puppet](http://www.infoq.com/presentations/BDD-with-Puppet-Cucumber) was given by [Tom Sulston](https://twitter.com/tomsulston).
+- General information on cucumber can be found in the [Pragmatic Programmers's Cucumber book](http://pragprog.com/book/hwcuc/the-cucumber-book)
+- Or at the the cucumber main site <http://cukes.info/>
+
+And for a more practical explanation, see how Oliver Hookins describes [the way Nokia uses cucumber-puppet](http://paperairoplane.net/?p=233)
+
+    Scenario: Proxy host and port have sensible defaults
+      Given a node of class "mymodule::myapp"
+      And we have loaded "test" settings
+      And we have unset the fact "proxy_host"
+      And we have unset the fact "proxy_port"
+      When I compile the catalog
+      Then there should be a file "/etc/myapp/config.properties"
+      And the file should contain "proxy.port=-1"
+      And the file should contain /proxy\.host=$/
+
+    ----
+
+    Then /^the file should contain "(.*)"$/ do |text|
+      fail "File parameter 'content' was not specified" if @resource["content"].nil?
+      fail "Text content [#{text}] was not found" unless @resource["content"].include?(text)
+    end
+
+    Then /^the file should contain \/([^\"].*)\/$/ do |regex|
+      fail "File parameter 'content' was not specified" if @resource["content"].nil?
+      fail "Text regex [/#{regex}/] did not match" unless @resource["content"] =~ /#{regex}/
+    end
+
+
+<hr>
+### Tip 2: rspec-puppet
+While the idea on using specs and puppet is not new (<https://github.com/jes5199/puppet_spec>),
+the new tool on the block is [rspec-puppet](https://github.com/rodjek/rspec-puppet) brought to us by [Tim Sharpe](https://twitter.com/#!/rodjek). The same person who gave us [vim-puppet](https://github.com/rodjek/vim-puppet) and [puppet-lint](https://github.com/rodjek/puppet-lint)
+
+Like the cucumber-puppet structure, the idea is to have specs directory close to your module:
+
+    module
+      +-- manifests
+      +-- lib
+      +-- spec
+           +-- spec_helper.rb
+           +-- classes
+           |     +-- <class_name>_spec.rb
+           +-- defines
+           |     +-- <define_name>_spec.rb
+           +-- functions
+                 +-- <function_name>_spec.rb
+
+I found it useful to change the default spec_helper.rb as the default 
+
+    require 'rspec-puppet'
+
+    RSpec.configure do |c|
+       c.module_path = File.expand_path(File.join(File.dirname(__FILE__), '..', '..'))
+       c.manifest_dir = File.expand_path(File.join(File.dirname(__FILE__), '..', '..','..','manifests'))
+    end
+
+
+    desc "Run specs check on puppet manifests"
+    RSpec::Core::RakeTask.new(:spec) do |t|
+       t.pattern = './demo-puppet/modules/**/*_spec.rb' # don't need this, it's default
+       t.verbose = true
+       t.rspec_opts = "--format documentation --color"
+        # Put spec opts in a file named .rspec in root
+      end
+
+Here is a quick example for checking if the class apache installs a package httpd when on a Debian system
+
+    require "#{File.join(File.dirname(__FILE__),'..','spec_helper')}"
+
+    describe 'apache', :type => :class do
+      let (:title { 'basic' })
+      let(:params) { { } }
+      let(:facts) { {:operatingsystem => 'Debian', :kernel => 'Linux'} }
+
+      it { should contain_package('httpd').with_ensure('installed') }
+    end
+
+A more detailed description can be found at
+
+- <http://bombasticmonkey.com/2011/11/04/test-your-puppet-modules-functions/>
+
+For more generic information on rspec:
+
+- The main website to find all the expectations, Mocks etc.. <http://rspec.info/documentation/>
+- The book on Rspec by Pragmatic programmers- <http://pragprog.com/book/achbd/the-rspec-book>
+
+### Conclusion cucumber-puppet vs rspec-puppet
+I think you can write your tests in both to do the same. Currently they both support 2.6 and 2.7
+
+I found the rspec-puppet a bit simpler to juggle with providing params like :name or :facts.
+The yaml file didn't feel to flexible to me. Also cucumber seems to install more dependent gems, that might inflict with other projects.
+
+ But as Nikolay already said: 
+
+> "don't duplicate your manifests in your tests"
+> Focus on the catalog problems he described earlier and test your logic.
+> Don't test if puppet is doing it's job, test that your logic it's doing it's job.
+
+This is why I called them unit-tests, they don't test the real functionality. (That's for the next blogpost)
+
+<hr>
+### Tip 3: puppet-lint
+To check you files against programming style you can use <https://github.com/rodjek/puppet-lint>.
+It will check for Rules on Spacing, Identation & Whitespace , Quoting, Resources, Conditionals, Classes
+
+An easy way to integrate it in your Rakefile is:
+
+    require 'puppet-lint'
+
+    desc "Run lint check on puppet manifests"
+    task :lint do
+    linter =  PuppetLint.new
+      Dir.glob('./demo-puppet/modules//**/*.pp').each do |puppet_file|
+        puts "Evaluating #{puppet_file}"
+        linter.file = puppet_file
+        linter.run
+      end
+      fail if linter.errors?
+     end
+
+Now you can simply run:
+
+    $ rake lint
+
+<hr>
+### Tip 4: go wild and build your own test/catalog logic
+After having a look at the rspec-puppet logic, I looked deeper in the way to walk trough the catalog object. This is pretty much work in progress, but the idea is find a way to look at changes in the catalog.
+
+The following is a list of useful examples on understanding on how to work with puppet in ruby code:
+
+ The first list of links are some fun tools written by Dean Wilson of [www.puppetcookbook.com](http://www.puppetcookbook.com/) fame:
+
+- <http://www.unixdaemon.net/tools/puppet/puppet-cucumber-providers.html>
+- <http://www.unixdaemon.net/tools/puppet/listing-puppet-managed-files.html>
+- <https://github.com/deanwilson/puppet-scripts/blob/master/puppet-ls>
+- <https://github.com/deanwilson/puppet-scripts/blob/master/puppet-pkg>
+- <https://github.com/deanwilson/puppet-scripts/blob/master/pm-grep>
+
+R.I. Pienaar of [Mcollective Fame](http://puppetlabs.com/mcollective/introduction/) shows a way to create diff on a catalog. this can be useful to understand what tests to run in between changes:
+
+- <http://www.devco.net/archives/2010/11/14/getting_diffs_for_puppet_catelogs.php>
+- <https://github.com/ripienaar/puppet-catalog-diff>
+
+- Dramatically better CLI tools for interacting with Puppet: <https://github.com/lak/puppet-interfaces>
+
+- And another fun tool is [puppet-growl](https://github.com/AhmedElGamil/puppet-growl) that will run a puppet file syntax check everytime a file changes in a directory. 
+
+This final gist shows how to walk through the catalog and check the classes and resources available:
+
+[https://gist.github.com/1430062#file_puppet_demo.rb](https://gist.github.com/1430062#file_puppet_demo.rb)

@@ -1,0 +1,138 @@
+---
+title: "Build a SOAP Service with Rails 2.x"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=691
+created_at: 2009-04-09 11:07:32.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - soap
+   - rails
+   - actionwebservice
+   - datanoise
+---
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/ruby_on_rails_logo.jpg"><img title="ruby_on_rails_logo" class="size-medium wp-image-692 alignleft" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/ruby_on_rails_logo-252x300.jpg" height="192" alt="" width="162" /></a><a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/zeep.jpg"><img title="soap" class="size-medium wp-image-693 alignright" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/zeep-300x300.jpg" height="183" alt="" width="183" /></a>
+<br>
+In the days of Rails 1.x, building a SOAP service in Rails was easy. There was the actionwebservice gem that enabled SOAP services, similar to what we know as ActionResource today.
+<br>
+Be it good or bad, SOAP eventually got replaced by REST within the Rails world, leaving the net scattered with examples on how to build a SOAP service with Rails 1.x but not much for 2.x
+<br>
+<span><em>The first thing I tried (but did not work):</em></span>
+<br>
+Inspired by<a href="http://www.devarticles.com/c/a/Ruby-on-Rails/Web-Forms-and-Ruby-on-Rails/2/"> http://www.devarticles.com/c/a/Ruby-on-Rails/Web-Forms-and-Ruby-on-Rails/2/</a>
+<pre>$ gem install actionwebservice</pre>
+<p>This installed ok, bringing all the older versions of action series gems along with it.</p>
+<br>
+<pre>$ ./script/generate web_service ...<em>
+</em></pre>
+<p>It did not have the generator, so much for this solution</p>
+<br>
+<span>The solution: enter datanoise actionwebservice:
+</span>
+<br>
+<a href="http://www.datanoise.com/">The guys from datanoise</a>, <a href="http://www.datanoise.com/articles/2008/7/2/actionwebservice-is-back">brought it back alive</a> with a version that works in rails 2.x again.
+<br>
+Details on how to use it, can be found on <a href="http://www.datanoise.com/articles/2008/7/2/actionwebservice-is-back">http://www.datanoise.com/articles/2008/7/2/actionwebservice-is-back</a>
+<br>
+I'll redo the example done in the rails 1.x article to the datanoise style
+<pre>$ gem install datanoise-actionwebservice --source http://gems.github.com
+./script/generate
+....
+Installed Generators
+  Rubygems: web_service
+  Builtin: controller, helper, integration_test, mailer, metal, migration, model, observer, performance_test, plugin, resource, scaffold, session_migration
+....
+<br>
+$ ./script/generate web_service Item
+      create  app/services/
+      exists  app/controllers/
+      exists  test/functional/
+      create  app/services/item_api.rb
+      create  app/controllers/item_controller.rb
+      create  test/functional/item_api_test.rb</pre>
+As you can see, it puts its files in /app/services instead of app/api .
+<br>
+Next step is to add the gem to the conf/environment.rb so that is knows the correct actionwebservice gem
+<pre>     config.gem 'datanoise-actionwebservice', :lib =&gt; 'actionwebservice'</pre>
+Modify the file app/controllers/item_controller.rb
+<pre>class ItemController &lt; ApplicationController
+  wsdl_service_name 'Item'
+  web_service_api ItemApi
+  web_service_scaffold :invocation if Rails.env == 'development'
+<br>
+  def add(name, value)
+    Item.create(:name =&gt; name, :value =&gt; value).id
+  end
+<br>
+  def edit(id, name, value)
+    Item.find(id).update_attributes(:name =&gt; name, :value =&gt; value)
+  end
+<br>
+  def fetch(id)
+    @item1=Item.find(id)
+    Item.new(:id =&gt; "{@item1.id}", :value =&gt; "#{@item1.value}", :name =&gt; "#{@item1.name}")
+  end
+end</pre>
+Modify the file app/controllers/item_api.rb
+<pre>class ItemApi &lt; ActionWebService::API::Base
+    api_method :add, :expects =&gt; [:string, :string], :returns =&gt; [:int]
+    api_method :edit, :expects =&gt; [:int, :string, :string], :returns =&gt; [:bool]
+    api_method :fetch, :expects =&gt; [:int], :returns =&gt; [Item]
+end</pre>
+Ok, let's start the service know, and see if we can read the wsdl file
+<pre>$ ./script/server
+$ curl http://localhost:3000/item/wsdl
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;definitions name="Item" xmlns:typens="urn:ActionWebService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:ActionWebService" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns="http://schemas.xmlsoap.org/wsdl/"&gt;
+  &lt;types&gt;
+    &lt;xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="urn:ActionWebService"&gt;
+      &lt;xsd:complexType name="Item"&gt;
+        &lt;xsd:all&gt;
+          &lt;xsd:element name="id" type="xsd:int"/&gt;
+          &lt;xsd:element name="name" type="xsd:string"/&gt;
+          &lt;xsd:element name="value" type="xsd:string"/&gt;
+          &lt;xsd:element name="created_at" type="xsd:dateTime"/&gt;
+          &lt;xsd:element name="updated_at" type="xsd:dateTime"/&gt;
+        &lt;/xsd:all&gt;
+      &lt;/xsd:complexType&gt;
+    &lt;/xsd:schema&gt;
+  &lt;/types&gt;
+ .......
+<br>
+$ curl http://localhost:3000/item/invocation
+...some..nice..readable..html...</pre>
+So far so good, let's build a Soap Client to use the service via ruby. Create a file test.rb
+<pre>require 'soap/wsdlDriver'
+wsdl = "http://localhost:3000/item/service.wsdl"
+item_server = SOAP::WSDLDriverFactory.new(wsdl).create_rpc_driver
+item_id = item_server.add('foo', 'bar')
+if item_server.edit(item_id, 'John', 'Doe')
+   puts 'Hey, it worked!'
+else
+   puts 'Back to the drawing board...'
+end
+# Hey, it worked!
+item = item_server.fetch(item_id)
+item.class     # =&gt; SOAP::Mapping::Object
+item.name      # =&gt; "John"
+item.value     # =&gt; "Doe"</pre>
+If we run this, it will spit out the error “Cannot Map {objType} to SOAP/OM”.
+<br>
+It seems to be a problem with the way the Arrays are handled. I'm unsure how to describe the real issue, but here are some links about the subject.
+<ul>
+	<li> <a href="http://benrobb.com/2007/02/06/cannot-map-objtype-to-soapom/">http://benrobb.com/2007/02/06/cannot-map-objtype-to-soapom/</a></li>
+	<li> <a href="http://www.evenflow.nl/2009/04/02/rails-and-soap/comment-page-1/">http://www.evenflow.nl/2009/04/02/rails-and-soap/comment-page-1/</a></li>
+	<li><a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/211011">http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/211011</a></li>
+</ul>
+The solution was to use another notation assign the values to a new Item using the #{@item1.value} notation. So if we change the function fetch:
+<pre>  def fetch(id)
+    @item1=Item.find(id)
+    Item.new(:id =&gt; "{@item1.id}", :value =&gt; "#{@item1.value}", :name =&gt; "#{@item1.name}")
+  end</pre>
+The example now works again. So far, Soap for Rails seems to be working ok.
+<br>
+P.S. If you are consuming it with axis2, chances are that it uses 'Transfer-Encoding: chuncked'. Actionwebservice doesn't seem to handle this ok.

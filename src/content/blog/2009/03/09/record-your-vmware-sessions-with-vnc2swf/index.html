@@ -1,0 +1,93 @@
+---
+title: "Record your vmware sessions with vnc2swf"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=614
+created_at: 2009-03-09 15:52:23.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - vnc
+   - vmware
+   - vnc2swf
+   - flash
+---
+Vmware has a nice way of enabling a VNC session for the virtual machine that is running. Using vnc2swf you can record these session into a flash video.
+<br>
+<strong>Enable VNC in your vmware image</strong>
+<br>
+Stop your Virtual Machine first. (others changes will be overwritten)
+<br>
+Edit your .vmx file and set the following variables to your liking
+<br>
+<em>RemoteDisplay.vnc.enabled = "TRUE"</em>
+<br>
+<em>RemoteDisplay.vnc.password = "vncpassword"</em>
+<br>
+<em>RemoteDisplay.vnc.port = "5900"</em>
+<br>
+Restart your virtual machine and verify the connection with a vnc client
+<br>
+<strong>Get the vnc2swf package</strong>:
+<br>
+Source can be found at <a href="http://www.unixuser.org/~euske/vnc2swf/">http://www.unixuser.org/~euske/vnc2swf/</a>
+<br>
+I got mine for Centos x86_64 from the dag wieers repository:
+<br>
+[root@mymachine tmp]# wget http://dag.wieers.com/rpm/packages/vnc2swf/vnc2swf-0.5.0-2.el5.rf.x86_64.rpm
+<br>
+If you would install the package first, you need to satisfy some dependencies
+<br>
+[root@mymachine tmp]# rpm -ihv vnc2swf-0.5.0-2.el5.rf.x86_64.rpm
+warning: vnc2swf-0.5.0-2.el5.rf.x86_64.rpm: Header V3 DSA signature: NOKEY, key ID 6b8d79e6
+error: Failed dependencies:
+libXaw.so.7()(64bit) is needed by vnc2swf-0.5.0-2.el5.rf.x86_64
+<br>
+<strong>Install dependencies</strong>:
+<br>
+[root@mymachine tmp]# yum install libXaw
+<br>
+...Installed: libXaw.x86_64 0:1.0.2-8.1 libXaw.i386 0:1.0.2-8.1
+Dependency Installed: libXpm.i386 0:3.5.5-3 libXpm.x86_64 0:3.5.5-3
+Complete!
+<br>
+<strong>Install the package:</strong>
+<br>
+[root@mymachine tmp]# rpm -ihv vnc2swf-0.5.0-2.el5.rf.x86_64.rpm
+<br>
+<strong>Record the session:</strong>
+<br>
+NOTE: you need a working X for this. So if do this from a remote machine, you should use the ssh -X flag and have xauth installed on the server system and a local X11 environment running.
+<br>
+[root@mymachine tmp]# vnc2swf -startrecording -framerate 25  recording.swf localhost:5900  -viewonly
+<br>
+vnc2swf version 0.5.0
+Copyright (C) 2002-2005 Yusuke Shinyama &lt;yusuke at cs dot nyu dot edu&gt;
+- Based on VNC viewer version 3.3.7
+Copyright (C) 2002-2003 RealVNC Ltd.
+Copyright (C) 1994-2000 AT&amp;T Laboratories Cambridge.
+See http://www.realvnc.com for information on VNC.
+VNC server supports protocol version 3.8 (viewer 3.3)
+Password:
+VNC authentication succeeded
+Desktop name "mymachine"
+<br>
+we record at 25 frames/second the session on port 5900. It will ask for a password if necessary
+<br>
+<strong>Embed it into some html</strong>:
+<br>
+when you stop the recording it will spit out a piece of html that you can use to embed the flash file
+<br>
+&lt;html&gt;&lt;body&gt;
+&lt;object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="720" height="400" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=5,0,0,0"&gt;
+&lt;param name="movie" value="blib.swf"&gt;
+&lt;param name="play" value="true"&gt;
+&lt;param name="loop" value="true"&gt;
+&lt;param name="quality" value="high"&gt;
+&lt;embed src="recording.swf" width="720" height="400" play="true" loop="true" quality="high" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer"&gt;&lt;/embed&gt;
+&lt;/object&gt;
+&lt;/body&gt;
+&lt;/html&gt;

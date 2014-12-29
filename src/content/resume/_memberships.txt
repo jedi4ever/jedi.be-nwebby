@@ -1,0 +1,13 @@
+---
+filter: textile
+---
+<h2>Professional Memberships</h2>
+* ACM - Association for Computing Machinery. Special interest groups WEB, Human Interactions, Hypertext, Information Retrieval
+* AIFIA - Asilomar Institute for Information Architecture
+* PMI - Project Management Institute (PMP)
+* Iforce - Sun Partner Program 
+* SOS - Supporting Open Source  (founding partner)
+* SANS/GIAC - Security Community
+* ISOC - Internet Society (Taskforce E-government)
+* CISM - Certified Information Security Management
+* CSM - Scrum Alliance

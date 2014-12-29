@@ -1,0 +1,585 @@
+--- 
+title: Automated Vmware ESX Installation - Bonus in Vmware Fusion
+created_at: 2010-12-09 16:10:56.510121 +01:00
+tags: 
+- vmware esx
+- vmware fusion
+- automation
+- custom cdrom
+blog_post: true
+filter: 
+- erb
+- markdown
+related: 
+- desc: Vmware Fusion Scripted Installation
+  url: /blog/2010/12/09/vmware-fusion-scripted-installation/
+---
+This time, I'll be focussing on automating the Vmware ESX installation (automated, of course :) . As an extra bonus I describe how to run ESX within Vmware Fusion (yes it works great for testing!).
+
+1. [creation of a custom cdrom that will get it's configuration from a (temporary) webserver](#cdrom)
+2. [create a kickstart file to configure the vmware esx server](#kickstart)
+3. [(_Fusion_) add some network interface on OSX to simulate multiple network interfaces inside Vmware Fusion for the Vmware ESX Server](#network)
+4. [(_Fusion_) create a virtual machine in Vmware Fusion for the new vmware esx server](#create)
+5. [(_Fusion_) tweak security vmware ESX can monitor all interfaces](#admin_privilege)
+6. [(_Fusion_) start the ESX VM](#start)
+7. [start a small disposable webserver to serve the kickstart file](#webserver)
+8. [wait for SSH to become available](#ssh)
+
+Et voilà, this is how you create a VMWare ESX installation inside VMWare Fusion in an automated way. 
+
+- Very useful for setting up testing environment for customers who don't have a spare ESX server to work on. You can run it all on your laptop. 
+- I can also say that the automation it's particular handy to avoid the ESX trial expiration period ... 
+
+*Note:* 
+
+- the commands used are MacOSX commands, so it might need small adaptations to run on a Unix based system.
+- this example requires you to [download the Vmware ESX (or Vsphere 4 as it's called now) dvd](http://www.vmware.com/products/vsphere/) to continue . I did not test it with ESXi but suspect this work as well 
+
+For [a list of references skip to the end](#references) 
+
+<a name="cdrom"></a>
+### Creating a custom ESX Cdrom
+The first step is to create a custom cdrom that contains the all our configuration settings instead of using the GUI.
+
+Let's begin by setting some variables
+
+<% codify (:shell) do %>
+ESX_ISOFILE="$HOME/SavedDownloads/esx-DVD-4.1.0-260247.iso"
+ESX_CUSTOM_ISOFILE="/tmp/esx-custom.iso"
+ESX_CUSTOM_ISO_TEMPDIR="/tmp/esx-new-iso"
+ESX_KS_PORT=7125
+ESX_KS_HOST="192.168.2.30"
+ESX_KICKSTART_DIR="/tmp/"
+<% end %>
+
+We unpack the original Cdrom and change the kickstart files on it: 
+
+<% codify (:shell) do %>
+# Mount the Original ESX Cdrom
+MOUNT_POINT=$( hdiutil mount $ESX_ISOFILE -nobrowse|tail -1 |cut -d ' ' -f 2-|cut -d '/' -f 2-)
+echo $MOUNT_POINT
+
+# This is the file we need to change
+cat $MOUNT_POINT/isolinux/isolinux.cfg
+
+mkdir $ESX_CUSTOM_ISO_TEMPDIR
+chmod -R +w $ESX_CUSTOM_ISO_TEMPDIR
+
+# Copy the original cdrom content to our new place
+rsync -av $MOUNT_POINT/ $ESX_CUSTOM_ISO_TEMPDIR
+
+# Make some files writeable , by default they are read-only (cdrom)
+chmod +w $ESX_CUSTOM_ISO_TEMPDIR/isolinux
+chmod +w $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.bin
+chmod +w $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
+
+# Change the default kicstart from esx to our own esx-ks
+sed -i -e 's/^default esx/default esx-ks/' $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
+
+# Adjust the timeout
+sed -i -e 's/^timeout 300/timeout 1/' $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
+
+# Adding a new kickstart option to the isolinux.cfg file
+# Note: pleasing mac sed that has no \t to tab things with \ \ \ 
+sed -i -e '/timeout 1/ a\
+\
+LABEL esx-ks \
+\ \ \ \ menu label Install ESX in ks mode \
+\ \ \ \ kernel vmlinuz \\
+\ \ \ \ append initrd=initrd.img debugLogToSerial=1 mem=512M text quiet ks=http://$ESX_KS_HOST:$ESX_KS_PORT/ks.cfg \
+' $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
+
+cat $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
+
+## You now need the mkisofs command 
+# sudo /opt/local/bin/port install cdrtools
+# brew install cdrtools
+
+# Or if you have vmware fusion you don't need to install the cdrtools
+#/Library/Application\ Support/VMware\ Fusion/mkisofs -l -J -R -r -T -o $ESX_CUSTOM_ISOFILE -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $ESX_CUSTOM_ISO_TEMPDIR
+
+mkisofs -l -J -R -r -T -o $ESX_CUSTOM_ISOFILE -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $ESX_CUSTOM_ISO_TEMPDIR
+
+hdiutil unmount $MOUNT_POINT
+<% end %>
+
+Now that you have created it, you can use this cdrom to boot from and it will try to fetch the kickstart file from [a webserver](#webserver) 
+
+
+
+<a name="kickstart"></a>
+### Creating a custom kickstart for ESX
+Even though Vmware ESX feels like a Redhat machine, it is not. Therefore it will have different options then the standard Redhat Kickstart.
+
+You can find out all options [http://www.vmware.com/pdf/vsphere4/r41/vsp_41_esx_vc_installation_guide.pdf](http://www.vmware.com/pdf/vsphere4/r41/vsp_41_esx_vc_installation_guide.pdf)
+
+Another easy way to get started is that after a manual install, there will be a resulting kickstart file created in /root/ks.cfg
+
+Before we start the creation , let's set some variables we will use in the commands:
+<% codify (:shell) do %>
+ESX_PASSWORD="thepassword"
+ESX_IP="192.168.2.240"
+ESX_HOSTNAME="esx4-server.example.org"
+ESX_NTP="192.168.2.10"
+ESX_DNS="192.168.2.10"
+ESX_GW="192.168.2.10"
+ESX_MASK="255.255.255.0"
+ESX_ADMIN="esxadmin"
+ESX_ADMIN_KEY="ssh-dss AAAAB3NzaC1kc3MAAACBAMAgxcGLk3QynAJdZmkXBh0/2BV78YY+lJJka3SPCXXFI6TEr2BnuIEmY7NwSViXFJSBrYVJgId73a7OHwsN3D9+w0NJe42J+0Z0rK1N1pEgqjf72dDb4ii/3LDQr9GaDv7G0MkSwLdLCN2cIHaEH8N2tS3moAj9Dbtsj298ekGDAAAAFQDI0iL4ETud0eGj1YemawySRMAVgwAAAIEAm1dyooc4thKGMHGtSq6TinAa58vRfN7XGGRzdGdfjMYBzTke996VedCzp1TXPN0YxFCdKhKAYnK7VH1EG9XtOzWT6MIVQ4QJJxlrS6abAqcARdJd0Er20FMxSdQwOdGT6xKK1i/C/3PawV0ZgLrp2cGlHD1tSofdx/ZP9/Z1ADwAAACAeMfHcZVpN2Wi5esr1zQa0c7IeGMC4154HsJ7GkdDK3ebRxugbgl3PKao8kM2/y3bA5ba52Ln+DRyji4x83l7o/OoTWw9xqjTKP05imWxKg977UOI6YossdCrAddr00FS6II7GofBfwdwnGHjT6vYycUskjGLZ5dMQkgZMZtv7TU= me@mymachine"
+ESX_DATASTORE="datastore1"
+<% end %>
+
+The password of the ESX_ADMIN user needs to be encoded in the kickstart file. To generate it we will use the openssl command. 
+
+On a Mac system openssl is part of the base installation, so be aware that when you installed macports or brew that the syntax might differ.
+The string generated should look like $1$TBcBRI4V$6l0q1eaCnmsB8bpEsmko2.
+
+<% codify (:shell) do %>
+ESX_ENC_PASSWD=$(/opt/local/bin/openssl passwd -1 $ESX_PASSWORD)
+<% end %>
+
+<% codify (:shell) do %>
+cat <<THE_END > $ESX_KICKSTART_DIR/ks.cfg
+accepteula
+# serialnum --esx=XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
+keyboard us
+auth
+#Reboot after install?
+reboot
+# Canonical drive names:
+#clearpart --drives=mpx.vmhba0:C0:T0:L0
+clearpart --drives=mpx.vmhba0:C0:T0:L0 --overwritevmfs
+# Uncomment to use first detected disk:
+# clearpart --firstdisk
+# Uncomment the esxlocation line and comment out the clearpart
+# and physical partitions to do a non-destructive reinstall.
+# esxlocation --uuid=f53dd247-a43f-43af-af4c-319cca600c98
+install cdrom
+rootpw --iscrypted $ESX_ENC_PASSWD
+timezone 'Europe/Brussels'
+network --addvmportgroup=true --device=vmnic0 --bootproto=static --ip=$ESX_IP --netmask=$ESX_MASK --gateway=$ESX_GW --nameserver=$ESX_DNS --hostname=$ESX_HOSTNAME
+
+part '/boot'  --fstype=ext3 --size=1100  --ondisk=mpx.vmhba0:C0:T0:L0
+# Uncomment to use first detected disk:
+#part '/boot'  --fstype=ext3 --size=1100  --onfirstdisk
+part 'none'  --fstype=vmkcore --size=110  --ondisk=mpx.vmhba0:C0:T0:L0
+# Uncomment to use first detected disk:
+#part 'none'  --fstype=vmkcore --size=110  --onfirstdisk
+part 'datastore1'  --fstype=vmfs3 --size=8604 --grow  --ondisk=mpx.vmhba0:C0:T0:L0
+# Uncomment to use first detected disk:
+#part 'datastore1'  --fstype=vmfs3 --size=8604 --grow  --onfirstdisk
+
+virtualdisk 'esxconsole' --size=7604 --onvmfs='datastore1'
+
+part 'swap'  --fstype=swap --size=600 --onvirtualdisk='esxconsole'
+part '/var/log'  --fstype=ext3 --size=2000 --onvirtualdisk='esxconsole'
+part '/'  --fstype=ext3 --size=5000 --grow --onvirtualdisk='esxconsole'
+
+%post --interpreter=bash
+# ntp settings
+esxcfg-firewall --enableService ntpClient
+
+chkconfig ntpd on
+cat > /etc/ntp.conf <<EOF
+
+# ---- ntp.conf ----
+# Created by Weasel (ESX Installer)
+# Permit time synchronization with our time source, but do not
+# permit the source to query or modify the service on this system.
+restrict default kod nomodify notrap nopeer noquery
+restrict -6 default kod nomodify notrap nopeer noquery
+restrict 127.0.0.1
+
+server $ESX_NTP
+driftfile /var/lib/ntp/drift
+EOF
+
+# Add the user to the wheel group as to specify sudo powers
+useradd -p '$ESX_ENC_PASSWD' -c '$ESX_ADMIN' $ESX_ADMIN -G wheel,root
+
+# Service Console SSH access on ESX 4.1
+# To enable shell access it needs to be added to /etc/security/access.conf
+# either member of root group or this
+# +:root:ALL
+# +:esxadmin:ALL
+# -:ALL:ALL
+
+cp /etc/security/access.conf /etc/security/acces.conf.orig
+echo "+:$ESX_ADMIN:ALL" > /etc/security/access.conf
+cat /etc/security/access.conf.orig >> /etc/security/access.conf
+
+# Enable no password sudo for all user in the wheel group
+# resulting in /etc/sudoers %wheel ALL=(ALL) NOPASSWD:ALL
+sed -i '/NOPASSWD/ s/# %wheel/%wheel/g' /etc/sudoers
+
+mkdir "/home/$ESX_ADMIN/.ssh"
+
+chown $ESX_ADMIN "/home/"$ESX_ADMIN"/.ssh"
+chmod 700 "/home/$ESX_ADMIN/.ssh"
+
+# Enable the ssh service 
+esxcfg-firewall -e sshServer
+echo ""$ESX_ADMIN_KEY"" > /home/$ESX_ADMIN/.ssh/authorized_keys
+chown $ESX_ADMIN /home/$ESX_ADMIN/.ssh/authorized_keys
+THE_END
+
+# Show the resulting kickstart file
+cat $ESX_KICKSTART_DIR/ks.cfg
+<% end %>
+
+
+
+<a name="network"></a>
+### Add network interfaces to simulate multiple network interfaces inside Vmware ESX
+On my mac machine, I only have one physical interface, it turns you can easily create other 'Virtual' Ethernet ports. This allows you to configure these as interfaces inside your Vmware Fusion virtual machine. This way you can simulate different interfaces (vmnic1,vmnic2,...) inside the Vmware Fusion virtual machine ESX instance.
+
+We set the ports we want: (you can add more to the list by adding ESX1,ESX2...)
+<% codify(:shell) do %>
+ESX_NETPORTS="ESX1"
+<% end %>
+
+<% codify(:shell) do %>
+for port in $ESX_NETPORTS
+do
+  sudo networksetup -createnetworkservice "Ethernet $port" "Ethernet"
+  networksetup -getinfo "Ethernet $port"
+done 
+
+# Remember only one of the interfaces can be on DHCP 
+# as they all share the same network interface
+# #networksetup -setmanual <networkservice> <ip> <subnet> <router>
+sudo networksetup -setmanualwithdhcprouter "Ethernet ESX1" 192.168.4.30
+
+networksetup -listallhardwareports
+networksetup -listallnetworkservices
+<% end %>
+
+To remove the network ports later use: 
+<% codify(:shell) do %>
+for port in $ESX_NETPORTS
+do
+  echo $port
+  sudo networksetup -removenetworkservice "Ethernet $port"
+done 
+
+<% end %>
+
+
+### Creating a new vm in VMWare fusion suitable for ESX
+To bad Vmware Fusion doesn't have a way to create a machine by scripting it, it could really learn from the Virtualbox commandline API.
+To overcome that problem , I first manually created an ESX machine and used that .vmx file as a template.
+
+Again setting some variables:
+<% codify (:shell) do %>
+ESX_VM_NAME="esx4-server"
+ESX_VM_ISOFILE=ESX_CUSTOM_ISOFILE
+ESX_VM_MACADDRESS="00:0c:29:f3:aa:63"
+ESX_VM_MEMSIZE="3072"
+ESX_VM_DISKSIZE="30G"
+ESX_VM_DISKTYPE="1"
+#Disk types:
+#    0                   : single growable virtual disk
+#    1                   : growable virtual disk split in 2GB files
+#    2                   : preallocated virtual disk
+#    3                   : preallocated virtual disk split in 2GB files
+#    4                   : preallocated ESX-type virtual disk
+#    5                   : compressed disk optimized for streaming
+#    6                   : thin provisioned virtual disk - ESX 3.x and above
+ESX_VM_CPUS="4"
+<% end %>
+
+Then we create the VM directory and a new disk for the new vm 
+<% codify (:shell) do %>
+mkdir -p "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm"
+cd $HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm
+/Library/Application\ Support/VMware\ Fusion/vmware-vdiskmanager -c -s $ESX_VM_DISKSIZE -a lsilogic -t $ESX_VM_DISKTYPE $ESX_VM_NAME.vmdk
+<% end %>
+
+Now that we have the disk, we can continue with the machine .vmx file
+
+<% codify (:shell) do %>
+cat << EOF > "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx"
+.encoding = "UTF-8"
+config.version = "8"
+virtualHW.version = "7"
+numvcpus = "$ESX_VM_CPUS"
+scsi0.present = "TRUE"
+scsi0.virtualDev = "lsilogic"
+memsize = "$ESX_VM_MEMSIZE"
+scsi0:0.present = "TRUE"
+scsi0:0.fileName = "$ESX_VM_NAME.vmdk"
+ide1:0.present = "TRUE"
+ide1:0.fileName = "$ESX_VM_ISOFILE"
+ide1:0.deviceType = "cdrom-image"
+usb.present = "TRUE"
+ehci.present = "TRUE"
+pciBridge0.present = "TRUE"
+pciBridge4.present = "TRUE"
+pciBridge4.virtualDev = "pcieRootPort"
+pciBridge4.functions = "8"
+pciBridge5.present = "TRUE"
+pciBridge5.virtualDev = "pcieRootPort"
+pciBridge5.functions = "8"
+pciBridge6.present = "TRUE"
+pciBridge6.virtualDev = "pcieRootPort"
+pciBridge6.functions = "8"
+pciBridge7.present = "TRUE"
+pciBridge7.virtualDev = "pcieRootPort"
+pciBridge7.functions = "8"
+vmci0.present = "TRUE"
+roamingVM.exitBehavior = "go"
+tools.syncTime = "TRUE"
+displayName = "$ESX_VM_NAME"
+guestOS = "vmkernel"
+nvram = "$ESX_VM_NAME.nvram"
+virtualHW.productCompatibility = "hosted"
+proxyApps.publishToHost = "FALSE"
+tools.upgrade.policy = "upgradeAtPowerCycle"
+powerType.powerOff = "soft"
+powerType.powerOn = "soft"
+powerType.suspend = "soft"
+powerType.reset = "soft"
+floppy0.present = "FALSE"
+extendedConfigFile = "$ESX_VM_NAME.vmxf"
+checkpoint.vmState = ""
+#uuid.location = "56 4d 7a 3a bb 23 52 50-d4 b3 d3 46 6e f3 aa 63"
+#uuid.bios = "56 4d 7a 3a bb 23 52 50-d4 b3 d3 46 6e f3 aa 63"
+cleanShutdown = "FALSE"
+replay.supported = "FALSE"
+debugStub.linuxOffsets = "0x0,0xffffffff,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0"
+replay.filename = ""
+scsi0:0.redo = ""
+pciBridge0.pciSlotNumber = "17"
+pciBridge4.pciSlotNumber = "21"
+pciBridge5.pciSlotNumber = "22"
+pciBridge6.pciSlotNumber = "23"
+pciBridge7.pciSlotNumber = "24"
+scsi0.pciSlotNumber = "16"
+usb.pciSlotNumber = "32"
+ehci.pciSlotNumber = "34"
+vmci0.pciSlotNumber = "35"
+vmotion.checkpointFBSize = "65536000"
+vmci0.id = "1861462627"
+gui.fullScreenAtPowerOn = "FALSE"
+gui.viewModeAtPowerOn = "windowed"
+hgfs.mapRootShare = "TRUE"
+hgfs.linkRootShare = "TRUE"
+isolation.tools.hgfs.disable = "FALSE"
+sharedFolder.maxNum = "1"
+sharedFolder0.present = "TRUE"
+sharedFolder0.enabled = "TRUE"
+sharedFolder0.readAccess = "TRUE"
+sharedFolder0.writeAccess = "TRUE"
+sharedFolder0.hostPath = "/Users/patrick/Downloads"
+sharedFolder0.guestName = "Downloads"
+sharedFolder0.expiration = "never"
+ethernet0.pciSlotNumber = "33"
+ethernet0.present = "TRUE"
+ethernet0.connectionType = "custom"
+ethernet0.virtualDev = "e1000"
+ethernet0.wakeOnPcktRcv = "FALSE"
+ethernet0.addressType = "generated"
+ethernet0.linkStatePropagation.enable = "FALSE"
+ethernet0.generatedAddress = "$ESX_VM_MACADDRESS"
+ethernet0.generatedAddressOffset = "0"
+ethernet0.vnet = "vmnet2"
+ethernet0.bsdName = "en0"
+ethernet0.displayName = "Ethernet"
+EOF
+
+<% end %>
+
+If you want to add the extra interfaces we defined earlier: repeat this for every interface you need (ESX1,ESX2,..ESXN)
+<% codify (:shell) do %>
+cat << EOF >> "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx"
+ethernet1.present = "TRUE"
+ethernet1.connectionType = "custom"
+ethernet1.virtualDev = "e1000"
+ethernet1.wakeOnPcktRcv = "FALSE"
+ethernet1.addressType = "generated"
+ethernet1.linkStatePropagation.enable = "TRUE"
+ethernet1.vnet = "vmnet2"
+ethernet1.bsdName = "en0"
+ethernet1.displayName = "Ethernet ESX1"
+EOF
+<% end %>
+
+
+<a name="admin_privilege"></a>
+### Overcoming the dialog: A virtual machine is attempting to monitor all network traffic, which requires administrator access, type your password to allow VMWARE Fusion to make changes 
+
+Vmware ESX when it starts will signal Vmware Fusion that it wants to monitor all network traffic. Due to security restrictions this is not enabled by default and requires a GUI confirmation, while the machine boots. The whole machine will start while it waits but it would not be able to do any correct network traffic if you don't allow it.
+
+I found the solution on the Vmware Fusion Mailinglist [http://communities.vmware.com/thread/140960](http://communities.vmware.com/thread/140960)
+
+The trick is to change the system.privilege.admin setting. You set this by changing the /etc/authorization file
+
+Here is an excerpt of that file; if you would run fusion as root this error will go away (allow-root). To give an ordinary user that privilege (and all the others!) , change it the text after key:class, from  "user" to "allow"
+
+<% codify (:text) do %>
+<key>system.privilege.admin</key>
+        <dict>
+               <key>allow-root</key>
+               <true/>
+               <key>class</key>
+               <string>user</string>
+               <key>comment</key>
+               <string>Used by AuthorizationExecuteWithPrivileges(...).
+               AuthorizationExecuteWithPrivileges() is used by programs requesting
+               to run a tool as root (e.g., some installers).</string>
+               <key>group</key>
+               <string>admin</string>
+                         <key>shared</key>
+                         <false/>
+                         <key>timeout</key>
+                         <integer>300</integer>
+
+<% end %>
+
+To script that you can: 
+<% codify (:shell) do %>
+# Make a backup of the /etc/authorization file
+sudo cp /etc/authorization /etc/authorization.$$
+
+# Do the changes. Use with caution: this has an impact on security, but if you want to automate the start you need it!
+sudo sed -i -e'/system.privilege.admin/,/Used by AuthorizationExecuteWithPrivileges/ s/<string>user/<string>allow/' /etc/authorization
+
+<% end %>
+
+Now the nagging GUI message should be gone when you start the ESX virtual machine. 
+
+
+### Restart network services (proved helpful)
+When you recreate machines often and maybe some of the parts of the script fail, I found it useful to restart the VMWare Fusion network 
+
+<% codify (:shell) do %>
+sudo sh -c "/Library/Application\ Support/VMware\ Fusion/boot.sh --restart"
+<% end %>
+
+<a name="ssh"></a>
+### Start the machine (in Vmware Fusion)
+<% codify (:shell) do %>
+/Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion start  "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx" nogui 
+<% end %> 
+
+<a name="webserver"></a>
+### Starting a disposable webserver
+To serve the kickstart we have create we use a disposable webserver, with the help of ruby. This saves from installing an apache or other stuff. Also it allows us to choose the port very easily.
+
+<% codify (:shell) do %>
+# Create a disposable ruby based webserver
+# This will stop after the the file has been fetched
+cat <<EOF > $ESX_KICKSTART_DIR/ks.rb
+require 'webrick'
+include WEBrick
+
+class FileServlet < WEBrick::HTTPServlet::AbstractServlet
+        def do_GET(request,response)
+                response['Content-Type']='text/plain'
+                response.status = 200
+                displayfile=File.open("$ESX_KICKSTART_DIR/ks.cfg",'r')
+                content=displayfile.read()
+                response.body=content
+                sleep 2
+                @@s.shutdown
+        end
+end
+
+@@s= HTTPServer.new(:Port => $ESX_KS_PORT)
+@@s.mount("/ks.cfg", FileServlet)
+trap("INT"){@@s.shutdown}
+@@s.start
+EOF
+
+# Start the webserver
+cat $ESX_KICKSTART_DIR/ks.rb|ruby --"
+
+<% end %>
+
+<a name="ssh"></a>
+### Wait for SSH to be working
+Once the kickstart 'kicks' in, we have to wait until the ssh is available. We can use the ssh-keyscan command for that.
+After we got a connection, we can cleanup the keys with ssh-keygen -R and add the new one with the ssh-keyscan command.
+
+<% codify (:shell) do %>
+sleep 200
+ssh-keyscan -T 10000  $ESX_IP
+ssh-keygen -R $ESX_IP
+ssh-keyscan -T 10000  $ESX_IP >> $HOME/.ssh/known_hosts
+<% end %>
+
+### Removing the ESX Machine
+If you need to start all over again, you can wipe the create ESX Machine like this: 
+<% codify(:shell) do %>
+# List the running machines
+/Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion list
+
+# Stop our ESX server
+/Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion stop $HOME/Documents/Virtual\ Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx
+
+# Wait a bit for the stop to complete
+sleep 4
+
+# Stop the fusion GUI interface
+FUSION_PID=$(ps -eo pid,command  |grep -i "/Applications/VMware Fusion.app/Contents/MacOS/vmware"|grep -v grep| sed -e "s/^[ ]*//"|cut -d ' ' -f 1)
+echo $FUSION_PID
+kill $FUSION_PID
+
+# Remove the machine (including disk ; take care ! )
+/Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion deleteVM $HOME/Documents/Virtual\ Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx
+rm -rf $HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm
+<% end %>
+
+### Final words
+After this exercise you should be able to completely script the installation of a Vmware ESX virtual machine and make it run inside Vmware Fusion.
+
+<a name="references"></a>
+### Interesting references
+
+*Creating an ESX Cdrom*
+
+- Create a new CD - [http://vmprofessional.com/index.php?content=kickstart_2](http://vmprofessional.com/index.php?content=kickstart_2)
+- Kickstart building cdrom - example - [http://www.gronau.it/index2.php?option=com_content&do_pdf=1&id=62](http://www.gronau.it/index2.php?option=com_content&do_pdf=1&id=62)
+- ESXi: Kickstart installs using CD-ROM or USB media - [http://get-admin.com/blog/?p=1192](http://get-admin.com/blog/?p=1192)
+
+*Running ESX inside Fusion*
+
+- HOWTO: Run ESXi in Fusion - [#http://communities.vmware.com/docs/DOC-6590](#http://communities.vmware.com/docs/DOC-6590)
+- How to install esxi on mac osx Screencast - [http://virtualscreencasts.com/2010/05/13/how-to-install-esxi-on-mac-osx/](http://virtualscreencasts.com/2010/05/13/how-to-install-esxi-on-mac-osx/)
+- Installing esxi 4 in Vmware Fusion - [http://professionalvmware.com/2009/12/installing-esxi-4-in-vmware-fusion/](http://professionalvmware.com/2009/12/installing-esxi-4-in-vmware-fusion/)
+
+*Encrypt password*
+
+- Creating encrypted ROOT password in ks.cfg - [http://communities.vmware.com/message/742087](http://communities.vmware.com/message/742087)
+- Vsphere Unattended esx4 Installation with a ks.cfg file - [http://ict-freak.nl/2010/03/23/vsphere-unattended-esx4-installation-with-a-ks-cfg-file/](http://ict-freak.nl/2010/03/23/vsphere-unattended-esx4-installation-with-a-ks-cfg-file/)
+- md5 - OSX password - [http://www.dribin.org/dave/blog/archives/2006/04/07/os_x_passwords/](http://www.dribin.org/dave/blog/archives/2006/04/07/os_x_passwords/)
+
+
+*security sudo, esx login*
+
+- Enabling Sudo - [http://communities.vmware.com/message/1407612](http://communities.vmware.com/message/1407612)
+- Esx Sudoers - [http://www.vmadmin.co.uk/resources/35-esxserver/48-esxsudoers](http://www.vmadmin.co.uk/resources/35-esxserver/48-esxsudoers)
+- Active Directory and Sudo - [http://www.vreference.com/2010/01/14/ad-and-sudo-integratation-in-kickstart/](http://www.vreference.com/2010/01/14/ad-and-sudo-integratation-in-kickstart/)
+- Service Console SSH access on ESX 4.1 /etc/security.conf - [http://planetvm.net/blog/?p=1705](http://planetvm.net/blog/?p=1705)
+
+*Networking*
+
+- Custom VNets broken in 3.1 - [http://communities.vmware.com/message/1507256](http://communities.vmware.com/message/1507256)
+- Vmware Fusion and Network Bridging - [http://www.ianmcshane.org/2007/12/13/vmware-fusion-and-network-bridging/](http://www.ianmcshane.org/2007/12/13/vmware-fusion-and-network-bridging/)
+- Vmware Fusion Network settings Part 1 - [http://www.scribd.com/doc/7828011/VMware-Fusion-Network-Settings-Part-1](http://www.scribd.com/doc/7828011/VMware-Fusion-Network-Settings-Part-1)
+
+*Kickstart*
+
+- Mother of all kickstarts - Esxi 4.1 Kickstart Install Wip - [http://www.kendrickcoleman.com/index.php?/Tech-Blog/esxi-41-kickstart-install-wip.html](http://www.kendrickcoleman.com/index.php?/Tech-Blog/esxi-41-kickstart-install-wip.html)
+- don't make /tmp too small - [http://www.vReference.com/2009/11/13/dont-make-tmp-too-small/](http://www.vReference.com/2009/11/13/dont-make-tmp-too-small/)
+- Create local vmfs with 8mb blocks - [http://www.vreference.com/2010/01/11/create-local-vmfs-with-8mb-block-size-during-esx4-kickstart-install/](http://www.vreference.com/2010/01/11/create-local-vmfs-with-8mb-block-size-during-esx4-kickstart-install/)
+- Esxi 4.1 scripted installation via pxe - [http://communities.vmware.com/blogs/vmwareinsmb/2010/07/13/esxi-41-scripted-installation-via-pxe-and-kickstart
+](http://communities.vmware.com/blogs/vmwareinsmb/2010/07/13/esxi-41-scripted-installation-via-pxe-and-kickstart
+) 
+- Very detailed example 1 - [http://www.cylindric.net/doc/technology/10-virtualisation/232-esxscriptedinstall?start=4](http://www.cylindric.net/doc/technology/10-virtualisation/232-esxscriptedinstall?start=4)
+- [http://blog.core-it.com.au/?p=39](http://blog.core-it.com.au/?p=39)
+- [http://vmprofessional.com/index.php?content=scripted_install](http://vmprofessional.com/index.php?content=scripted_install)
+- [http://zenhat.wordpress.com/2010/09/11/how-to-sample-kickstart-file-for-vmware-esxi-4-1/](http://zenhat.wordpress.com/2010/09/11/how-to-sample-kickstart-file-for-vmware-esxi-4-1/)
+- [http://ict-freak.nl/2010/03/23/vsphere-unattended-esx4-installation-with-a-ks-cfg-file/](http://ict-freak.nl/2010/03/23/vsphere-unattended-esx4-installation-with-a-ks-cfg-file/)
+- [http://blog.laspina.ca/ubiquitous/automating-vsphere-esx4-host-installations ](http://blog.laspina.ca/ubiquitous/automating-vsphere-esx4-host-installations )
+

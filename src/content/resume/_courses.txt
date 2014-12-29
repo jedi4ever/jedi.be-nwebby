@@ -1,0 +1,9 @@
+---
+filter: textile
+---
+<h2>Courses:</h2>
+* Kluwer - Recognizing and controlling body language 
+* Kluwer - Emotional Intelligence and NLP
+* NLP - NLP Practioner
+* In Balance - Voice Control 
+* Syntra - Verhaaltechnieken

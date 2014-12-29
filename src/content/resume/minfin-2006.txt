@@ -1,0 +1,28 @@
+---
+period: "2006"
+customer: Ministerie Financiën (Sun Microsystems)
+role: System Architect/Technical Consultant
+title: Identity and Access Management Disaster Recovery Integration
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/minfin.gif" class="left"></div>
+		<div class="span-18 last">
+
+* Initial scope was just to put the redundant hardware in a second location. While this would solve solve problems, there was a lot coordination to be done within each layer of the identity and access management solution. Each subcomponent provided its own redundancy layer but no orchestration was foreseen between the different layers. 
+* An example was that f.i. The loadbalancers was still active on one site, the ldap on the second, the database again on the first. Different coordination strategies were described and integrated in the solution. 
+* Another aspect was log consolidation and data loss and integrity within disaster recovery solution. The right balance between consolidation and distribution was analyzed. Due to the financial impact of the information additional encryption was foreseen at network Layer 2 and Layer 3. Also at the storage (SAN) level additional measures were taken.
+* The different disaster recovery strategies for the applications using the access control mechanisms were examined and the impact on the architecture was studied. 
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+SAN, NAS, legato Networker, layer 2,3 switch, layer 7 loadbalancer, oracle RAC, netgear router, link encryption, disaster Recovery, loadbalancers</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* Design of the technical disaster recovery solution and integration of the disaster recovery solutions of the client applications.
+</div>
+

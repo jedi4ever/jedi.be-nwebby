@@ -1,0 +1,46 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Fundamentals Training - Payment
+dirty: true
+---
+<p>Training registration is for three days and includes the training material, coffee, thee, soft drinks, water and 3 lunches .</p>
+
+<p>Dinner on Monday evening is not included as this will be paid at the restaurant itself by each individual.</p>
+
+<p>Traveling and lodging expenses are not included.</p>
+
+<p>The registration fee for attending the training on <strong>8,9 and 10 November 2010</strong>:</p>
+
+<ul>
+<li>Early Bird: € 180 (excl. Taxes/VAT) - Valid Until 15 October 2010</li>
+<li>Regular Fee: € 210 (excl. Taxes/VAT)</li>
+</ul>
+
+
+<p>We provide two options for payment</p>
+
+<h4>Option 1: Bank payment (preferred)</h4>
+
+<p>Jedi BVBA,
+Quote 29,
+9290 Berlare, Belgium</p>
+
+<p>Bank (Belgium): BNP Paribas , Emiel Hertecantlaan 20, 9290 Berlare, Belgium</p>
+
+<ul>
+<li>Belgium: BNP Paribas 293-0198783-85</li>
+<li>EU zone: IBAN BE89 2930 1987 8385 BIC GEBABEBB</li>
+</ul>
+
+
+<p><em>Mention Chef Fundamentals + Participant name(s)</em></p>
+
+<h4>Option 2: Payment via Paypal/Visa</h4>
+
+<p><a href="mailto:Patrick.Debois@jedi.be?subject=Chef+Fundamentals+Paypal+Request">Drop me an email</a> with your details and I will send you a Paypal request.</p>
+
+<p><em>Your registration is only valid if payment has been received.</em></p>

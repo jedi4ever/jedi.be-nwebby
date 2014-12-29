@@ -1,0 +1,33 @@
+---
+title: "Missing Quicktime Component in iMovie 08 on MacOSX Leopard Fixed!"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/10/15/missing-quicktime-component-in-imovie-08-on-macosx-leopard-fixed/
+created_at: 2008-10-15 15:36:16.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - imovie
+   - quicktime
+---
+After several months of running Mac OSX 10.5 "Leopard", I found that my iMovie 08 would start and complain about:
+<br>
+"Missing Quicktime Component".
+<br>
+It turns out that at the time, I upgraded my 10.4.x to 10.5 (Leopard) by running an upgrade DVD provided by Apple after purchase. Leopard was not yet shipping with the new macs. The problem was that iLife 08 WAS installed on the machine but is NOT on the upgrade DVD. So I resorted to copying files from /Application/iMovie... from a backup.
+<br>
+It seems that I missed a Quicktime Component called: "AppleIntermediateCodec.component". This component is necessary for importing movies in iMovie 08. Ok, what's next:
+<ol>
+	<li>buy Ilife 08: that's too easy ;-) or torrent it from somewhere : easy but illegal</li>
+	<li>copy it over from another Mac: a bit of a problem if you're alone in windows land ...</li>
+	<li>extract it with <a href="http://www.charlessoft.com/">pacifist</a> from a older 10.4 DVD which has iMovie 06 package as bundled App.</li>
+</ol>
+I used option 3. Just let pacifist read the 10.4.x Install DVD and extract only the 'AppleIntermediateCodec.component' to the default directory.
+<br>
+And voilà .
+<p><img class="aligncenter" src="http://www.jedi.be/blog/wp-content/uploads/2008/10/Apple.IntermediateCodec.png" height="526" alt="" width="478" /></p>
+<br>
+P.S. Running an Imovie 7.x or 8.x upgrade from Apple Downloads will not help you as it is not included in the updates

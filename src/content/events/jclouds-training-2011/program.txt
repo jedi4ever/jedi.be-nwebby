@@ -1,0 +1,78 @@
+---
+layout: event
+extension: html
+filter:
+- erb
+- markdown
+title: Jclouds Training - Program
+tags:
+- jclouds
+- ec2
+- cloud
+- devops
+- course
+- training
+dirty: true
+---
+<h3>Schedule</h3>
+<table border=1>
+<tr><th></th><th>Monday 21/11</th><th>Tuesday</th></tr>
+<tr><td>Morning</td><td>Jclouds Training</td><td>Jclouds Training</td></tr>
+<tr><td>Afternoon</td><td>Cloudcamp</td><td>Jclouds Training</td></tr>
+<tr><td>Evening</td><td>Cloudcamp</td><td>-</td></tr>
+</table>
+
+
+### Summary: jclouds training
+
+Adrian Cole, founder of jclouds and Chief Evangelist of Cloudsoft will present a 1,5 day course, continually grounding topics with coding exercises, written in Java in the Eclipse IDE.  By the end of this class, students will write testable and portable code that can deploy virtual machines and data in the cloud, in the same way as their laptops!
+
+<i>Course Duration: 1,5 days</i>
+
+### Objectives:
+
+Upon completion of this course, you will be able to:
+
+  * Understand concepts of compute and storage clouds
+  * Create, control, and run scripts on virtual machines using jclouds ComputeService
+  * Persist to clouds using jclouds BlobStore with simplest API for the task
+  * Write unit and offline testable code
+  * Know how to use drivers to configure support for logging
+  * Configure your ComputeService to deploy to your laptop (VirtualBox) or a public service like EC2
+  * Configure your BlobStore to store on your laptop (FileSystem) or a public service like S3
+
+### Audience:
+
+This course is designed for Java developers who are looking for way to acclimate themselves to the cloud as well those with specific Cloud Storage use cases.  Developers who wish to understand how to portably use services like Amazon S3 should attend this class.
+
+### Prerequisites:
+
+In order to benefit from this course, you should be able to code Java 5 features such as generics, and be familiar with the Eclipse IDE, unit testing, and maven. 
+
+### Setup:
+
+Please come prepared with an environment where the following are already installed:
+
+  * JDK 6 or higher
+  * Eclipse 3.4 or higher with TestNG plugin installed
+  * Maven 3 or higher
+  * git
+
+### Agenda:
+
+#### Day 1 (half-day)
+
+  * Cloud Computing in context
+  * Introduction to jclouds
+  * Contexts, Containers and Blobs
+  * Hello cloud with jclouds BlobStore
+
+###  Day 2
+
+  * APIs, Providers and Locations
+  * configuring jclouds for alternate cloud providers
+  * java.util.Map meets the Cloud
+  * Getting smarter about Metadata with BlobMap
+  * Powerful persistence with BlobStore
+  * Unit testing with the Transient Blobstore
+  * Tuning and configuring the jclouds context with drivers

@@ -1,0 +1,20 @@
+--- 
+title: How Hudson Hit Puppet With a Cucumber
+created_at: 2010-05-19 14:46:58.784597 +02:00
+tags: 
+- ukuug
+- hudson
+- puppet
+- cucumber
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+On 25 March the UKUUG organized their '[UKUUG Spring Conference](http://www.ukuug.org/events/spring2010/)'. I must say, it was a long time ago since I went up to a Unix User group conference. It was really fun to see people again so passionate about their subjects, although a lot of the talks had a rather academic edge. Being in Manchester, several of the devops crowd came down and we had a nice chat with them.
+
+Together with Julian Simpson aka as the illustrious '[BuildDoctor](http://www.build-doctor.com)'. We presented a session on how to use the tools Hudson, Puppet and Cucumber together. Initially we intended to do more technical demos but it turned out to be a devops talk, trying to attract people to the ideas around it.
+
+Here are the slides of the presentation. Enjoy!
+
+<div style="width:425px" id="__ss_3560758"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/hudson-hit-puppet-with-a-cucumber" title="How Hudson hit Puppet with a Cucumber">How Hudson hit Puppet with a Cucumber</a></strong><object id="__sse3560758" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=ukuug-2010-hudson-hit-puppet-with-a-cucumber-final-100326040214-phpapp01&rel=0&stripped_title=hudson-hit-puppet-with-a-cucumber" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed name="__sse3560758" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=ukuug-2010-hudson-hit-puppet-with-a-cucumber-final-100326040214-phpapp01&rel=0&stripped_title=hudson-hit-puppet-with-a-cucumber" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/jedi4ever">Patrick Debois</a>.</div></div>

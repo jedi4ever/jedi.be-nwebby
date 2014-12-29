@@ -1,0 +1,34 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Fundamentals Training - 2010
+period: "8/11/2010 - 10/11/2010"
+short: "Chef Fundamentals is a <b>3-day comprehensive class</b> covering the basic architecture of Chef and all of the underlying components. We will be covering installation basics of Chef Client and Chef Solo. Other topics will include: creating Chef repositories, creating cookbooks and advanced use of the command line utility, Knife. This class will include lecture, labs and some comprehensive case studies."
+tags: 
+- opscode
+- chef
+- infrastructure as code
+- configuration management
+- devops
+- course
+- training
+dirty: true
+event: true
+---
+<table><tr><td><a href="http://opscode.com"><img src='<%= @page.url+"/opscode_logo.png" %>'></a></td>
+<td>Chef Fundamentals is a <b>3-day comprehensive class</b> covering the basic architecture of Chef and all of the underlying components. We will be covering installation basics of Chef Client and Chef Solo. Other topics will include: creating Chef repositories, creating cookbooks and advanced use of the command line utility, Knife. This class will include lecture, labs and some comprehensive case studies.</td></tr></table>
+
+### Date: 8, 9 and 10 November 2010 in <a href="location.html">Gent, Belgium</a></b>
+
+<p><em>This is a limited and unique offer</em>:</p><p>Several of the core <a href="http://opscode.com">Opscode</a> people are coming over to Belgium/Europe for <a href="http://www.devoxx.com">Devoxx</a>. <a href="trainer.html">Joshua Timberman</a> has generously agreed in using the opportunity to teach this course for all you Chef lovers!</p>
+
+
+This means <del>instead of the usual pricing of 1500 Euro</del> we can have the training at real community Pricing!
+<ul>
+<li>Early Bird: <b>€ 180</b> (excl. Taxes/VAT) - Valid Until 15 October 2010</li>
+<li>Regular Fee: <b>€ 210</b> (excl. Taxes/VAT)</li>
+</ul>
+

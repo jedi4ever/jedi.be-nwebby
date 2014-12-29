@@ -1,0 +1,25 @@
+---
+title: Manage Non-Cloud Dev+Test Environment With a Cloud Hat On
+created_at: 2011-11-23 10:35:34.199577 +02:00
+tags:
+- devops
+- cloudcamp
+- cloud
+blog_post: true
+filter:
+- erb
+- markdown
+---
+Over the years I've moved from Production to Test to Development and back to Production. 
+
+This presentation is a summary of my learnings along the way: 
+
+- After running larger production environments I wondered how it would be different in the cloud
+- What would be extra if you already have configmt, continouous delivery etc..
+- I learned that selfservicing and API's can make a huge difference
+- and I plea for more IT companies to apply these principles in their internal IT.
+- not only for machine provisioning , but also for logging, monitoring, etc ..
+
+Here's my presentation from [cloudcamp Ghent 2011](http://www.cloudcamp.org/ghent/2011-11-21) that was brilliantly organized by [Frederik Van Hecke](http://blog.cluttr.be/)
+
+<div style="width:425px" id="__ss_10242489"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/manage-your-devtestprod-like-a-cloud" title="Manage your dev-test-prod like a cloud" target="_blank">Manage your dev-test-prod like a cloud</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10242489" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>

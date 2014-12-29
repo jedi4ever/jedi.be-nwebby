@@ -1,0 +1,450 @@
+<BASE HREF="http://developer.netscape.com/library/documentation/communicator/">
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.0b5 (WinNT; I) [Netscape]">
+   <TITLE>Customizing LDAP Settings for Communicator</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#ffffff" TEXT="#000000">
+
+<CENTER>
+<H2>
+<FONT SIZE=+3>C</FONT>USTOMIZING 
+<FONT SIZE=+3>LDAP S</FONT>ETTINGS FOR 
+<FONT SIZE=+3>C</FONT>OMMUNICATOR
+</H2>
+</CENTER>
+<CENTER><I>Netscape Communicator 4.x</I></CENTER>
+
+
+
+<CENTER>
+<I>Last updated: 16 September 1997</I>
+</CENTER>
+
+<H3>
+<FONT SIZE=+2>I</FONT>NTRODUCTION
+</H3>
+
+<A HREF="http://home.netscape.com/comprod/products/communicator/index.html" TARGET=_top>Netscape
+Communicator</A> can interact with LDAP directories in three different ways:
+
+<OL>
+<LI>In the Address Book and Select Address dialog boxes (accessible from the mail
+composition window), users can enter one string of search criteria to search an LDAP directory 
+for matching names.</LI>
+<P>
+
+<LI>In the Search Directory dialog box, users can enter more complex query expressions
+to search an LDAP directory. </LI>
+<P>
+
+<LI>Users can enter <A HREF="ftp://ds.internic.net/rfc/rfc1959.txt" TARGET=_top>LDAP URLs</A> 
+(URLs beginning with the &quot;ldap://&quot; prefix) in Navigator (web browser) windows
+to search an LDAP directory. </LI>
+<P>
+</OL>
+<P>
+
+This note describes ways in which MIS administrators can customize
+the settings that Communicator uses for these features. 
+<P>
+
+<B>NOTE: </B>The intended audience for this note is MIS personnel who are familiar
+with <A HREF="http://web.nexor.co.uk/users/cjr/x500.html" TARGET=_top>X.500</A> and/or
+<A HREF="http://home.netscape.com/newsref/ref/ldap.html" TARGET=_top>LDAP directories</A>.
+Please read this note carefully before making changes. Making incorrect
+changes can disable your users' ability to search your directory.
+<P>
+
+<H3>
+<FONT SIZE=+2>H</FONT>OW 
+<FONT SIZE=+2>C</FONT>USTOMIZATION 
+<FONT SIZE=+2>W</FONT>ORKS
+</H3>
+
+You can customize the Communicator settings 
+through <A HREF="/library/documentation/javascript.html" TARGET="content">JavaScript
+</A>preferences. If you have configured an LDAP directory in Communicator,
+those settings have been saved into your <TT>prefs.js</TT> preferences
+file. The settings described in this note are accessible only through JavaScript
+preferences, since that is the mechanism for MIS administrators to distribute
+settings to all users in their enterprise. Note that settings are stored in
+the JavaScript preferences file only if they are not the default preference;
+Communicator stores the default values for preferences internally.
+<P>
+
+<BLOCKQUOTE>
+<B>IMPORTANT: </B>In <B>Preview Release 5 (PR5)</B>, the syntax for these settings has changed again. In the current preview release, the preferences begin with <B><CODE>ldap_1</CODE></B>, instead
+of <B><CODE>directories</CODE></B> (as it was in PR3) or <B><CODE>ldap</CODE></B> (as it was in PR4). For example:
+<P>
+
+<CODE>
+pref(&quot;<B>ldap_1</B>.directory1.attributes.mail&quot;, &quot;mega_corp_email_address&quot;);
+</CODE>
+<P>
+
+</BLOCKQUOTE>
+
+<H3>
+<FONT SIZE=+2>U</FONT>SING 
+<FONT SIZE=+2>Y</FONT>OUR 
+<FONT SIZE=+2>O</FONT>WN 
+<FONT SIZE=+2>A</FONT>TTRIBUTE 
+<FONT SIZE=+2>N</FONT>AMES
+</H3>
+
+By default, Netscape Communicator uses 
+<A HREF="ftp://ftp.ietf.org/internet-drafts/draft-ietf-asid-ldapv3-attributes-08.txt" TARGET=_top>standard
+attribute names</A> (which are described in the X.520 standard and in the LDAP protocol)
+when searching the directory. These include the following attributes:  <TT>cn</TT>, 
+<TT>givenname</TT>, <TT>sn</TT>, <TT>mail</TT>, <TT>telephonenumber</TT>, <TT>o</TT>, <TT>ou</TT>,
+<TT>l</TT>, and <TT>street</TT>.  
+<P>
+
+If your directory schema uses different attribute names, you should specify your
+own attribute names in the <TT>prefs.js</TT> file to override Communicator's defaults. 
+(Otherwise, Communicator's LDAP support may not work correctly with your directory.) 
+For example, you might be using an attribute named <TT>mega_corp_email_address</TT>
+instead of the standard <TT>mail</TT> attribute for specifying user email addresses.
+<P>
+
+<H3>Changing the Attribute Used</H3>
+
+To change the attributes used in directory searches, use
+the following syntax:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.&lt;standard_attr&gt;&quot;, &quot;&lt;your_attr&gt;&quot;);
+</TT></DL></DL>
+<P>
+
+where <TT>&lt;standard_attr&gt;</TT> is the name of a standard attribute used by Communicator 
+(such as <TT>mail</TT>), and <TT>&lt;your_attr&gt;</TT> is the name of your attribute that 
+you want used in place of the standard attribute.
+<P>
+
+For example, if you want Communicator to use the attribute named <TT>mega_corp_email_address</TT> 
+instead of <TT>mail</TT> when searching email addresses, include the following statement in the
+<TT>prefs.js</TT> file:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.mail&quot;, &quot;mega_corp_email_address&quot;);
+</TT></DL></DL>
+<P>
+
+<H3>Changing the Displayed Name of the Attribute</H3>
+You may also want to change the name of the attribute that is displayed to users
+(for example, you might want the name <TT>MegaCorp Mail ID</TT> to appear in the
+list of attribute, rather than <TT>Email</TT>).  To change the displayed name of
+the attribute, use the following syntax:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.&lt;standard_attr&gt;&quot;, &quot;&lt;displayed_name&gt;:&lt;your_attr&gt;&quot;);
+</TT></DL></DL>
+<P>
+
+where <TT>&lt;displayed_name&gt;</TT> is the name that you want displayed in the
+user interface. The colon (<TT>':'</TT>) specifies to Communicator that the statement
+contains a name to use for display.
+<P>
+ 
+At most one colon may appear in an attribute name. If no colon appears, the entire 
+string is interpreted as an attribute, and Communicator will use that name both in 
+the user interface and in the actual filter expression for the search.
+<P>
+
+For example, if you want Communicator to display the name <TT>MegaCorp Mail ID</TT> 
+in the user interface, include the following statement in the <TT>prefs.js</TT> file:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.mail&quot;, &quot;MegaCorp Mail ID:mega_corp_email_address&quot;);
+</TT></DL></DL>
+<P>
+
+<H3>Using Multiple Attributes as Search Criteria</H3>
+You may also want to specify more than one attribute when searching
+email addresses. For example, in some enterprises, users on different email systems
+have different attributes in the directory.
+<P>
+
+To specify additional attributes as search criteria, add the names of the attributes
+to then end of the statement in a comma-separated list.  For example, if you want the
+search criteria applied to the <TT>mega_corp_email_address</TT>, <TT>mail</TT>, and 
+<TT>email</TT> attributes, use the following syntax:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.mail&quot;, &quot;MegaCorp Mail ID:mega_corp_email_address, mail, email&quot;);
+</TT></DL></DL>
+<P>
+
+The commas (<TT>','</TT>), which separate names after the colon, specify
+attribute names to be searched for email addresses. With the preference
+setting shown above, the filter string generated for &quot;email address
+contains smith&quot; would be:
+<P>
+
+<DL><DL><DT><TT>
+(|(mega_corp_email_address=*smith*)(mail=*smith*)(email=*smith*))
+</TT></DL></DL>
+<P>
+
+<H3>Applicability and Default Settings</H3>
+<B>Applicability:</B> Settings for standard attribute names apply to
+all three of the ways Communicator interacts with LDAP directories.
+<P>
+
+<B>Default Settings:</B> Although the <TT>prefs.js</TT> file does not 
+contain actual JavaScript code for all the default settings, if these 
+settings did appear, they would be express as follows:
+
+<DL><DL>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.cn&quot;, &quot;Name:cn&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.givenname&quot;, &quot;First Name:givenname&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.sn&quot;, &quot;Last Name:sn&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.mail&quot;, &quot;Email address:mail&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.telephonenumber&quot;, &quot;Phone Number:telephonenumber&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.o&quot;, &quot;Organization:o&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.ou&quot;, &quot;Organizational Unit:ou&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.l&quot;, &quot;Locality:l&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.attributes.street&quot;, &quot;Street Address:street&quot;);</TT>
+</DL></DL>
+<P>
+
+<H3>
+<FONT SIZE=+2>A</FONT>DDING 
+<FONT SIZE=+2>M</FONT>ORE 
+<FONT SIZE=+2>A</FONT>TTRIBUTES
+</H3>
+
+If you want to add attributes to the list used in the Search Directory
+dialog, you can define up to five additional attributes. Use the following
+syntax to add the attributes:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.custom&lt;n&gt;&quot;, &quot;&lt;addl_display_name&gt;:&lt;addl_attr&gt;&quot;);
+</TT></DL></DL>
+<P>
+
+where <TT>&lt;n&gt;</TT> is a number of the additional attribute in the list (a number from 1 to 5), 
+<TT>&lt;addl_display_name&gt;</TT> is the name that you want displayed in the user interface, and 
+<TT>&lt;addl_attr&gt;</TT> is the name of the attribute that you want to add.
+<P>
+
+For example, to allow user to search on license plate numbers, you can add the standard 
+<TT>carlicense</TT> attribute to the list by using the following statement:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.attributes.custom1&quot;, &quot;License Plate:carlicense&quot;);
+</TT></DL></DL>
+<P>
+
+Note also that you can change any default attribute to one of your
+choosing. So if you prefer to allow users to search on car license numbers
+rather than street addresses, you can change the <TT>street</TT> entry in the
+list to use the <TT>carlicense</TT> attribute instead of <TT>street</TT>:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.street&quot;, &quot;License Plate:carlicense&quot;);
+</TT></DL></DL>
+<P>
+
+<H3>Applicability and Default Settings</H3>
+<B>Applicability:</B> Additional attribute names apply to all three
+of the ways Communicator interacts with LDAP directories.
+<P>
+
+<B>Default Settings:</B> Although the <TT>prefs.js</TT> file does not 
+contain actual JavaScript code for all the default settings, if these 
+settings did appear, they would be express as follows:
+
+<DL><DL>
+<DT><TT>pref(&quot;ldap_1.directory1.custom1&quot;, &quot;Custom 1:custom1&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.custom2&quot;, &quot;Custom 2:custom2&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.custom3&quot;, &quot;Custom 3:custom3&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.custom4&quot;, &quot;Custom 4:custom4&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.custom5&quot;, &quot;Custom 5:custom5&quot;);</TT>
+</DL></DL>
+<P>
+
+
+<H3>
+<FONT SIZE=+2>S</FONT>PECIFYING 
+<FONT SIZE=+2>Y</FONT>OUR 
+<FONT SIZE=+2>O</FONT>WN 
+<FONT SIZE=+2>F</FONT>ILTER 
+<FONT SIZE=+2>S</FONT>TRINGS
+</H3>
+
+In Communicator, you can also customize the <A HREF="ftp://ds.internic.net/rfc/rfc1960.txt" TARGET=_top>filter
+strings</A> used to find directory entries from the Address Book dialog box and from
+the Select Address dialog box in the Compose Window. By default, when you enter
+a name into the Address Book or Select Address dialog box, Communicator uses the
+entered name to generate a filter string for search criteria.
+<P>
+
+For example, if you enter the name <TT>&quot;smith&quot;</TT>,
+Communicator generates the filter string <TT>(cn=*smith*)</TT>. 
+<P>
+
+If you want to customize the filter expressions to use different attributes, 
+you can use the following syntax to provide your own filter expression:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.filter&lt;n&gt;.string&quot;, &quot;&lt;my_filter_expr&gt;&quot;);
+</TT></DL></DL>
+<P>
+
+where <TT>&lt;n&gt;</TT> is a number of the attribute in the list that you are defining the filter for, 
+and <TT>&lt;my_filter_expr&gt;</TT> is the filter expression that you want to use for that attribute.
+<P>
+
+For example, if you want to use the value entered under Name to find matching values in the <TT>givenname</TT>,
+<TT>sn</TT>, or <TT>cn</TT> attribute, use the following statement:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.filter1.string&quot;, &quot;(|(givenname=%s)(sn=%s)(cn=%s))&quot;);
+</TT></DL></DL>
+<P>
+
+The symbol <TT>%s</TT> represents the text string typed by the user. This is the standard <TT>printf</TT> 
+format that should be recognizable to C/C++ programmers.
+<P>
+
+If the user enters multiple words, Communicator separates the words and attempts to apply the filter 
+expression to each word. 
+<P>
+
+For example, if the filter expression is <TT>(cn=*%s*)</TT> if the user types &quot;Bob Smith&quot;, 
+Communicator will generate the filter string:
+<P>
+
+<DL><DL><DT><TT>
+(&amp;(cn=*Bob*)(cn=*Smith*))
+</TT></DL></DL>
+<P>
+
+To disable this behavior, you can set <TT>repeatFilterForWords</TT> to <TT>false</TT>.
+For example:
+<P>
+
+<DL><DL><DT><TT>
+user_pref(&quot;ldap_1.directory1.repeatFilterForWords&quot;, false);</B></FONT>
+</TT></DL></DL>
+<P>
+
+<H3>Applicability and Default Settings</H3>
+<B>Applicability:</B> Custom filter strings only apply to the Address
+Book and Compose Window. The Search Directory dialog and LDAP URLs each
+contain a filter string as part of their normal operation.
+<P>
+
+<B>Default Settings:</B> Although the <TT>prefs.js</TT> file does not 
+contain actual JavaScript code for all the default settings, if these 
+settings did appear, they would be express as follows:
+
+<DL><DL>
+<DT><TT>pref(&quot;ldap_1.directory1.filter1.string&quot;, &quot;(cn=*%s*)&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.filter1.repeatFilterForWords&quot;,true);</TT>
+</DL></DL>
+<P>
+
+
+<H3>
+<FONT SIZE=+2>S</FONT>PECIFYING THE 
+<FONT SIZE=+2>O</FONT>BJECT 
+<FONT SIZE=+2>C</FONT>LASS TO 
+<FONT SIZE=+2>S</FONT>EARCH
+</H3>
+
+By default, Communicator does not restrict searches to directory objects
+of any particular class. If you wish to search for particular object classes,
+or if you wish to exclude particular object classes from a search, 
+you can encode that information in your filter string, as shown in these examples:
+<P>
+
+<DL><DL>
+<DT><TT>pref(&quot;ldap_1.directory1.filter&quot;, &quot;(&amp;(objectclass=Person)(cn=*%s*))&quot;);</TT>
+<DT><TT>pref(&quot;ldap_1.directory1.filter&quot;, &quot;(&amp;(!(objectclass=PayrollRecord))(mail=*%s*))&quot;);</TT>
+</DL></DL>
+<P>
+
+Note that &quot;not&quot; expressions have two sets of parentheses, as specified in the <A HREF="ftp://ds.internic.net/rfc/rfc1960.txt" TARGET=_top>RFC 1960</A> (the RFC that specifies filter expression
+syntax).
+<P>
+
+<H3>
+<FONT SIZE=+2>D</FONT>EFAULT 
+<FONT SIZE=+2>U</FONT>SE OF 
+<FONT SIZE=+2>W</FONT>ILDCARDS
+</H3>
+
+Communicator's default behavior in the Search Directory dialog box and
+the Address Book is to use wildcards in the filter expression (for example, <TT>(cn=*Bob*Smith*)</TT>)
+from the server. Although the <A HREF="http://home.netscape.com/comprod/server_central/product/directory/index.html" TARGET=_top>Netscape
+Directory Server</A> is capable of efficiently indexing strings for wildcard
+filters, other directory servers may not be as capable, which may result in 
+searches that time out before completion. 
+<P>
+
+In order to support these types of directory servers, Communicator allows you
+to disable wildcard searching by specifying this preference:
+<P>
+
+<DL><DL><DT><TT>
+pref(&quot;ldap_1.directory1.efficientWildcards&quot;, false);
+</TT></DT></DL>
+<P>
+
+When this preference appears in the <TT>prefs.js</TT> file for a user,
+Communicator adapts by removing the &quot;contains&quot; and &quot;doesn't contain&quot; 
+operators from the Search Directory dialog box. If you set <TT>efficientWildcards</TT> to
+<TT>false</TT>, you'll also want to change the default filter string, <TT>(cn=*%s*)</TT>.
+<P>
+
+<H3>
+<FONT SIZE=+2>O</FONT>THER 
+<FONT SIZE=+2>D</FONT>IRECTORY 
+<FONT SIZE=+2>R</FONT>ESOURCES
+</H3>
+
+For more information on the LDAP protocol and LDAP directories, see the following
+resources:
+<P>
+
+<UL>
+<LI><A HREF="/one/directory/index.html" TARGET=_top>Netscape
+Directory SDK</A>
+
+<LI><A HREF="http://www.umich.edu/~rsug/ldap/" TARGET=_top>University of Michigan LDAP pages</A>
+
+<LI><A HREF="http://www.critical-angle.com" TARGET=_top>Critical Angle, Inc.</A>
+</UL>
+<P>
+
+<P ALIGN=right>
+
+<FONT SIZE=-2><I>Last Updated: Mon Dec 08 19:47:12 1997</I></FONT>
+
+<HR SIZE=4>
+
+<P> <CENTER> Copyright © 1997 <A
+HREF="http://home.netscape.com/misc/contact_info.html"
+ TARGET=_top>Netscape Communications Corporation</A></FONT>
+</CENTER>
+<P>
+<P>
+
+</BODY>
+</HTML>

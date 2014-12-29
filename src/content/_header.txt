@@ -1,0 +1,16 @@
+ <div class="span-24 last" id="header">
+ <div class="span-16 first">
+  <img src="/images/bridging-the-gap.jpg" title="Bridging the gap" width="487" height="262" alt="Bridging the gap" ><br>
+  <small><a href="http://www.flickr.com/photos/wouterh/2483198400/in/set-72157604996179380/">Image courtesy by Wouter Horré</a></small>
+ </div>
+ <div class="span-8 last">
+  <br>
+  <br>
+    <h1 class="louder">Patrick Debois</h1>
+    <h4>Independent IT-consultant</h4>
+    <h3 class="quiet">Bridging the gap between <strong>projects</strong> and <strong>operations</strong></h3>
+    <h3 class="quiet">by using <strong>Agile</strong> techniques both in <strong>development</strong>,<strong>project management</strong> and <strong>system administration</strong>.</h3>
+  <p class="quiet" align="right">availability: September 2014</p>
+ </div>
+<hr>
+</div>

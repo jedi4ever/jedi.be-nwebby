@@ -1,0 +1,41 @@
+---
+period: "2005- 2006"
+customer: Ministerie Financiën (Sun Microsystems)
+role: System Architect/Technical Consultant
+title: Identity and Access Management
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/minfin.gif" class="left"></div>
+		<div class="span-18 last">
+* With an internal user population of more then 35.000 users, the organization is determined to automate the identity and access management of their IT environment. 
+* For this the proper procedures and responsible persons were put in place. Based upon a new organization hierarchy a role based access control (RBAC) was implemented.
+* These procedures together with the user store management was controlled by implementing the Sun Identity Manager solution: an integration between LDAP ,  Active directory, mail, HR system and even a telephony system was achieved by synchronization and applying new company policies. (f.i. password, request approval).
+* All access policies were centralized using Sun ONE Access Manager and by installing Policy Agent or by directly using a JAVA API to interface with the session management of the solution. By centralizing, all access is logged to an Oracle RAC Database. 
+* To protect the Identity and Access Management solution, additional firewalls were deployed , server hardening was performed and additional security measures were taken.
+* Similar to the server layer, the network and application layer were designed so that a maximum availability was achieved: using Nauticus loadbalancers, Foundry redundant switches, Oracle RAC. The solution was even designed to function within a Disaster Recovery scenario using SAN technology.
+* Given the high impact/visibility of the environment, substantial monitoring (7space) was put in place to guarantee the level of SLA required. 
+* In order to control further changes and upgrades, a test environment was created and extensive testing was performed to minimize the impact on the existing environment.
+* Integration with E-ID (National Electronic ID card) was tested in a proof of concept in order to show the technical integration of the product.
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+active directory, sun identity management, j2ee, sun application server, solaris, java, portlets, e-id, spml, lighthouse, zones, cisco switches, loadbalancers, proxy server, apache reverse proxy, Legato Networker, Oracle RAC
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* To design, implement, test and roll out the infrastructure for the Identity Management platform (server,network,storage)
+
+_Sysadmin_
+* Automation of machine provisioning for both testing as production
+* LDAP, J2EE application server and Oracle automation
+
+_Tester_
+* Define test scenario's
+* Design and create test environments (dev, UAT, Training, Patch, Pre-Production)
+</div>
+

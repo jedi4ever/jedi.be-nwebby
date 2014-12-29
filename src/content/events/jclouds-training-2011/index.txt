@@ -1,0 +1,43 @@
+---
+layout: event
+extension: html
+filter:
+- erb
+- markdown
+title: Jclouds Training - 2011
+period: "21/11/2011 - 22/11/2011"
+short: "Jclouds Training is a <b>1,5-day comprehensive class</b> covering the basic architecture of Jclouds and all of the underlying components. This class will include lecture, labs and some comprehensive case studies."
+tags:
+- jcloud
+- amazon
+- devops
+- course
+- training
+- ec2
+- java
+dirty: true
+event: true
+---
+# Note: This class has been cancelled/postponed, stay tuned for a new date
+
+<table><tr><td><a href="http://jclouds.org"><img src='<%= @page.url+"/jclouds.jpeg" %>'></a></td>
+<td><h3>working your way through the clouds with java</h3> </td></tr></table>
+
+> [Jclouds](http://jclouds.org) is an open source library that helps you get started in the cloud and reuse your java and clojure development skills. Our api allows you freedom to use portable abstractions or cloud-specific features. We test support of 30 cloud providers and cloud software stacks, including Amazon, GoGrid, Ninefold, vCloud, OpenStack, and Azure.
+
+### Date: 21, 22 November 2011 in <a href="location.html">Gent, Belgium</a></b>
+
+<p><em>This is a limited and unique offer</em>:</p>
+
+<a href="trainer.html">Adrian Cole</a>, <b>original founder of jclouds</b> and <b>keynote speaker</b> at <a href="http://www.cloudcamp.org/ghent">Cloudcamp Ghent</a> , has generously agreed in using the opportunity to teach the first <a href="program.html">1,5-day comprehensive course</a> for all you European [Jclouds](http://jclouds.org) lovers!
+
+This means we can have the training at exceptional, real community pricing:
+<ul>
+<li>Early Bird: <b>€ 90</b> (excl. Taxes/VAT) - Valid Until 1 November 2011</li>
+<li>Regular Fee: <b>€ 120</b> (excl. Taxes/VAT)</li>
+</ul>
+
+Be quick to [register](registration.html) as places are limited.
+
+Note: [registration for cloudcamp](http://www.cloudcamp.org/ghent) needs to be done separately 
+

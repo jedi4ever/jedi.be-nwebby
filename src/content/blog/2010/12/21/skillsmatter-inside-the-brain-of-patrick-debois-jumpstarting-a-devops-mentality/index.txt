@@ -1,0 +1,42 @@
+---
+title: Skills Matter - Inside the Brain of Patrick Debois - Jumpstarting a Devops Mentality
+created_at: 2010-12-21 11:50:58.966781 +01:00
+tags: 
+- skillsmatter
+- devops
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<table>
+<tr>
+<td><img src='{{ page.url}}/skills-matter-logo.gif'>
+</td>
+<td>
+I'm pleased to announce that the nice people of <a href="http://skilsmatter.com">Skill Matter</a> have scheduled me to talk devops. Thank you and <a href="http://www.build-doctor.com">Julian Simpson</a> for the encouragement.</td></tr></table>
+
+I've always been a big fan of their sessions and courses. And they were one of the first sponsors for the first <a href="http://devopsdays.org">devopsdays</a>. All Kudos go to them! 
+
+The official title is : "[Inside the Brain of Patrick Debois , bootstrapping a devops mentality?](http://skillsmatter.com/event/agile-testing/bootstrapping-a-devops-mentality)"
+
+- **Location**: [The Skills Matter eXchange, London](http://skillsmatter.com/location-details/agile-testing/878/96)
+- **When**: 27th January 2011, 18:30 PM 
+- **Cost**: free
+- **Registration**: [At the Skills Matter website](http://skillsmatter.com/event/agile-testing/bootstrapping-a-devops-mentality)
+
+I've heard there is gonna be free drinks afterwards at the [Slaughtered Lamb](http://www.theslaughteredlambpub.com/). Feel free to pick the rest of my brain there .
+
+Here is the abstract:
+
+<i>When devops get's mentioned the discussion tends to fall in two parts: the technology part and the cultural part. When devops get's mentioned the discussion tends to fall in two parts: the technology part and the cultural part.
+
+Sure, a lot is happening at the technology side: virtualization, cloud and more recently infrastructure as code. All cool stuff. And a good toolset sure is worth a lot for getting the job done more easily. Still tools will only have a mild impact on making people collaborate. Collaboration is really the core of the devops idea, plain and simple.
+But even if the idea is simple, it doesn't mean the implementation is easy: a lot of resistance needs to be overcome.
+
+Phrases like: ""this will never work"", ""it's only for those cool web 2.0 companies"", ""it only works for small startups"" are not usual when a mentality shift is introduced. Within this session, we will highlight several stories from the trenches how people are trying to bootstrap devops within their organizations and the benefits they got from it. Besides what worked, we will also explain the things that didn't work well.
+
+Remember devops is no silver bullet. It's still hard work to get it going. At the end of the session, we hope to have provided you with several practical and useful tips to make it work inside YOUR company: How to get devs and ops work together, overcome management resistance, start working on the same goals and teams. That is of course if you want it !</i>
+
+
+ 

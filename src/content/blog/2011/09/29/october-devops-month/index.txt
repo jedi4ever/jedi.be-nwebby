@@ -1,0 +1,53 @@
+---
+title: October is Devops Month
+created_at: 2011-09-29 10:35:34.199577 +02:00
+tags:
+- devops
+- devopsdays
+- campdevops
+blog_post: true
+filter:
+- erb
+- markdown
+related:
+- desc: Devopsdays Goteborg
+  url: http://devopsdays.org/events/2011-goteborg/
+- desc: Camp Devops
+  url: http://campdevops.com/
+---
+>  So you are looking for a devops place to be in October? Be quick to register to one or both of these conferences
+
+## Europe: Devopsdays Goteborg
+
+On *Oct 14 - 15 in Goteborg*, we're organizing the third! [Devopsdays Europe (goteborg)](http://devopsdays.org/events/2011-goteborg/)
+
+<img src="http://devopsdays.org/images/devopsdays-banner-small.png">
+
+Here's a list of the talks:
+
+- Ramon Van Alteren , [Hiring and embedding new team members at Hyves](http://www.devopsdays.org/events/2011-goteborg/proposals/Hiring%20and%20embedding%20new%20team%20members%20at%20Hyves/)
+- Mitchell Hashimoto , [DevOps is not an absolute. It's a range](http://www.devopsdays.org/events/2011-goteborg/proposals/DevOps%20is%20not%20an%20absolute%20-%20It%27s%20a%20range/)
+- Mattias Jansson and Noa Resare , [A case study in operations and development integration at Spotify](http://www.devopsdays.org/events/2011-goteborg/proposals/A%20case%20study%20in%20ops%20and%20dev%20integration%20at%20Spotify/)
+- Julian Simpson , [Everything I learned about Continuous Integration , I learned from System Administration](http://www.devopsdays.org/events/2011-goteborg/proposals/Everything%20I%20learned%20from%20CI%20-%20I%20learned%20from%20a%20sysadmin/)
+- John Clapham and Paul Swartout , [Dev+Ops+Org - How we are including (almost) everyone](http://www.devopsdays.org/events/2011-goteborg/proposals/dev-ops-org-how%20we%20are%20including%20everyone/)
+- John Vincent , [Sometimes it *IS* about the tools - Solving cultural issues with software](http://www.devopsdays.org/events/2011-goteborg/proposals/sometimes%20it%20is%20about%20the%20tools/)
+
+For more information on the schedule , goto [the complete program](http://devopsdays.org/events/2011-goteborg/program/)
+
+## US: Camp Devops Chicago
+<img src="http://campdevops.com/images/devops-tree-logo.png">
+
+On *Oct 22 - 23 in Chicago*, the first [Camp Devops](http://campdevops.com/) will be organized by [@martinjlogan](http://twitter.com/@martinjlogan).
+
+Here's a list of the talks:
+
+- Continuous Delivery Breakdown - Jez Humble
+- Automate Everything: 100% Continuous with Jenkins and Gerrit -  Tyler Croy
+- Overcoming Organizational Hurdles - Chris Read
+- Configuration Management: Puppet -  Teyo Tyree
+- Monitoring and Alerting  - Zenoss
+- Hands on Graphite - Nicholas Leskiw
+- Hal Snyder - Is CMDB Dead? 
+- Head in the Clouds - Matt O'Keefe
+
+For more information, goto the complete [program](http://campdevops.com/sessions)

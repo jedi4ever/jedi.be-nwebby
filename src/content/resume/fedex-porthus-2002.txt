@@ -1,0 +1,34 @@
+---
+period: "2002 - 2003"
+customer: Fedex (Porthus)
+role: System Architect
+title:  Fedex CRM
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/fedex.gif" class="left"></div>
+		<div class="span-18 last">
+* After a proof of concept project for their CRM application, Fedex decided that the time had come for a complete rollout. As CRM is crucial for an enterprise, the application was setup within a fully redundant, disaster recovery environment.
+* As the CRM application was based upon Windows, a complete Citrix Farm was installed over two locations. Oracle was used as the database together with business logic installed upon Bea Weblogic. This server infrastructure was the first part of the rollout.
+* To achieve maximal disaster recovery, the complete backup solution was revised based upon OmniBack, Legato and Veritas. For storage and clustering Veritas backup was installed upon EMC volumes.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+weblogic, oracle, solaris, citrix, legato, veritas, omniback, emc2
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Architecture_
+* Design of the redundant Citrix, application and database infrastructure
+* Design of the backup and disaster recovery solution
+
+_Project Management_
+* Create cost and project plan
+* Coordinate offers for Backup and Disaster Recovery
+</div>
+</div>
+
+

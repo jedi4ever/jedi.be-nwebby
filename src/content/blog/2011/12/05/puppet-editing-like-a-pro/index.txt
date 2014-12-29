@@ -1,0 +1,153 @@
+---
+title: Puppet editing like a pro
+created_at: 2011-12-05 09:35:34.199577 +02:00
+tags:
+- puppet
+- vim
+- textmate
+- productivity
+blog_post: true
+filter:
+- erb
+- markdown
+---
+I've spent some time recently on setting up my environment to work more productively on writing puppet manifests.
+This blogpost highlights some of the findings to get me more productive on editing puppet files and modules.
+Some older information can be found at [Editor Tips](http://projects.puppetlabs.com/projects/1/wiki/Editor_Tips) on the puppetlabs website.
+
+### Tip 1: Syntax highlighting,snippet completion
+Puppet syntax is very specific, it's important to get clues about missing curly braces, semi-colums, etc .. as fast as possible. There is support for this in the most common editors:
+
+#### Using Textmate:
+[@Masterzen](http://www.masterzen.fr/) has created a textmate bundle for use with puppet. You can find it at <https://github.com/masterzen/puppet-textmate-bundle>.
+
+Michael Halligan [describes how to install it from the commandline](http://mhalligan.com/textmate-for-the-modern-sysadmin-adding-bundl)
+
+    mkdir -p /Library/Application\ Support/TextMate/Bundles
+    cd /Library/Application\ Support/TextMate/Bundles
+    git clone git://gitorious.org/git-tmbundle/mainline.git Git.tmbundle
+    git clone http://git.gitorious.org/git-tmbundle/mainline.git Git.tmbundle
+    git clone https://github.com/masterzen/puppet-textmate-bundle.git Puppet.tmbundle
+    git clone https://github.com/drnic/Chef.tmbundle.git Chef.tmbundle
+    osascript -e 'tell app "TextMate" to reload bundles'
+
+#### Using VIM:
+If textmate is not your thing, here is how you can pimp up your vim:
+
+When you look around for puppet/vim integration there seem to have been some re-incarnations:
+
+- The first option is just setting the syntax of any .pp file to ruby syntax
+- The second option as [Garett Honeycutt describes](http://garretthoneycutt.com/index.php/Vim):
+  - is a more elaborate version of highlighting pp files (orginally written by Luke Kanies).
+  - this file is distributed with puppet itself.
+  - <http://downloads.puppetlabs.com/puppet/puppet.vim>
+- Stick gaves us even more advanced tips at :
+  - <http://onastick.wordpress.com/2011/03/30/puppet-and-vim/>
+- R.I. Pienaar [showed us how](http://www.screenr.com/su7) to use Snipmate with vim and puppet :
+  - <http://www.devco.net/archives/2009/09/22/vim_and_puppet.php>
+  - His snippets can be found at <http://www.devco.net/code/puppet.snippets>
+
+The most advanced vim-puppet integration I could currently(Dec/2011) find is :
+  - the [vim-puppet](https://github.com/rodjek/vim-puppet) Tim Sharpe created.
+  - <https://github.com/rodjek/vim-puppet>
+
+To use the vim-puppet plugin, you're best to use pathogen written by Tim Pope.
+I've followed the instructions at <http://tammersaleh.com/posts/the-modern-vim-config-with-pathogen>.
+
+I've enabled the following plugins in my update_bundles script
+
+    git_bundles = [
+      "git://github.com/astashov/vim-ruby-debugger.git",
+      "git://github.com/ervandew/supertab.git",
+      "git://github.com/godlygeek/tabular.git",
+      "git://github.com/hallison/vim-rdoc.git",
+      "git://github.com/msanders/snipmate.vim.git",
+      "git://github.com/pangloss/vim-javascript.git",
+      "git://github.com/scrooloose/nerdtree.git",
+      "git://github.com/timcharper/textile.vim.git",
+      "git://github.com/tpope/vim-cucumber.git",
+      "git://github.com/tpope/vim-fugitive.git",
+      "git://github.com/tpope/vim-git.git",
+      "git://github.com/tpope/vim-haml.git",
+      "git://github.com/tpope/vim-markdown.git",
+      "git://github.com/tpope/vim-rails.git",
+      "git://github.com/tpope/vim-repeat.git",
+      "git://github.com/tpope/vim-surround.git",
+      "git://github.com/tpope/vim-vividchalk.git",
+      "git://github.com/tsaleh/taskpaper.vim.git",
+      "git://github.com/tsaleh/vim-matchit.git",
+      "git://github.com/tsaleh/vim-shoulda.git",
+      "git://github.com/tsaleh/vim-tcomment.git",
+      "git://github.com/tsaleh/vim-tmux.git",
+      "git://github.com/vim-ruby/vim-ruby.git",
+      "git://github.com/vim-scripts/Gist.vim.git",
+      "git://github.com/scrooloose/syntastic",
+      "git://github.com/rodjek/vim-puppet.git",
+      "git://github.com/vim-scripts/Specky.git"
+    ]
+
+Most notable plugins:
+
+- [Tabular](https://github.com/godlygeek/tabular) gives you automatic => alignment
+- [Syntastic](https://github.com/scrooloose/syntastic) gives you syntax feedback while you edit files
+- [Snipmate](https://github.com/msanders/snipmate.vim) gives you the snippets on tab expansion
+- [Specky](https://github.com/vim-scripts/Specky) gives you functionality for rspec files
+- [vim-ruby](https://github.com/vim-scripts/vim-ruby) gives you extra functionality for ruby files
+- [vim-cucumber](https://github.com/vim-scripts/Specky) gives you functionality for cucumber files
+
+For more information on the vim-puppet project go to:
+
+<https://github.com/rodjek/vim-puppet/>
+
+The snippets that are expanded in the vim-puppet plugin can be found at:
+
+<https://github.com/rodjek/vim-puppet/blob/master/snippets/puppet.snippets>
+
+### Tip 2: don't create modules structure by hand
+I keep forgetting the correct structure, files etc.. when I create a new module. 
+Luckily there is an easy way to generate a puppet module structure using the *puppet-module* gem
+
+    $ gem install puppet-module
+    $ puppet-module
+    Tasks:
+      puppet-module build [PATH_TO_MODULE]                 # Build a module for release
+      puppet-module changelog                              # Display the changelog for this tool
+      puppet-module changes [PATH_TO_MODULE]               # Show modified files in an installed module
+      puppet-module clean                                  # Clears module cache for all repositories
+      puppet-module generate USERNAME-MODNAME              # Generate boilerplate for a new module
+      puppet-module help [TASK]                            # Describe available tasks or one specific task
+      puppet-module install MODULE_NAME_OR_FILE [OPTIONS]  # Install a module (eg, 'user-modname') from a repositor...
+      puppet-module repository                             # Show currently configured repository
+      puppet-module search TERM                            # Search the module repository for a module matching TERM
+      puppet-module usage                                  # Display detailed usage documentation for this tool
+      puppet-module version                                # Show the version information for this tool
+
+    Options:
+      -c, [--config=CONFIG]  # Configuration file
+    $ puppet-module generate puppetmodule-apache
+    =========================================================================================
+    Generating module at /Users/patrick/demo-puppet/modules/puppetmodule-apache
+    -----------------------------------------------------------------------------------------
+    puppetmodule-apache
+    puppetmodule-apache/tests
+    puppetmodule-apache/tests/init.pp
+    puppetmodule-apache/spec
+    puppetmodule-apache/spec/spec_helper.rb
+    puppetmodule-apache/spec/spec.opts
+    puppetmodule-apache/README
+    puppetmodule-apache/Modulefile
+    puppetmodule-apache/metadata.json
+    puppetmodule-apache/manifests
+    puppetmodule-apache/manifests/init.pp
+
+### Tip 3 - Geppetto: a Puppet IDE
+The folks from [cloudsmith](http://blog.cloudsmith.com/) have created an Eclipse based editor called [Geppetto](https://github.com/cloudsmith/geppetto).
+It integrates the syntax highlighting, module creation etc... and has nice integration with the [Puppet forge](http://forge.puppetlabs.com/)
+
+Note: this NOT related with the [Gepetto (one P) project by Alban Peignier](https://github.com/albanpeignier/gepetto)
+
+[James Turnbull](http://www.kartar.net) was so kind to make a quick screencast on how it works:
+
+<iframe src="http://player.vimeo.com/video/21999983?title=0&amp;byline=0&amp;portrait=0" width="550" height="344" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+But remember it's Java based, so it might take a while to fire it up :)

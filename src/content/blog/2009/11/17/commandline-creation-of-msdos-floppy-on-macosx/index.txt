@@ -1,0 +1,46 @@
+--- 
+title:  Commandline creation of Msdos floppy on MacOSX
+created_at: 2009-11-17 15:10:34.772412 +01:00
+tags: 
+- floppy
+- automation
+- msdos
+- macosx
+- hdiutil
+- hdid
+- newfs_msdos
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+I wanted to automate the creation of an MS-DOS floppy under MacOSX. The usual way is very similar to Linux. In this script I avoided using sudo to mount the filesystem and took advantage of the hdiutils to run everything under normal user credentials.
+
+<% codify({:lang => :shell }) do  %>
+# creating an empty file
+dd if=/dev/zero bs=512 count=2880 of=msdos-floppy.img
+
+# associate the file with a device without mounting it
+device=`hdid -nomount msdos-floppy.img`
+
+# formatting disk with msdos format
+newfs_msdos $device
+
+# detach the file from the associated device
+hdiutil detach $device -force
+
+# mounting the image file 
+device=`hdid msdos-floppy.img|cut -d ' ' -f 1`
+
+# calculate the mountpoint by checking the mount table
+path=`mount |grep -w '$device' | cut -d ' ' -f 3- | cut -d '(' -f 1`
+
+# copying file to the mountpoint $path
+cp file $path/ 
+
+# unmount the image
+hdiutil detach $device -forceend
+
+<% end %>
+
+

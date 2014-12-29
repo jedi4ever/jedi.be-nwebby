@@ -1,0 +1,10 @@
+<ul>
+<li><a href="program.html">Program</a>
+<li><a href="location.html">Location and venue</a>
+<li><a href="registration.html">Registration</a>
+<li><a href="trainer.html">Trainer</a>
+<li><a href="payment.html">Payment</a>
+<li><a href="index.html">Description</a>
+<li><a href="hotels.html">Hotels</a>
+
+</ul>

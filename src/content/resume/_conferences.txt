@@ -1,0 +1,9 @@
+---
+filter: textile
+---
+<h2>Conference organizer</h2>
+* Agile Open Benelux 2009,2010,2011
+* Puppetcamp 2010 Europe
+* Devopsdays 2009 Belgium
+* Devopsdays 2010 USA,Europe,Brazil 
+* Devopsdays 2011 Boston, Mountain View, Melbourne, Bangalore, Goteborg

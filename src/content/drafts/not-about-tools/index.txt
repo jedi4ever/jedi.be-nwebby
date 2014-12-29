@@ -1,0 +1,458 @@
+---
+title: It's not about the tools
+tags:
+- devops
+filter:
+- erb
+- markdown
+---
+### Levels of Interaction
+<http://mikeg.typepad.com/perceptions/2010/10/collaboration-its-not-about-the-tools.html>
+<http://mikeg.typepad.com/perceptions/2010/08/getting-ready-for-a-next-generation-collaborative-experience.html>
+
+* People-to-activities: The traditional area where we focus on work models, process, projects, productivity, information sharing, etc.
+* People-to-collectives: An area often touched on by knowledge management efforts realted to teaming and communities
+* People-to-networks: A key aspect of E2.0 (that we still only barely understand), related to social identities, social roles, social networks, and the underlying participation structures that connect peope inside and outside of the enterprise
+* People-to-organization: An area often disconnected from collaboration related to how people learn and develop their own talent - and how the enterprise can best leverage its social and human capital
+
+-----------------------------
+[Social Media ... it's about the tools right? - Beth Harte]( http://www.searchengineguide.com/beth-harte/social-mediaits-about-the-tools-right.php)
+> Social media are primarily Internet- and mobile-based tools for *sharing and discussing* information among human beings.
+> Marketers and business need to understand not only the tools but how the communities want the tools to be used
+
+-----------------------------
+[Tools define Culture - Ed](http://blog.brainstormbrand.com/tools/2009/02/tools-define-culture)
+> Unlike traditional marketing, conversation implies that you know your audience.
+> The way we conduct ourselves within those subcultures is akin to a dialect or preference. The tools we use are the words and media we employ.
+
+-----------------------------
+[Wikipedia Defition of Tools Users](http://en.wikipedia.org/wiki/Oldowan#The_tool_users)
+Odowan -> stone tool
+Stone as a tool made a difference in the 2.6 million years ago
+
+-------------------
+Design & Skills used to be a shared thing, based on experience
+Closely weaven
+
+-------------------
+<http://edition.cnn.com/2011/OPINION/09/07/rushkoff.jobs.obsolete/index.html>
+Are we going back to the sharing experience instead of job? Communties can work at home for each-other
+
+-------------------
+<http://langwitches.org/blog/2010/01/09/its-not-about-the-tools-its-about-the-skills/>
+> It's not about the tools, about the skills
+Collaboration skill in participating in the class
+
+-------------------
+<http://langwitches.org/blog/2009/10/19/we-podcasted-today-so-did-you-learn-anything/>
+People worry about time we spend in new tools if it adds to old skills. Like blogging in writing, Surfing in reading...
+TDD in Testing (Architecting) , Configuration Mgt (vs installing servers)
+
+-------------------
+<http://agilemanifesto.org/>
+> Individuals and interactions over processes and tools
+Doesn't mean right is not important (but collaboration and people make it happen)
+
+---------
+<http://www.connectivism.ca/?p=89>
+> It’s not about tools. It’s about change.
+
+> I personally would like to see change. At deep levels.
+> we are seeking a window dressing solution when it is the house that needs to be renovated. 
+
+Behavioral change through tools, hope it's not a slight change
+
+------------------
+<http://gigaom.com/collaboration/its-not-about-the-tools-its-about-the-strategy/>
+Know when to stop...
+
+> This makes it easy to obsess more about the tools themselves rather than the strategy for using them, as if by choosing the perfect tools you can guarantee the success of your ventures
+> Even great tools, used with very little planning, will seem mediocre at best.
+
+You've got have a least some plan, keep the big picture 
+
+> Know when to stop. If it’s obvious that a particular tool or platform doesn’t work, no amount of force or prayer will make it work. 
+
+------------------
+<http://techpudding.com/2011/02/24/its-not-about-the-tools-its-about-how-yo-use-them/>
+
+It’s Not About the Tools–It’s About How You Use Them
+
+> Have you engaged your students in critical thinking today?” and then see what tools (technological and otherwise) can be used in the process?
+
+------------------
+Critical thinking (design needed?) - Like post by Agile Exec/Ernest Mueller
+<http://blog.cutter.com/2011/09/11/originality-and-operations/>
+
+> Complex systems require substantial human expertise in their operation and management,
+
+>  but that has simply freed us up to innovate even more.  
+
+-------------------------
+I can't code, what can I do:  Open Source, Blog, Tweet, ..., Open Datacenter
+
+<http://opencompute.org/>
+<http://arstechnica.com/business/news/2011/04/why-facebook-open-sourced-its-datacenters.ars>
+<http://stackoverflow.com/>
+
+-------------------------
+Social Media: It’s not about the tools, it’s about the people.
+
+<http://www.brandtology.com/blog/social-media-it%E2%80%99s-not-about-the-tools-it%E2%80%99s-about-the-people/>
+
+> The thing is about the new technologies is not that they provide new, more efficient – better targeted or more relevant – messaging opportunities for businesses to exploit, but rather that it connects people to each other and that allows us to see each other (which you will hopefully remember allows us to emulate and thus drives the spread of behaviors and ideas).
+
+-------------------------
+<http://blogs.cisco.com/collaboration/collaboration-the-long-journey/>
+
+> A focus on collaborative relationships shifts the focus from tools to design when we start re-thinking collaboration in terms of interaction contexts and situational needs. 
+> We need to realize that a compelling user experience is a subtle but critical success factor for effective collaboration.
+
+-------------------------
+<https://communities.cisco.com/community/technology/collaboration/enterprisesocialsoftware/blog/2010/10/15/pushing-the-reset-button-on-how-we-look-at-collaboration>
+
+> activity-centric collaboration to relationship-centric collaboration (which brings culture more to the forefront as well). 
+
+-----------------------------
+<http://www.thesimplerlife.net/2011/01/31/tools-carpenter/>
+
+> Your reality isn’t my reality. My reality isn’t yours. We risk running into problems when we project our own perspective on others.
+
+> I’m not interested in being defined by my tools either; I’m building something that transcends what I’ve used to build it.
+
+-----------------------------
+<http://cultureofyes.ca/2011/04/29/its-not-the-tools-its-the-team/>
+It's the team of the school that helps children not the tools 
+
+-----------------------------
+<http://rickladd.com/2011/06/03/the-hell-its-not-about-the-tools/>
+
+> On the other hand, we’re probably all aware of situations where the simplest of tools served an organization well in dealing with a particularly difficult situation. This can only happen, I think, when the people confronting the situation are open and honest about what they’re facing and how it’s affecting the processes and people who are tasked with dealing with it.
+
+> Nevertheless, the pain associated with change is usually ameliorated by the newfound capabilities the change brings
+
+> Tools are, by themselves, absolutely useless unless they’re used to get things done in the manner for which they were designed. Even better, if you can figure out how to use them creatively they can be even more powerful.
+
+> I would say it most definitely IS about the tools, but it’s just not entirely about the tools. Having functionality available that was not possible five or ten years ago can change things dramatically. However, it doesn’t happen overnight. 
+
+> If anyone tells you it’s not about the tools, as if to say they aren’t important, ask them when was the last time they combed their hair with a fork!
+
+-------------------------------
+<http://mondaybynoon.com/2011/01/03/its-about-the-tools/>
+
+Habits can be supremely productive
+
+> When you’ve progressed to becoming more professional, you’ll be able to much better analyze your toolset, with actual experience and fact to back up your opinions. At that point, tools become an important choice. Or do they?
+
+------------------------------
+<http://designm.ag/design/its-about-the-design-not-the-tools-2/>
+Discussion about Photoshop or other tools, it's about the design
+
+> Great design relies on an open dialogue between the artist and the medium.
+Not only dialog as in conversation, but also inner conversation
+
+Expresivness design
+A Man of Many Methods
+
+> The same is true of our websites. It doesn’t matter how they are made. In the end, all that matters is that they work.
+
+-----------------------------
+<http://jimworth.blogspot.com/2011/07/its-not-tools-its-about-people.html>
+
+Social Media - Clearly on the relationships
+
+> It’s not about the tools, it’s about the relationship. The great thing about any social network is the socializing that takes place there. 
+
+------------------------------
+> A poor craftsman blames his tools.  —UNKNOWN
+> The craftsman does not blame his hammer for an improperly build shed, etc.
+
+Stings, doesn’t it? But there’s no nice way to say it. You can’t sugarcoat it.
+
+> It is a poor Indian who blames the arrow.
+
+> When we fail, our pride prevents us from coming to terms with our own abilities. Then we go scapegoat hunting. Tools are typically the most present, easy targets—after all, they got us into this mess, right? You can’t take good photos? It’s because of your crappy camera. You can’t play that riff? You need better gear. You can’t squash that programming bug? It’s because [insert programming language of choice here] sucks. Surely the problem isn’t you.
+
+<http://joshuablankenship.com/blog/2010/03/21/its-not-your-tools-blame-shifter/>
+
+------------------------------
+> It’s not about the tool – a naïve myth. (Peter Skillen)
+
+<http://theconstructionzone.wordpress.com/2011/05/09/%E2%80%9Cit%E2%80%99s-not-about-the-tool%E2%80%9D-%E2%80%93-a-naive-myth/>
+
+> Computers are not mere tools but are media with which to think.
+> They can provide mental models that are transferable within, and across, domains
+
+> ‘Effects with’ are the changes that take place while one is engaged in intellectual partnership with peers or with a computer tool, as, for example, is the case with the changed quality of problem solving that takes place when individuals work together in a team. On the other hand, ‘effects of’ are those more lasting changes that take place as a consequence of the intellectual partnership, as when computer-enhanced collaboration teaches students to ask more exact and explicit questions even when not using that system.
+
+> Tools shape behaviours, cognition & societal structures
+
+------------------------------
+> The addition of a drop of blue dye to a glass of water results not in blue dye plus water, but in blue water: a new reality. - Derrick De Kerckhove
+
+<http://theconstructionzone.wordpress.com/2010/05/28/blue-dye-plus-water-or-blue-water/>
+
+* Any tool can change the behavior, .... -  A new tool, a new reality
+* Need to tune into to what the community wants
+* Needs a skill to select
+
+------------------------------
+<http://www.slideshare.net/dkuropatwa/what-can-i-do-now-web-20-pedagogy-v4-7858206>
+
+<http://web.mit.edu/comm-forum/forums/gutenberg_parenthesis.html>
+
+The natural flow of communication was interrupted by the print phase. Pettitt pointed out that the parenthesis does not begin or end at any single point in time.  Various cultures and subcultures entered and exited the parenthesis independently.
+
+Folklore at people who have not entered the parenthesis
+
+ Technologies are not simply tools.
+
+Containment - Book/Letters/... Immersive readings ...
+
+Our bodies are envelopes
+
+Divides / Categories
+Man and Material / Man and Machine /... Borders are crossable -  Less categorical - Less Panicky - Distinctions
+
+------------------------------
+<http://theconstructionzone.wordpress.com/2010/03/07/deep-understanding-the-issue-of-transfer/>
+
+> _Effects with_ and _Effects of_ Technology
+
+
+> Effects with are the changes that take place while one is engaged in intellectual partnership with peers or with a computer tool, as, for example, is the case with the changed quality of problem solving that takes place when individuals work together in a team.  On the other hand, effects of are those more lasting changes that take place as a consequence of the intellectual partnership, as when computer-enhanced collaboration teaches students to ask more exact and explicit questions even when not using that system
+
+Bug - turtle feed
+
+> Does word processing make students better writers? 
+<http://theconstructionzone.files.wordpress.com/2010/03/transferringknowledge.pdf>
+<http://theconstructionzone.wordpress.com/2011/01/02/the-drip-effect-of-technology/>
+
+Or does abstractions make us bad at programming
+Or does google makes us dumber
+
+> a second order effect of cars was the development of suburbs and city sprawl
+
+> I had been keeping the lid on too tight.
+
+> If the role of the computer is so slight that the rest remains constant, then it is too slight for much to come of it. – Seymour Papert
+ What second order effects have you witnessed a
+
+Be explicit in building the bridge—in making the connection of this skill to other domains.
+---------------------------
+
+<http://theconstructionzone.wordpress.com/2010/03/03/scaffolding-for-deep-understanding/>
+
+
+- Novices typically don’t plan, monitor, and reflect on their learning
+- Expert learners use ‘multiple representations’
+- Novices typically don’t generate a number of potential solution strategies
+- Novices engage in ‘knowledge telling’ rather than ‘knowledge transformation
+- Expert learners make multiple passes at knowledge
+- Experts view ‘mistakes’ as opportunities to learn
+- Experts are able to transfer their learning to other domains
+- Experts realize that the ‘social context’ is important to learning
+
+
+Multiple options , Multiple tools
+
+---------------------------
+<http://bsherry.wordpress.com/2010/02/28/what-is-deep-understanding/>
+
+> It is the peculiarity of knowledge that those who really thirst for it always get it. -  Richard Jefferies
+
+> MAYBE WE SHOULD ASKING,  “WHAT KIND OF THINKERS DO WE WANT OUR STUDENTS TO BE, RATHER THAN WHAT STUFF DO WE WANT OUR STUDENTS TO KNOW?”
+O
+
+> Can we see evidence of deep understanding or does it occur only in the inner world of the learner?
+How can we see if someone has a deep understanding?
+
+- Are students make sense of what they are learning by creating meaning and making ideas their own?
+- Are students connecting ideas together and connecting with previous experiences?
+- Are students personally involved and engaged in constructing new knowledge (may include intellectual, emotional, social or spiritual domains)
+- Is there evidence of transformation?  Does the student take action or change their beliefs based upon what they are learning? How do we know if this has occurred?
+- Are students involved in making a plan to acquire the kinds of knowledge they need in order to go deeper in their learning?
+
+And, like Neil Postman said, Children enter kindergarten as question marks and leave as periods.
+
+---------------------------------
+<http://ideasandthoughts.org/2011/05/07/its-not-just-a-tool/>
+
+In the book  A New Culture of Learning: Cultivating the Imagination for a World of Constant Change by Douglas Thomas, John Seely Brown, they talk about this new culture as creating learning environments, not systems as we currently see in our schools. Systems emphasize control from a small number of managers, environments rely much more on the collective
+
+> No wonder we embrace technology,  it has the potential to help students towards thinking deeply!
+
+> We shape our tools and afterwards our tools shape ups - Marshall McLuhan
+
+---------------------------------
+Teaching the iGeneration: It's About Verbs, Not Tools
+
+<http://www.edweek.org/tm/articles/2011/04/20/tln_ferriter_igeneration.html>
+
+> It's not about the tools, Bill," Sheryl pushed back. "It's about the behaviors that the tools enable."
+
+---------------------------------
+
+> Implementing Lean tools is important, but it's the culture of change that unlocks the true potential of Lean
+
+<http://www.asq-1302.org/wp-content/uploads/2010/09/Lean-Culture-its-not-the-Tools.pdf>
+
+---------------------------------
+
+<http://adage.com/article/small-agency-diary/digital-debate-mistaking-tools-strategies/228035/>
+
+> A Screwdriver Doesn't Replace a Hammer; Social Won't Replace Traditional
+
+To lead we need a deeper understanding of the strengths and weaknesses of every tool in the advertising toolbox so that we are able instruct our clients on the proper use of each tool.
+
+----------------------------------
+Doing cloud with traditional tools (can be done internally)
+Private cloud ...
+
+----------------------------------
+
+<http://blog.jayway.com/2009/11/07/the-craftsman-analogy/>
+
+> It’s not the Tools, It’s the Craftsman
+
+The masters also have the responsibility to take on journeymen and apprentices to train in their particular flavor of software development.
+
+> So, if our goal is to get programmers to be viewed as craftsmen, we're already there. Just change the statement those f***ing carpenters never do what we expect! to those f***ing programmers never do what we expect!
+
+----------------------------------
+
+<http://agile.dzone.com/articles/frustrations-and-aspirations>
+
+Sandro Mancuso
+
+I just wish I could find the things I described above in all projects. Companies should aim to hire passionate and skilful people. People that can contribute to their projects and organisation. People that are willing to share and learn.
+
+----------------------------------
+
+<http://www.agilejourneyman.com/2011/02/software-craftsmanship-beyound-hype.html>
+<http://www.infoq.com/presentations/Software-Craftsmanship-Beyond-The-Hype>
+
+Not only working software but also well crafted software
+Not only responding to change but also steadily adding value
+Not only individuals and interactions but also a community of professionals
+Not only customer collaboration, but also productive partnerships
+
+
+Code retreats: Retreats started worldwide. This is where developers get together on a Saturday for a full day of practice. They work on Conway’s game of life using a technique known as “TDD as if you meant it” which focuses on TDD being all about evolutionary design. Pair-up, work on it for 45 minutes. Then delete your code, swap pairs and do it again.
+User groups: Several Software Craftsmanship User groups started.
+Craftsman Swaps: A couple of companies conducted craftsman swaps. This is where 2 companies swap an employee for a week. The employees learn the practices of another company and come back and try to improve their own environment.
+Craftsman Journeys: Similar to a craftsman swap, this is where you just go to a company for a week and learn what they do. So instead of going to a conference, a company will give you time off to go and work and learn what others are doing.
+Craftsman spikes: These are side projects that you can use to practice craftsmanship. Companies offers employees 20% time to work on these side projects.
+
+----------------------------------
+Transcending the Individual Human Mind—Creating Shared Understanding through Collaborative Design
+
+<http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.138.5562&rep=rep1&type=pdf>
+
+> The clashing point of two subjects,two disciplines, two cultures ought to produce creative chaos
+
+> The existence of the symmetry of ignorance requires creating spaces and places that serve as boundary objects (shared objects to talk about and to think with) where different cultures can meet and collaborate. Boundary objects serve as externalizations [Bruner 1996] that capture distinct domains of human knowledge. They have the potential to lead to an increase in socially shared cognition and practice [Resnick et al.  1991].
+
+<http://wenku.baidu.com/view/e9230a553c1ec5da50e27029.html?from=related>
+
+<http://books.google.be/books?id=4uF6FKDMk5sC&pg=PA79&lpg=PA79&dq=%E2%80%9CThe+clashing+point+of+two+subjects,two+disciplines,+two+cultures+ought+to+produce+creative+chaos%E2%80%9D&source=bl&ots=W_DPGQsG_J&sig=ypw45bZXI6KhDee_12e2SVDPhyw&hl=nl&ei=sxlqTvL8CMXrOe707cMF&sa=X&oi=book_result&ct=result&resnum=1&ved=0CBgQ6AEwAA#v=onepage&q=%E2%80%9CThe%20clashing%20point%20of%20two%20subjects%2Ctwo%20disciplines%2C%20two%20cultures%20ought%20to%20produce%20creative%20chaos%E2%80%9D&f=false>
+
+<http://firstmonday.org/htbin/cgiwrap/bin/ojs/index.php/fm/article/view/1323/1243>
+
+> group, community, or society is interested in hearing as many voices as possible for the following concerns:
+
+> How can we encourage individuals to contribute to the good and progress of all of us?” — This is relevant in open source efforts, which rely on social capital and gift cultures (Fischer, et al., 2004b).
+
+> In order to stimulate and increase social creativity, how can we support and exploit cultural pluralism and epistemological pluralism as an advantage rather than as a disadvantage?” — Related questions include: Is the European multi–culturalism and its local and regional identities a strength or a weakness? Are we willing to accept the validity and the multiple ways of knowing and thinking, especially by including the voices of underrepresented and underprivileged groups (e.g., people with disabilities (Carmien, et al., 2005)?
+
+> How do we avoid the situation that voices get lost because there is too much information or their input does not get recorded?” — In other words, how do we create knowledge management environments that support the right division between pull and push technologies and that have some context awareness?
+
+> How do we avoid illegitimate voices?” — this includes information that is pushed at people without their consent (such as spam mail) or is made available against their will (such as violation of privacy).
+
+> How do we avoid getting stuck in group think?” — This includes seeing controversy as an asset rather than as a limitation; group think (Janis, 1972) is especially harmful if some groups believe that their way of thinking is on top, rather than on tap (Turkle and Papert, 1991).
+
+> How do we eliminate sources of exclusion?” — This includes not only rules that specifically exclude people (such as minorities, lay persons facing experts, or people with disabilities), but ways of thinking and organizing that make them reluctant to join in.
+
+<http://www.mendeley.com/research/barriers-and-enablers-for-creating-shared-understanding-in-codesign-projects/>
+
+----------------------------------
+Complex design problems require more knowledge than any single person possesses because the knowledge relevant to a problem is usually distributed among stakeholders. Bringing different and often controversial points of view together to create a shared understanding among these stakeholders can lead to new insights, new ideas, and new artifacts. New media that allow owners of problems to contribute to framing and resolving complex design problems can extend the power of the individual human mind. Based on our past work and study of other approaches, systems, and collaborative and participatory processes, this article identifies challenges
+First, we distinguished three organizational levels: the actor, project and company level.
+
+-------------
+<http://ideasandthoughts.org/2011/05/07/its-not-just-a-tool/>
+
+Much of this infusion is just about continuing on with current practice and sprinkling technology on top and calling it innovative. This is when it’s just a tool. When the technology transforms the way we learn, offers us new, unchartered experiences and opportunities, it’s much more than a tool but a whole new environment. 
+
+<http://www.slideshare.net/dkuropatwa/what-can-i-do-now-web-20-pedagogy-v4-7858206>
+
+-------------------------
+<http://en.wikipedia.org/wiki/Co-Design>
+<http://en.wikipedia.org/wiki/Participatory_design>
+<http://cpsr.org/issues/pd/>
+
+Co-design reviewers
+<http://www.tandfonline.com/doi/full/10.1080/15710880701875068>
+
+<http://www.fastcompany.com/blog/cliff-kuang/design-innovation/we-build-parts-you-build-product>
+<http://sarahdrummond.wordpress.com/2010/01/07/co-design-isnt-really-that-new/>
+
+<http://www.servicedesignbooks.org/isbn/9789063692568/this-is-service-design-thinking/>
+
+<http://www.fastcodesign.com/1663480/design-thinking-isnt-a-miracle-cure-but-heres-how-it-helps>
+
+
+<http://theagileexecutive.com/2010/07/06/boundary-objects-in-devops/>
+<http://redesignresearch.com/chi05/EC%20Boundary%20Objects.pdf>
+<http://www.slideshare.net/littleidea/agile-infra-agileroots-2009>
+<http://www.kitchensoap.com/2009/12/12/devops-cooperation-doesnt-just-happen-with-deployment/>
+
+<http://kmwiki.wikispaces.com/Boundary+objects>
+<http://www.exampler.com/testing-com/writings/marick-boundary.pdf>
+
+------------------
+<http://devjam.com/dudesblog/dudes-law/>
+Enter Dude’s Law: V = W / H,  where V is value, W is why (intent) and H is how (mechanics).
+
+Knowing “How” Still Matters
+
+<http://hypergogue.posterous.com/agile-waterfall-boundary-objects-cubism>
+----------------
+I'm think a lot about the idea of the 'Teachable Equivalent'.
+
+In a work environment, this means training/educating learners about the way things ought to be according to ideas and polemics of schools and gurus.
+
+As long as this is accompanied by some reflection (with actual real work, informal learning, decent management, coaching, mentoring, performance management - delete as appropriate) and a period of learning adjustment or schema refurbishment, this seems like an efficient way to go about things and achieve real learning.
+
+You can have your cake and eat it. The problem is when people don't acknowledge (or, more likely with our current L & D generation) or even understand that the Teachable Equivalent is not real life.
+
+Teachable Equivalents - the map not the territory.
+<http://bfchirpy.amplify.com/2010/02/14/simulations-sometimes-more-effective-than-real-life-when-it-comes-to-knowledge-transfer/>
+
+<http://www.dubberly.com/articles/why-horst-wj-rittel-matters.html>
+
+> Solving simple problems may lead to improvement—but not innovation. For innovation, we need to re-frame wicked problems.
+Having become convinced design is argument
+
+----------------------------
+<http://edutechwiki.unige.ch/en/Bricolage>
+Design is not, to use an analogy, simply following a recipe. 
+
+----------------------------
+Fwd: Craftsman, by Richard Sennett » Center for Practical Theology » Boston University
+<http://www.bu.edu/cpt/resources/book-reviews/craftsman-by-richard-sennett/>
+
+--------------
+ Marshall McLuhan famously said "We shape our tools. And then our tools shape us." McLuhan was referring to the fact that our social practices co-evolve with our use of new tools and the refinements we make to existing tools.
+
+<http://en.wikipedia.org/wiki/Tool>
+
+A tool is a device that can be used to produce an item or achieve a task, but that is not consumed in the process. Informally the word is also used to describe a procedure or process with a specific purpose. Tools that are used in particular fields or activities may have different designations such as Instrument, Utensil, Implement, Machine, or Apparatus.
+----------------
+<http://en.wikipedia.org/wiki/Device_paradigm>
+
+----------
+<http://journal.bitshaker.com/articles/2011/06/10/the-importance-of-good-tools/>
+
+Upon donning my new attire and my new bicycle, I will be magically transformed into a cyclist that can hold his own with Lance Armstrong, right?
+<http://thesalesblog.com/2011/04/it%E2%80%99s-still-not-about-the-tools/>

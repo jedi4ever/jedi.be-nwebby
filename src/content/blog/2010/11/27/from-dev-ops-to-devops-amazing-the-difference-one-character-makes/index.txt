@@ -1,0 +1,23 @@
+--- 
+title:      From Dev/Ops to Devops, What a difference one character makes
+created_at: 2010-11-27 15:07:19.393952 +01:00
+tags: 
+- devops
+- devoxx
+- tdose
+- culture
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+
+<table>
+<tr><td>
+<img src='{{ page.url }}/devoxx-2010-logo.jpg'><br>
+<img src='{{ page.url }}/t-dose-2010-logo.png'>
+</td><td>
+<p>Here are the slides of my co-presentation with <a href="http://krisbuytaert.be/blog">Mr. DNS</a> <a href="http://twitter.com/krisbuytaert">@KrisBuytaert</a> both at <a href="http://tdose-org">t-dose 2010</a> and <a href="http://devoxx.org">devoxx 2010</a>. </p><p>It was really interesting to bundle our experiences and discussing the subject. We'll be back next year, I'm sure.</p>
+</td></tr></table>
+
+<div style="width:425px" id="__ss_5917741"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/from-devops-to-devops-what-a-difference-one-character-makes" title="From Dev/ops to devops: What a difference one character makes">From Dev/ops to devops: What a difference one character makes</a></strong><object id="__sse5917741" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=what-a-difference-one-character-makesv10-101126020901-phpapp01&stripped_title=from-devops-to-devops-what-a-difference-one-character-makes&userName=jedi4ever" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed name="__sse5917741" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=what-a-difference-one-character-makesv10-101126020901-phpapp01&stripped_title=from-devops-to-devops-what-a-difference-one-character-makes&userName=jedi4ever" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/jedi4ever">Patrick Debois</a>.</div></div>

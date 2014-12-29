@@ -1,0 +1,120 @@
+--- 
+title: Automation of Network Provisioning of Machines (DNS, DHCP, PXE, TFTP)
+created_at: 2009-11-17 15:58:16.021038 +01:00
+tags: 
+- automation
+- dhcpd
+- pxe
+- tftp
+- dns
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+<img src='/blog/wp-content/uploads/2009/11/network-provisioning.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/) and [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/). The next step is to prepare the network for the virtual machine to make it boot with the right network settings. In a lot of companies this is often a manual process but we want to automate it.
+
+In order to boot a linux machine, one relies on: 
+
+- a DHCP Server for IP Adresses, domainname, router
+- a DNS Server for the necessary name resolution
+- PXE file creation
+- a TFTP Boot server to provide a PXE File 
+
+
+### DHCP Automation
+On linux the de-facto standard DHCP Servers is the [ISC DHCPD](https://www.isc.org/software/dhcp). It relies on configuration files in a specific format. Most of the automation of this, were homebrew scripts that changes these config files. It's a pity there is no scriptable API for managing these files.
+
+The next runner up is the [DNSMASQ](http://www.thekelleys.org.uk/dnsmasq) which dispite it's name can also act as DHCP server. It too relies on configuration files, but I found [dnsmasq mysql](http://echothrust.org/projects:mysqlification:dnsmasq:index) that extends dnsmasq with a mysql backend. So we could issues SQL statements to control it?
+
+Other things I found were:
+
+- the project <http://dhcpd-j.org/> (outdated) as a Java effort to create a DHCP Server storing its information in a Database. But still no real API to manage the files. 
+- mydhcpgen(outdated) <http://freshmeat.net/projects/mydhcpgen/> project: it holds all information into a database and then generates the files. We could you SQL to program the configuration.
+
+Overall I found no good out of the box way of automating subnet creation, client registration, templates. So if you know any let me know.
+Maybe be this is the reason why the big virtual vendors provide their own DHCP server in their product, configurable with their own API.
+
+Example of Virtualbox API:
+
+<pre>
+VBoxManage dhcpserver       add|modify --netname &lt;network_name&gt;
+								--ifname &lt;hostonly_if_name&gt;
+								[--ip &lt;p_address&gt;
+								--netmask &lt;network_mask&gt;
+                                 --lowerip &lt;lower_ip&gt;
+                                 --upperip &lt;upper_ip&gt;]
+                                [--enable | --disable]
+ VBoxManage dhcpserver       remove --netname &lt;network_name&gt;
+                                   --ifname &lt;hostonly_if_name&gt;
+</pre>
+
+### DNS Automation
+The next step is automating the management of DNS files. For DNS servers under Linux we have more choice then with DHCP server. We have [ISC Bind](https://www.isc.org/products/BIND/) , [DJBDNS](http://cr.yp.to/djbdns.html) and [dnsMasq](http://www.thekelleys.org.uk/dnsmasq). All of them rely on configuration files and for Bind and dnsMasq there have been efforts to integrate it with a database backend f.i. [mysql-bind](http://mysql-bind.sourceforge.net/) . Another effort I found is [dnsadmin](<http://freshmeat.net/projects/dnsadmin/)(outdated) for managing djdns/tinydns files.
+
+DNS by itself allows the use of Dynamic Updates (see [RFC 2136](http://www.ietf.org/rfc/rfc2136.txt)). This already allows us to change the attributes of a single host using commands such as [nsupdate](http://linux.yyz.us/nsupdate/) , but does not provide a way to create/update/delete new zones or other settings. 
+
+Another project calls dnspython (outdated) <http://www.dnspython.org/> provides both high and low level access to DNS. The high level classes perform queries for data of a given name, type, and class, and return an answer set. The low level classes allow direct manipulation of DNS zones, messages, names, and records. 
+
+The most promising is the use of Power DNS <http://www.powerdns.com> which seem to have [full scripting capability]( http://downloads.powerdns.com/documentation/html/recursor-scripting.html). I haven't tried if personally but it's the best alternative I found.
+
+### Combing DHCP, DNS, TFTP and PXE boot
+For managing a single machine it is important than changes to both your DHCP, DNS, TFTP and PXE boot are in sync. It doesn't come as a surprise that a lot of global machine management solution use the base blocks and add their own sauce. It's a pity, that the management of DHCP and DNS management are not extended in the tools itself but stay in the global management tool. Another thing is that things like the creation of new DNS zones of DHCP templates are not possible because the underlying tools don't have it. (or maybe nobody normally automates that ;-)
+
+Examples of global solutions :
+
+- openQRM dhcpd-plugin <http://www.openqrm.com/?q=node/47> :automatically manages your ip-addres assignment and network-boot environment for the rapid-deployment features of openQRM.
+- Eucalyptus Dynamic DNS guide  - <http://open.eucalyptus.com/wiki/DynamicDNSGuide>
+- FAI chboot - <http://www.informatik.uni-koeln.de/fai/doc/man/fai-chboot.html>
+- Cobbler DNS/DHCP integration - <https://fedorahosted.org/cobbler/wiki/ManageDhcp>
+
+And because most these have a commandline or other API's , one could easily script the updates to DNS of DHCP settings for individual machines.
+
+Amazon started on an API for DNS/DHCP Options for automating their Private Cloud:
+ 
+- For Managing DHCP Options : <http://docs.amazonwebservices.com/AmazonVPC/2009-07-15/CommandLineReference/index.html?ApiReference-cmd-AssociateDhcpOptions.html>
+- Automation of DNS for EC2 machines: <http://www.ducea.com/2009/06/01/howto-update-dns-hostnames-automatically-for-your-amazon-ec2-instances/>
+
+### Example of scripting network provisioning with Cobbler
+<% codify(:lang => 'shell') do %>
+domainname="cobblertest.be"
+mac_address="aa:aa:bb:bb:cc:01"
+name="puppetclient"
+ip="192.168.3.150"
+kickstart="puppet.ks"
+profile="centos53-latest"
+distro="centos53-i386"
+
+# Set the distribution of the machine
+# The distribution was previously imported by importing an installation DVD
+# Cobbler will detect the possible kernels to boot
+# And this will also link the TFTP and PXE file necessary to Boot
+cobbler profile add --name=#{profile} --distro=centos53-i386 
+
+# Add the new machine with an IP and Mac address
+# By the IP Address it knows in which reverse DNS 
+cobbler system add --name=#{name} --ip=#{ip} --mac=#{mac_address}"
+# Set the DNS domain of the machine (this determines in which zone file it is create)
+cobbler system edit --name=#{name} --profile=#{profile} --dns-name=puppet1.#{domainname}"
+
+# For linux machines, the kernels are provided with an option 
+# ks=kickstart so that it will start the kickstart installation
+cobbler system edit --name=#{name} --kickstart=/var/lib/cobbler/kickstarts/#{kickstart}
+cobbler system edit --name=#{name}  --name-servers-search='#{domainname}'
+
+# This finally commits all the changes
+cobbler sync
+<% end %>

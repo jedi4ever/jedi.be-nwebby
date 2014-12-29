@@ -1,0 +1,26 @@
+---
+title: "CSVFile Parameters for Jmeter"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2006/03/02/csvfile-parameters-for-jmeter/
+created_at: 2006-03-02 20:49:04.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - jmeter
+---
+<p><a href="http://www.jedi.be/blog/wp-admin/" title="Jmeter">Jmeter </a>  is a great load testing tool. Creating a parameter file is not very clearly described in the documentation.
+</p><p>
+When creating a test plan, just after the creation of the thread group you can insert a CSV configuration element. This allows you to specify a CSV file that you can reuse in you http parameters:
+<ul>
+	<li>CSV configuration element:</li>
+<ul>
+	<li>filename (only filenames seem to work, not full paths. It's looking for the file in the same directory as the testscenario file.</li>
+	<li>the fieldnames f.i. USERNAME,PASSWORD</li>
+</ul>
+	<li>In your test element you can refer to them as {USERNAME} and {PASSWORD}</li>
+</ul>
+</p>

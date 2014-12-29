@@ -1,0 +1,292 @@
+--- 
+title:      Capturing the Screen or Video of Your Virtual Machines Using X, Vnc, Rdp or Native ways
+created_at: 2010-08-30 15:30:09.918567 +02:00
+tags: 
+- automation
+- screenshot
+- avi
+- ffmpeg
+- vnc
+- rdesktop
+- rdp
+- xvfb
+- virtualbox
+- xen
+- kvm 
+blog_post: true
+filter: 
+- erb
+- markdown
+related: 
+- desc: Sending Keystrokes to Your Virtual Machines using X or Vnc or Rdp or Native ways
+  url: /blog/2010/08/29/sending-keystrokes-to-your-virtual-machines-using-X-vnc-rdp-or-native/
+---
+<table>
+<tr>
+<td><a href="http://www.flickr.com/photos/nlscotland/4700299708/sizes/o/in/photostream/
+"><img src='{{ page.url }}/window-capture.jpg'></a>
+</td>
+<td>
+With this blogpost we continue the previous investigation to interact with a virtual machine using X, VNC , RDP or native ways with a virtual machine. This time instead of <a href="<a href="2010/08/29/sending-keystrokes-to-your-virtual-machines-using-X-vnc-rdp-or-native/">sending keystrokes</a> we are looking for <b>capture screenshots or even capture the complete session as a video</b>. 
+</td>
+</tr>
+</table>
+
+<hr>
+### Interacting with X-Windows
+#### Capturing a screenshot:
+Grabbing a screen of an X-Windows session is easy: in order to grab the screen on an X-session on :1 issue the following command:  
+
+<% codify(:lang => "shell") do %>
+$ import -window root -display :1 screenshot.png
+<% end %>
+
+#### Recording a video:
+I got the idea of using the [ffmpeg](http://www.ffmpeg.org) command for capturing the X-session from
+
+[http://gasubasu.com/2009/05/06/flash2video/](http://gasubasu.com/2009/05/06/flash2video/)
+
+So I installed ffmpeg using macports
+<% codify(:lang => "shell") do %>
+$ sudo port install ffmpeg
+<% end %>
+
+When I executed it, it complained about *Unknown input format: 'x11grab'*
+<% codify(:lang => "shell") do %>
+$ ffmpeg -f x11grab -vc x264 -s vga -r 30 -b 2000k -g 300 -i :1.0 session-recording.avi
+FFmpeg version 0.6, Copyright (c) 2000-2010 the FFmpeg developers
+  built on Aug 29 2010 16:56:51 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --prefix=/opt/local --enable-gpl --enable-postproc --enable-swscale --enable-avfilter --enable-avfilter-lavf --enable-libmp3lame --enable-libvorbis --enable-libtheora --enable-libdirac --enable-libschroedinger --enable-libfaac --enable-libfaad --enable-libxvid --enable-libx264 --enable-libvpx --enable-libspeex --enable-nonfree --mandir=/opt/local/share/man --enable-shared --enable-pthreads --disable-indevs --cc=/usr/bin/gcc-4.2 --arch=x86_64
+  libavutil     50.15. 1 / 50.15. 1
+  libavcodec    52.72. 2 / 52.72. 2
+  libavformat   52.64. 2 / 52.64. 2
+  libavdevice   52. 2. 0 / 52. 2. 0
+  libavfilter    1.19. 0 /  1.19. 0
+  libswscale     1.11. 0 /  1.11. 0
+  libpostproc   51. 2. 0 / 51. 2. 0
+Unknown input format: 'x11grab'
+<% end %>
+
+There was no variant or option for macports to have ffmpeg take this flag for compiling. So I downloaded the sourcecode from the ffmpeg repository:
+
+<% codify(:lang => "shell") do %>
+$ wget http://www.ffmpeg.org/releases/ffmpeg-0.6.tar.gz
+$ cd ffmpeg-0.6
+$  ./configure --enable-x11grab --enable-gpl
+<% end %>
+
+Although I had specified the *--enable-x11grab* option, ffmpeg still complained about the Unknown input format. 
+
+I got some clues [here](http://soledadpenades.com/2010/04/26/unknown-input-or-output-format-x11grab-ubuntu/) and [here](http://www.linuxquestions.org/questions/slackware-14/ffmpeg-x11grab-unknown-format-522296/). And after a look at the the configure file, I found that in order to work, it required the Xfixes and Xext libraries:
+<% codify(:language => "shell") do %>
+enabled x11grab                         &&
+check_header X11/Xlib.h                 &&
+check_header X11/extensions/XShm.h      &&
+check_header X11/extensions/Xfixes.h    &&
+check_func XOpenDisplay -lX11           &&
+check_func XShmCreateImage -lX11 -lXext &&
+check_func XFixesGetCursorImage -lX11 -lXext -lXfixes
+<% end %>
+
+So after installing those libraries:
+<% codify(:language => "shell") do %>
+$ sudo port install xorg-libXext
+$ sudo port install xorg-libXfixes
+$  ./configure --enable-x11grab --enable-gpl --enable-nonfree --extra-cflags="-I/opt/local/include -I/opt/local/include/X11"  --extra-ldflags=-L/opt/local/lib
+
+....
+Enabled indevs:
+x11_grab_device
+...
+<% end %>
+
+Now with the input x11_grab_device available, I was all set to record a running session. 
+
+<% codify(:language => "shell") do %>
+$ ./ffmpeg -f x11grab -vc x264  -s xga -r 30 -b 2000k -g 300 -i :1.0 session-recording.avi
+FFmpeg version 0.6, Copyright (c) 2000-2010 the FFmpeg developers
+  built on Aug 30 2010 09:11:02 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --enable-x11grab --enable-gpl --enable-nonfree --extra-cflags='-I/opt/local/include -I/opt/local/include/X11' --extra-ldflags=-L/opt/local/lib --disable-shared
+  libavutil     50.15. 1 / 50.15. 1
+  libavcodec    52.72. 2 / 52.72. 2
+  libavformat   52.64. 2 / 52.64. 2
+  libavdevice   52. 2. 0 / 52. 2. 0
+  libswscale     0.11. 0 /  0.11. 0
+[x11grab @ 0x10100b000]device: :1.0 -> display: :1.0 x: 0 y: 0 width: 1024 height: 768
+[x11grab @ 0x10100b000]shared memory extension  found
+[x11grab @ 0x10100b000]Estimating duration from bitrate, this may be inaccurate
+Input #0, x11grab, from ':1.0':
+  Duration: N/A, start: 1283153847.281641, bitrate: 754974 kb/s
+    Stream #0.0: Video: rawvideo, bgra, 1024x768, 754974 kb/s, 30 tbr, 1000k tbn, 30 tbc
+File 'session-recording.avi' already exists. Overwrite ? [y/N] y
+Output #0, avi, to 'session-recording.avi':
+  Metadata:
+    ISFT            : Lavf52.64.2
+    Stream #0.0: Video: mpeg4, yuv420p, 1024x768, q=2-31, 2000 kb/s, 30 tbn, 30 tbc
+Stream mapping:
+  Stream #0.0 -> #0.0
+Press [q] to stop encoding
+frame=  310 fps= 30 q=2.0 Lsize=    2810kB time=11.83 bitrate=1945.1kbits/s dup=0 drop=21    
+video:2796kB audio:0kB global headers:0kB muxing overhead 0.502798%
+<% end %>
+
+This worked fine! But the recording only captured 1024x768 (flag = xga), when I tried to have ffmpeg capture a larger screen 1600x1024 (flag wsxga), it told me an error about *Can't get shared memory* . No clue why. For now, the xga option is enough for me. 
+
+<% codify(:language => "shell") do %>
+./ffmpeg -f x11grab -vc x264  -s wsxga -r 30 -b 2000k -g 300 -i :1.0 session-recording.avi
+FFmpeg version 0.6, Copyright (c) 2000-2010 the FFmpeg developers
+  built on Aug 30 2010 09:11:02 with gcc 4.2.1 (Apple Inc. build 5664)
+  configuration: --enable-x11grab --enable-gpl --enable-nonfree --extra-cflags='-I/opt/local/include -I/opt/local/include/X11' --extra-ldflags=-L/opt/local/lib --disable-shared
+  libavutil     50.15. 1 / 50.15. 1
+  libavcodec    52.72. 2 / 52.72. 2
+  libavformat   52.64. 2 / 52.64. 2
+  libavdevice   52. 2. 0 / 52. 2. 0
+  libswscale     0.11. 0 /  0.11. 0
+[x11grab @ 0x10100b000]device: :1.0 -> display: :1.0 x: 0 y: 0 width: 1600 height: 1024
+[x11grab @ 0x10100b000]shared memory extension  found
+[x11grab @ 0x10100b000]Fatal: Can't get shared memory!
+<% end %>
+
+<hr>
+### Interacting with VNC
+#### Capturing a screenshot:
+I found two projects that touted the ability to capture the screen of a VNC session: 
+
+- VncSnapshot (C)- [http://vncsnapshot.sourceforge.net/](http://vncsnapshot.sourceforge.net/)
+- VncCapture (Perl) - [http://search.cpan.org/~lbrocard/Net-VNC-0.36/bin/vnccapture](http://search.cpan.org/~lbrocard/Net-VNC-0.36/bin/vnccapture)
+
+None of them really worked for me. So I resorted back to using Xvfb as an intermediate:
+
+<% codify(:language => "shell") do %>
+$ vncpasswd mypasswordfile
+$ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
+(EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
+(EE) GLX: could not load software renderer
+(EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
+(EE) XKB: No components provided for device Virtual core keyboard
+$ DISPLAY=:1 rdesktop -u username -p password -d domain remotehost
+$ import -window root -display :1 screenshot-rdp.png
+<% end %>
+
+#### Recording a video:
+To record an vnc session to flash I found the following pointers: 
+
+- [http://www.cs.ubc.ca/~bsd/vncrecording.html](http://www.cs.ubc.ca/~bsd/vncrecording.html)
+- [http://www.unixuser.org/~euske/vnc2swf/](http://www.unixuser.org/~euske/vnc2swf/)
+- [http://www.unixuser.org/~euske/vnc2swf/pyvnc2swf.html](http://www.unixuser.org/~euske/vnc2swf/pyvnc2swf.html)
+- [http://www.unixuser.org/~euske/python/vnc2flv/index.html](http://www.unixuser.org/~euske/python/vnc2flv/index.html
+)
+
+I went for the C version of vnc2swf : 
+
+<% codify(:language => "shell") do %>
+$ wget http://www.unixuser.org/~euske/vnc2swf/vnc2swf-0.5.0.tar.gz
+$ cd vnc2swf-0.5.0
+$  LDFLAGS=-L/usr/X11R6/lib  ./configure 
+$  LDFLAGS=-L/usr/X11R6/lib  make
+$ ./vnc2swf
+usage: ./vnc2swf [<options>] <out.swf> <host>:<display#>
+       ./vnc2swf [<options>] <out.swf> -listen [<display#>]
+
+<options> are standard Xt options, or:
+              -shared
+              -viewonly
+              -fullscreen
+              -passwd <passwd-file>
+              -noauto
+              -encodings <encoding-list> (e.g. "raw copyrect")
+              -geometry <geometry>
+              -bgr233
+              -owncmap
+              -truecolour
+              -depth <depth>
+              -framerate <frames-per-sec>
+              -startrecording
+              -nowindow
+              -nostatus
+              -clippinggeometry <geometry>
+<% end %>
+
+Àn alternative is to ffmpeg as explained in the X-session, with vncviewer  displayed in Xvfb session
+
+<hr>
+### Interacting with RDP
+#### Capturing a screenshot:
+I found **0 tools** to capture a screenshot directly from an RDP (at least a tool on Linux or MacosX). While poking around I found a reference to VNC inside the code of Rdesktop: there was mention of *rdp2vnc*
+
+<% codify(:language => "shell") do %>
+$ ./configure --help |grep vnc
+  --with-libvncserver-config=CMD  use CMD as libvncserver-config
+  --with-libvncserver     make rdp2vnc
+<% end %>
+
+I almost got it to work by checking out the latest svn 
+<% codify(:language => "shell") do %>
+$ svn co https://rdesktop.svn.sourceforge.net/svnroot/rdesktop rdesktop
+$ cd rdesktop
+<% end %>
+
+It required the installation of LibVNCServer library - [http://libvncserver.sourceforge.net/](http://libvncserver.sourceforge.net/)
+<% codify(:language => "shell") do %>
+./configure --prefix /opt
+make
+make install
+<% end %>
+
+<% codify(:language => "shell") do %>
+$ cd rdesktop
+$ ./configure  --with-libvncserver  --x-includes=/opt/local/include/ --x-libraries=/opt/local/lib --with-libvncserver-config
+<% end %>
+
+But in the end - nothing and I was facing a [Compile problem](http://osdir.com/ml/network.rdesktop.devel/2007-01/msg00037.html)
+
+So of to the X-session fallback using rdesktop and xvfb:
+
+<% codify(:language => "shell") do %>
+$ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
+(EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
+(EE) GLX: could not load software renderer
+(EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
+(EE) XKB: No components provided for device Virtual core keyboard
+$ DISPLAY=:1 vncviewer -FullColor --Passwordfile mypasswordfile localhost
+$ import -window root -display :1 screenshot-vnc.png
+<% end %>
+
+#### Recording a video:
+The only way (I found) is to capture the RDP session as a video is to use ffmpeg as explained in the X-session, with rdesktop displayed in Xvfb session. 
+
+<hr>
+### Virtual Server helpers:
+#### Capturing screenshots with Vmware Esx
+The Vsphere API allows the creation of a task by using CreateScreenshot_Task() command. I used the [VMware VI (vSphere) Java API](http://vijava.sourceforge.net/) - [http://vijava.sourceforge.net/](http://vijava.sourceforge.net/) and coded an example to create the screenshot. The file itself is saved by vmware in the datastore root, so you need something like scp to grab it from there. 
+
+<% codify({:language => "java", :file => "takescreenshot.java"}) do %>
+<% end %>
+
+For an example using the perl API have a look at the script at [http://communities.vmware.com/docs/DOC-10497](http://communities.vmware.com/docs/DOC-10497)
+
+#### Screencapture and recording a video in Virtualbox
+I found that virtualbox itself has a way to capture the screen (--capture) and to record the session to file. Internally it uses ffmpeg. I wasn't able to run it on my mac, as it is not supported on that platform, but it might work for you. 
+
+<% codify(:language => "shell") do %>
+$ VBoxVRDP --help
+Oracle VM VirtualBox Headless Interface 3.2.8
+(C) 2008-2010 Oracle Corporation
+All rights reserved.
+
+Usage:
+   -s, -startvm, --startvm <name|uuid>   Start given VM (required argument)
+   -v, -vrdp, --vrdp on|off|config       Enable (default) or disable the VRDP
+                                         server or don't change the setting
+   -p, -vrdpport, --vrdpport <ports>     Comma-separated list of ports the VRDP
+                                         server can bind to. Use a dash between
+                                         two port numbers to specify a range
+   -a, -vrdpaddress, --vrdpaddress <ip>  Interface IP the VRDP will bind to 
+   -c, -capture, --capture               Record the VM screen output to a file
+   -w, --width                           Frame width when recording
+   -h, --height                          Frame height when recording
+   -r, --bitrate                         Recording bit rate when recording
+   -f, --filename                        File name when recording.  The codec
+                                         used will be chosen based on the
+                                         file extension
+<% end %>

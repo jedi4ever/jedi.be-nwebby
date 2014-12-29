@@ -1,0 +1,88 @@
+---
+title: "Rsync snapshots: seeing it work"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/11/07/rsync-snapshots-seeing-it-work/
+created_at: 2008-11-07 17:11:58.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Tricks of the trade
+   - Unix related
+tags:
+   - rsync
+   - snapshots
+---
+Showing how rsync snapshots (--link-dest) work. This feature allows you to take incremental backups and still having a complete directory to copy over without taking additional diskspace for storing a copy of each file. It uses the notion of <em>hardlinks</em> off the filesystem. (having the same inodes ls -i).
+<br>
+<pre>
+#<em>create a datadirectory, with data</em>
+<span>$ mkdir data
+$ &gt; data/file1
+</span>
+#<em>make the first backup</em>
+<span>$ rsync -aP data/ backup-1
+building file list ...
+2 files to consider
+created directory backup-1
+./
+file1
+</span>
+#<em>do the second backup with nothing changed
+</em><span>$ rsync -aP --delete --link-dest=../backup-1 data/ backup-2
+building file list ...
+2 files to consider
+created directory backup-2
+./
+</span>
+#<em>verify that file1 in backup-1 is linked with file1 in backup-2</em>
+<span>$ ls -li backup-1
+<strong>9651639</strong> -rw-r--r--  2 patrick  staff  0 Nov  7 16:52 file1</span>
+<br>
+<span>$ ls -li backup-2
+<strong>9651639</strong> -rw-r--r--  2 patrick  staff  0 Nov  7 16:52 file1</span>
+#<em>change file 1</em>, but base ourselves on the previous (backup-2) snapshot
+<span>$ echo "change1" &gt; data/file1
+</span>
+#backup the directory again
+<span>$ rsync -aP --delete --link-dest=../backup-2 data/ backup-3
+building file list ...
+2 files to consider
+created directory backup-3
+./
+file1
+</span>
+<em>#Verify inode has changed
+</em><span>$ ls -li backup-3/
+total 8
+<strong>9651657</strong> -rw-r--r--  1 patrick  staff  8 Nov  7 16:53 file1
+</span>
+<em>#backup again with nothing changed
+</em><span>$ rsync -aP --link-dest=../backup-3 data/ backup-4
+building file list ...
+2 files to consider
+created directory backup-4
+./
+</span>
+<em>#Verify that inode is the same
+</em><span>$ ls -li backup-4
+<strong>9651657</strong> -rw-r--r--  2 patrick  staff  8 Nov  7 16:53 file1</span>
+<em>#Change the permissions
+</em><span>$ chmod 777 data/file1
+</span>
+<em>#backup again on previous snapshot
+</em><span>$ rsync -aP --delete --link-dest=../backup-4 data/ backup-5
+building file list ...
+2 files to consider
+created directory backup-5
+./
+file1</span>
+<br>
+<em>#verify that change of permission triggered a new file
+</em><span>$ ls -li backup-5/file1
+<strong>9651699</strong> <strong>-rwxrwxrwx</strong> 1 patrick  staff  8 Nov  7 16:53 backup-5/file1
+$ ls -li backup-4/file1
+<strong>9651657</strong> <strong>-rw-r--r--</strong> 2 patrick  staff  8 Nov  7 16:53 backup-4/file1
+</span>
+</pre>

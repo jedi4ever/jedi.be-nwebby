@@ -1,0 +1,44 @@
+---
+job: true
+period: "2003 - 2004"
+customer: Ministerie Vlaamse Gemeenschap (Siemens Business Services)
+role: System Architect/Technical Project Manager
+title: PKI implementation and LDAP migration
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/sbs.gif" class="left"></div>
+		<div class="span-18 last">
+* A fundamental part of modern E-government is the ability to strongly authenticate all different entities that interact with the government (people, organizations)
+* A solution based upon a PKI infrastructure was designed conform with the Federal Governement guidelines for authentication.
+* The portal environment was extended with HTTP/S capabilities based upon an infrastructure of Netegrity Siteminder, Apache and Ascertia OSCP.
+* Additional security measures were taken with additional network segmentation based upon Checkpoint Firewall and intrusion detection systems.
+* The LDAP infrastructure was upgraded and integrated with the PKI solution. All systems were based upon Unix Sun Solaris.
+* Aside from the infrastructure, the Directory Information Tree (DIT) was redesigned. An analysis was conducted to verify application compatibility with the new DIT.
+* All LDAP related applications and infrastructure was migrated from the old environment to the new environment.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+ldap, certificates, SSL, OCSP, CRL, Apache Reverse proxy, SiteMinder</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* To design the new SSL enabled portal environment.
+* To design the new LDAP DIT
+* To analyze the LDAP usage of the old LDAP.
+
+_Project Management_
+* To make a project proposal to the customer with fixed price implementation
+* To follow-up planning of  technical implementation and testing performed by a team of specialized skills.
+* To act as a technical lead in the implementation
+* Report to different service/change managers within ITIL based environment
+</div>
+
+
+
+
+
+
+

@@ -1,0 +1,39 @@
+--- 
+title:      Provisioning Workflow - Using Vsphere and Puppet
+created_at: 2011-03-29 09:19:20.840376 +02:00
+tags: 
+- ec2
+- vsphere
+- puppet
+- mcollective
+- vijava
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+On a recent project we explored how to further integrate [puppet](http://puppetlabs.com) and [Vsphere](http://www.vmware.com/products/vsphere/overview.html) to get EC2 like provisioning, all command-line based.
+
+We leveraged the (Java Vsphere) [Vijava interface](http://vijava.sourceforge.net/) . For the interested user, I also wrote another [blogpost on Programming options for vmware Vsphere](http://www.jedi.be/blog/2010/12/12/interacting-programming-vmware-vsphere-esx-on-macosx/), and why [libvirt for ESX](http://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) was (not yet) an option
+
+The result of the Proof of Concept code can be found on the [jvspherecontrol project on github](https://github.com/jedi4ever/jvspherecontrol)
+
+The premise for starting the workflow, is that the servername is added to the DNS first.
+
+- The name: &lt;apptype&gt;-&lt;environment&gt;-&lt;instance&gt;
+	- web-prod-1.&lt;domain&gt;
+- The IP : 
+	- &lt;IP-prefix&gt;-&lt;vlan-id&gt;-&lt;local ip&gt;
+	- 10.12.30.20 : VLAN 30
+
+In our situation, a typical server would have no default routing, but would communicate to the outside uniquely through services mapped through a loadbalancer. This means that all VLAN and Loadbalancing mappings would have been create before that,(that could be automated as well) . We would have DNS entries standardized per VLAN for these kind of services: proxy-30 , ntp-30, dns-30
+
+We didn't want to have dhcp/boot option running in each VLAN, so we decided that a newly created machine would boot in a separated 'Boot-VLAN' to do the initial kickstart. And we would disable (disconnected state in Vsphere) that (boot) network interface after the provisioning was done. The rest of the workflow is pretty standard.
+
+Recently I've heard an alternative way of tackling this problem: it involves created JEOS iso images on the fly for each server with the required network settings. The newly created ISO would be mounted on the Virtual Machine, and it would boot from there. This avoids the need to have a separate boot network interface that you need to disable afterwards.
+
+Because of the VLAN-ed approach we could not have the puppetmaster contact puppetclients directly. To make this work we leverage the use of Mcollective to have the clients listen to an AMQP server.
+
+I'd love to hear about **your** provisioning approach! Are you doing something similar? Totally different? Any tricks to improve this? Thanks for sharing!
+	
+<img src='{{ page.url}}/provisioning-workflow-vsphere-puppet.png'>

@@ -1,0 +1,98 @@
+--- 
+title: Collection of Test Driven Infrastructure Links
+created_at: 2009-11-12 13:50:17.533056 +01:00
+tags: 
+- behavior driven infrastructure
+- test driven infrastructure
+- test driven administration
+- test driven deployment
+- monitoring driven infrastructure
+- bdd
+- tdd
+- cucumber-nagios 
+blog_post: true
+filter: 
+- erb
+- markdown
+related:
+- desc: Recipes for Automated Installation of OS and beyond
+  url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
+- desc: Controlling Virtual Machines with an API
+  url: /blog/2009/11/17/controlling-virtual-machines-with-an-API/
+- desc: Shell Scripting DSL in Ruby
+  url: /blog/2009/11/17/shell-scripting-dsl-in-ruby/
+- desc: Test Driven Automation and Administration
+  url: /blog/2009/11/16/test-driven-automation-and-administration/
+- desc: Collection of Test Driven Infrastructure Links
+  url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
+- desc: Coding an Infrastructure Test First
+  url: /blog/2009/11/18/coding-an-infrastructure-test-first/
+---
+This pages shows a list of links i've collected related to the topic(s) of
+
+- behavior driven infrastructure
+- test driven infrastructure
+- test driven administration
+- test driven deployment
+- monitoring driven infrastructure
+
+You can subscribe to my bookmarks on delicious <http://delicious.com/jedi4ever/collection-devops+tdd> . 
+Just let me know if you find more related stuff, I'll add it to this page.
+
+Now the next thing is to write down my own ideas...
+
+### General discussion on the subject
+
+- [Test driven system administration « Server Horror](http://serverhorror.wordpress.com/2009/06/17/test-driven-system-administration/)
+- [Testdriven Administration vs. Monitor Driven Administration? - Agile System Administration | Google Groups](http://groups.google.com/group/agile-system-administration/browse_thread/thread/7dff39c9ddd7d84e/)
+- [Pair admining? Test driven administration? XA (eXtreme Admin'ing)? [LWN.net]](http://lwn.net/Articles/266520/)
+- [juliansimpson.org: Test Driven Systems Administration](http://www.juliansimpson.org/2006/08/test-driven-systems-administration.html)
+- [nasrat: Agile Operations - Thoughts on Operations Testing](http://nasrat.livejournal.com/57698.html)
+- [Monitoring web application behavior with cucumber-nagios](http://www.slideshare.net/auxesis/monitoring-web-application-behaviour-with-cucumbernagios)
+- [Web App Integration Testing for Sysadmins with cucumber nagios](http://holmwood.id.au/~lindsay/2009/02/23/web-app-integration-testing-for-sysadmins-with-cucumber-nagios/) 
+- [Behavior Driven Monitoring with cucumber-nagios](http://www.slideshare.net/auxesis/behaviour-driven-monitoring-with-cucumbernagios-2444224)
+- [Thinking about Test-Driven Systems Administration](http://romansandals.wordpress.com/2008/01/15/thinking-about-test-driven-systems-administration/)
+- [A Basic Systems Testing Toolkit](http://romansandals.wordpress.com/2008/02/14/a-basic-systems-testing-toolkit/)
+- [A language for sysadmin testing « Roman Sandals](http://romansandals.wordpress.com/2008/05/23/a-language-for-sysadmin-testing/)
+- [Test-driven development for infrastructure deployments? - Server Fault](http://serverfault.com/questions/36407/test-driven-development-for-infrastructure-deployments)
+- [lizkeogh.com » Blog Archive » Feature Injection and handling technical stories](http://lizkeogh.com/2008/09/10/feature-injection-and-handling-technical-stories/)
+- [DDG Tech Notes » Test Driven System Administration - Intro / Seems to be down](http://delducagroup.com/ddg-blog/2009/04/22/test-driven-system-administration/) - 
+[Google Cache](http://74.125.77.132/search?q=cache:delducagroup.com/ddg-blog/2009/04/22/test-driven-system-administration/)
+- [Tardate 11.1: TDD and BDD is old school. Make the jump to HDD (Humour Driven Development)](http://tardate.blogspot.com/2009/05/tdd-and-bdd-is-old-school-make-jump-to.html)
+
+### Examples on how OS related projects try to automate their testing
+
+- [AutoQA - FedoraProject](https://fedoraproject.org/wiki/AutoQA)
+- [KVM-Autotest - KVM](http://www.linux-kvm.org/page/KVM-Autotest)
+- [beaker - Trac](https://fedorahosted.org/beaker/)
+- [Distributed Test Automation Infrastructure Plan #1 | Test And Try](http://www.testandtry.com/2009/02/19/distributed-test-automation-infrastructure-plan-1/)
+
+### Examples of using cucumber for testing 
+
+- [Behavior Driven Infrastructure](http://blogs.sun.com/martin/entry/behavior_driven_infrastructure)
+- [Behavior driven infrastructure through Cucumber](http://holmwood.id.au/~lindsay/2009/11/09/behaviour-driven-infrastructure-through-cucumber/)
+- [Web app integration testing for sysadmins with cucumber-nagios - auxesis musings](http://holmwood.id.au/~lindsay/2009/02/23/web-app-integration-testing-for-sysadmins-with-cucumber-nagios/)
+- [Test driven deployment - R.I. Pienaar](http://www.devco.net/archives/2009/11/06/test_driven_deployment_-_mcollective_puppet_cucumber.php)
+- [Build Doctor cucumber examples](http://github.com/simpsonjulian/cucumber-love)
+- [Build Doctor cucumber test example  apache config  - #693713 - Pastie](http://pastie.org/693713)
+- [Jeff's Blog - Testing capistrano recipes with cucumber](http://pivotallabs.com/users/jdean/blog/articles/763-testing-capistrano-recipes-with-cucumber)
+- [Ruby DNS Testing - First Glance  - Dean Wilson@UnixDaemon](http://blog.unixdaemon.net/cgi-bin/blosxom.pl/2009/04/06#ruby-dns-testing)
+- [Dr Nic's Testing outbound emails with Cucumber](http://drnicwilliams.com/2009/03/26/testing-outbound-emails-with-cucumber/)
+- [the space between the movement - Testing Dash Metrics with Cucumber](http://bradley.is/post/82649218/testing-dash-metrics-with-cucumber)
+- [Using Cucumber as a scripting language](http://holmwood.id.au/~lindsay/2009/11/01/using-cucumber-as-a-scripting-language/)
+- [Devopsdays Day 1 (part two) - Intelligent Monitoring](http://agilesysadmin.net/cucumber-nagios)
+- [Behavior Driven Systems Monitoring for telephony](http://jsgoecke.wordpress.com/2009/06/10/behavior-driven-systems-monitoring-for-telephony/)
+
+### Shell / Perl related frameworks
+- [shunit2 - Google Code](http://code.google.com/p/shunit2/) 
+- [ShUnit](http://shunit.sourceforge.net/)
+- [Bash Unit](http://ostatic.com/bashunit)
+- [Testing with shell scripts | Talk software](http://talksoftware.echlin.ca/node/1)
+- [Test Anything Protocol in Shell scripts - Stack Overflow](http://stackoverflow.com/questions/745266/test-anything-protocol-in-shell-scripts)
+- [A language for sysadmin testing - Roman Sandals](http://romansandals.wordpress.com/2008/05/23/a-language-for-sysadmin-testing/)
+- [Jozef Kutej / Test-Server - search.cpan.org](http://search.cpan.org/dist/Test-Server/)
+- [Testing for sysadmins - monitoring your infrastructure ](http://ivory.idyll.org/blog/jan-08/sysadmin-testing.html)
+
+### Ruby related systems testing
+- [Explore Testing: How to run and test shell scripts from Ruby.](http://exploretesting.blogspot.com/2008/08/how-to-run-and-test-shell-scripts-from.html)
+- [swaks - Swiss Army Knife SMTP; Command line SMTP testing, including TLS and AUTH](http://www.jetmore.org/john/code/#swaks)

@@ -1,0 +1,241 @@
+--- 
+title:      Creating Custom Ubuntu Autoinstall Cdroms - With Puppet
+created_at: 2010-12-10 11:59:07.312585 +01:00
+tags: 
+- puppet
+- ubuntu
+- custom cdrom
+- preseed
+- mkisofs
+- kickstart
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+Now that we [have an brand new ESX Server running](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) , it's time to install the first machine. To automate installations you can normally use a PXE server, but that requires you of course to install a PXE server first. To automate the installation of the first machine, we create a custom cdrom. This example (Ubuntu) will show you how you can do that.
+
+To create a custom cdrom takes the following steps:
+
+1. [change the menu of the cdrom to a default install option](#menu)
+2. [provide a preseed file to use during the installation](#preseed)
+3. [the steps to build to the cdrom](#build)
+4. [filling in some variables](#define)
+5. [build the cdrom](#run)
+
+The example assumes that you have downloaded the iso file somewhere and have mkisofs installed (macports or brew cdrtools)
+
+Instead of creating a simple script, I ended up creating a puppet manifest for it. Why? Because it clearly gets you into the idempotent way of thinking and forces you to think on the re-execution of the script. Also using the power to use the checksums on the templates makes it easy to check if re-creation is needed. Some would argue puppet wasn't created for this kind of work as this is more procedural, but it proved very useful and gave me much more confidence to execute the script.
+
+<a name="menu"></a>
+#### Changing the menu with a default autoinstall option
+The new menu that we like to use for our cdrom, it specifies all the bootcommands and avoids prompting and the timeout.
+
+$MODULES/custom-ubuntu-cdrom/templates/isolinux.cfg.erb  
+<% codify(:shell) do %>
+default custominstall
+prompt 0
+timeout 1
+
+label custominstall
+  menu label Install Custom Ubuntu
+  kernel /install/vmlinuz
+  append  file=/cdrom/preseed/custom.seed debian-installer=en_US locale=en_US kbd-chooser/method=us hostname=<%%= custom_hostname %> fb=false debconf/frontend=noninteractive console-setup/ask_detect=false console-setup/modelcode=pc105 console-setup/layoutcode=us vga=788 initrd=/install/initrd.gz quiet --
+<% end %>
+
+<a name="preseed"></a>
+#### Providing the kickstart file
+The following is an example kickstart file for an Ubuntu 10 server
+<% codify(:shell) do %>
+## Options to set on the command line
+d-i debian-installer/locale string en_US
+d-i console-setup/ask_detect boolean false
+d-i console-setup/layout string <%%= custom_consolelayout %>
+
+d-i netcfg/get_hostname string <%%= custom_hostname %>
+d-i netcfg/get_domain string <%%= custom_domain %>
+
+# Continue without a default route
+# Not working , specify a dummy in the DHCP
+d-i netcfg/no_default_route boolean true
+
+d-i netcfg/disable_dhcp boolean true
+d-i netcfg/get_ipaddress string <%%= custom_ipaddress %>
+d-i netcfg/get_nameservers string <%%= custom_nameserver %>
+d-i netcfg/get_netmask string <%%= custom_netmask %>
+
+d-i netcfg/get_gateway string <%%= custom_gateway %>
+d-i netcfg/confirm_static boolean true
+
+d-i clock-setup/utc-auto boolean true
+d-i clock-setup/utc boolean true
+d-i time/zone string <%%= custom_timezone %>
+d-i clock-setup/ntp boolean true
+d-i clock-setup/ntp-server string <%%= custom_ntpserver %>
+
+d-i	kbd-chooser/method select <%%= custom_kbdchooser %>
+
+#d-i netcfg/choose_interface select auto
+d-i netcfg/choose_interface select <%%= custom_networkinterface %>
+d-i netcfg/wireless_wep string
+
+d-i base-installer/kernel/override-image string linux-server
+
+# Choices: Dialog, Readline, Gnome, Kde, Editor, Noninteractive
+d-i debconf	debconf/frontend	select	Noninteractive
+
+d-i mirror/country string <%%= custom_country %>
+d-i mirror/http/proxy string <%%= custom_proxy %>
+d-i pkgsel/install-language-support boolean false
+tasksel tasksel/first multiselect standard, ubuntu-server
+
+#d-i partman-auto/method string regular
+d-i partman-auto/method string lvm
+d-i partman-auto/purge_lvm_from_device boolean true
+
+d-i partman-lvm/confirm boolean true
+d-i partman-auto/choose_recipe select atomic
+
+d-i partman/confirm_write_new_label boolean true
+d-i partman/confirm_nooverwrite boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+
+#http://ubuntu-virginia.ubuntuforums.org/showthread.php?p=9626883
+#Message: "write the changes to disk and configure lvm preseed"
+#http://serverfault.com/questions/189328/ubuntu-kickstart-installation-using-lvm-waits-for-input
+#preseed partman-lvm/confirm_nooverwrite boolean true
+
+# Write the changes to disks and configure LVM?
+d-i partman-lvm/confirm boolean true
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-auto-lvm/guided_size string max
+
+d-i passwd/user-fullname string <%%= custom_user %>
+d-i passwd/username string <%%= custom_user %>
+d-i passwd/user-password password <%%= custom_password %>
+d-i passwd/user-password-again password <%%= custom_password %>
+d-i user-setup/encrypt-home boolean false
+d-i user-setup/allow-password-weak boolean true
+
+# Individual additional packages to install
+d-i pkgsel/include string openssh-server build-essential ntp
+# Whether to upgrade packages after debootstrap.
+# Allowed values: none, safe-upgrade, full-upgrade
+d-i pkgsel/upgrade select full-upgrade
+
+d-i grub-installer/only_debian boolean true
+d-i grub-installer/with_other_os boolean true
+d-i finish-install/reboot_in_progress note
+
+#For the update
+d-i pkgsel/update-policy select none
+
+d-i preseed/late_command string echo -e "\n\nauto eth1\niface eth1 inet static\n\taddress <%%= custom_ipaddress_1 %>\n\tnetmask <%%= custom_netmask_1 %>\n\tnetwork <%%= custom_network_1 %>\n\tbroadcast <%%= custom_broadcast_1 %>" >> /target/etc/network/interfaces
+<% end %>
+
+<a name="build"></a>
+#### Building the cdrom logic
+The logic to create the cdrom based on the two config files goes like this:  
+
+$MODULES/custom-ubuntu-cdrom/manifests/classes/custom-ubuntu-cdrom-darwin.pp 
+<% codify(:shell) do %>
+class custom-ubuntu-cdrom::darwin inherits custom-ubuntu-cdrom::base {
+
+        file { "create iso mount point":
+                path => "$mnt_point",
+                ensure => directory
+        }
+
+        File["create iso mount point"] -> Exec["mount the iso"]
+
+        exec { "mount the iso":
+                command => "hdiutil attach $iso_file -mountroot $mnt_point -nobrowse",
+                unless => "hdiutil info| grep $iso_file"
+        }
+
+        Exec["mount the iso"] -> Exec["extract the iso"]
+
+        exec { "extract the iso":
+                command => "rsync -av '$mnt_point/$volname/' '$custom_iso_tmpdir' "
+                }
+
+        Exec["extract the iso"] -> Exec["fix permissions"]
+        Exec["extract the iso"] -> Exec["unmount the iso"]
+
+        exec { "unmount the iso":
+                command => "hdiutil eject '$mnt_point/$volname/'",
+                onlyif => "hdiutil info| grep $iso_file"
+        }
+
+        exec { "fix permissions":
+                command => "chmod -R +w '$custom_iso_tmpdir/isolinux' '$custom_iso_tmpdir/preseed'"
+        }
+
+        Exec["fix permissions"] -> File["isolinux.cfg"]
+        Exec["fix permissions"] -> File["custom.seed"]
+
+        file { "isolinux.cfg":
+                path => "$custom_iso_tmpdir/isolinux/isolinux.cfg",
+                content => template("custom-ubuntu-cdrom/isolinux.cfg.erb")
+        }
+
+        file { "custom.seed":
+                path => "$custom_iso_tmpdir/preseed/custom.seed",
+                content => template("custom-ubuntu-cdrom/preseed.cfg.erb")
+
+                }
+
+        File["isolinux.cfg"] -> Exec["build new iso"]
+        File["custom.seed"] -> Exec["build new iso"]
+
+		# We calculate the md5 checksum of the total string of a concat of the config files
+		# And we add the checksum as part of the Volume id: so we can verify if the cdrom needs to be rebuild
+        $preseed_string=template("custom-ubuntu-cdrom/preseed.cfg.erb")
+        $isolinux_string=template("custom-ubuntu-cdrom/isolinux.cfg.erb")
+        $allstring="${preseed_string}-${isonlinux_string}"
+        $checksum=md5($allstring)
+
+        exec { "build new iso":
+                command => "mkisofs -V $checksum -l -J -R -r -T -o '$custom_iso_file' -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table '$custom_iso_tmpdir/'",
+                unless => "isoinfo -d -i '$custom_iso_file' | grep 'Volume id:' | grep $checksum"
+        }
+
+}
+<% end %>
+
+<a name="definition"></a>
+#### Creating the definition of the new cdrom
+To actually create the cdrom you can create a standalone puppet manifest like this
+
+create-pxe-cdrom.pp 
+<% codify(:shell) do %>
+Exec { path => "/usr/bin/:/usr/sbin:/bin:/sbin:/opt/local/bin:/opt/local/sbin:/usr/local/bin:/usr/local/sbin" }
+
+custom-ubuntu-cdrom::instance{ "pxeserver.example.org":
+        iso_file => "/Users/patrick/veewee/iso/ubuntu-10.10-server-amd64.iso",
+        custom_iso_file => "/Users/patrick/ubuntu-10.10-server-amd64-custom.iso",
+
+        custom_iso_tmpdir => "/tmp/cdrom-ubuntu",
+        volname => "Ubuntu-Server 10",
+        mnt_point => "/tmp/cdrom",
+
+        custom_hostname => "pxe-pr-1",custom_domain => "example.org", custom_nameserver => "192.168.113.119"
+		custom_gateway => "", custom_networkinterface => "eth0",
+		
+        custom_ipaddress => "192.168.113.5", custom_netmask => "255.255.255.0", custom_network => "192.168.113.0", custom_broadcast => "172.168.113.0",
+        custom_ipaddress_1 => "172.16.113.5", custom_netmask_1 => "255.255.255.0", custom_network_1 => "172.168.113.0", custom_broadcast_1 => "172.168.113.0",
+
+        custom_ntpserver => "ntp-113.example.org", custom_proxy => "http://forward-proxy-113.example.org:3128",
+
+        custom_user => "patrick", custom_password => "mypassword",
+        custom_timezone => "Europe/Brussels", custom_country => "Belgium", custom_kbdchooser => "Belgian", custom_consolelayout => "Belgium"
+}
+<% end %>
+
+<a name="run"></a>
+#### To actually build it:
+<% codify(:shell) do %>
+puppet apply  --modulepath modules/ create-pxe-cdrom.pp 
+<% end %>

@@ -1,0 +1,48 @@
+---
+job: true
+period: "2002 - 2003"
+customer: VRT (Porthus)
+role: System Architect/Technical Project Manager
+title: Internet Website vrtnieuws.net
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/vrtnieuws.net.png" class="left"></div>
+		<div class="span-18 last">
+* The main objective for this project was to report news on the elections in enhancing traditional broadcasting. 
+* Additionally, the process of publishing information on the Internet was to be streamlined in one solution. This solution had to support the publication of multimedia content on the web.
+* Previous election Internet projects clearly showed that a high volume and high-available solution was a must. Infrastructure needed to be designed to sustain a minimum of 1000 concurrent connections.
+* The project was split into 3 parts: the content management system (CMS) for content creation,  the webfarm for Internet consultation and the video production system.
+* The CMS system was custom built, based upon Bea Weblogic,  Oracle Database and Oracle Message Queues. It included XML entry within the Oracle Database and further transformations using XML and XSL validated by XSD schema's. Content was indexed using Oracle Text. All servers involved where Sun Solaris based and the primary programming language used was Java.
+* The webfarm was built around apache, Tomcat and JBoss for web and application services. At each different level high-availability was mandatory and implemented.
+* Given the high visibility of the project, a disaster recovery design was made based upon Veritas and Legato backup and clustering
+* To avoid traffic limitations, content was distributed to Telenet and Belgacom for peer services. This required additional security measures to be taken at the network level.
+
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+weblogic, oracle, jboss, j2ee, veritas backup, solaris, oracle text, soniq mq, xml, xslt
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* Design and implementation of Webfarm and CMS solution
+* Design of corporate Disaster Recovery solution
+* Design of monitoring environment
+* Security auditing
+
+_Sysadmin_
+* Setup Monitoring End-To-End
+* Data synchronization scripts
+
+_Project Management_
+* Coordinate technical project plan and bill of material.
+* follow-up of the implementation and testing process
+* Coordinate between different technical parties (JCS, Porthus, Real Software)
+* Interaction between the development and the infrastructure group
+* Responsible for Quality Assurance of the complete project
+* The project followed the PMI guidelines for project management
+
+	</div>
+</div>

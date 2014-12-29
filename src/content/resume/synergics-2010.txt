@@ -1,0 +1,49 @@
+---
+period: "2010"
+customer: Synergics
+role: Project Manager
+title: Datacenter Migration
+job: true
+layout: job
+technology: 
+   - netapp, vmware, nexenta, citrix, hp blades
+   - nagios, comvault, j2ee
+roles: project manager, architect
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/synergics.gif" class="left"></div>
+		<div class="span-18 last">
+As the number of machines in the synergics datacenter have grown over the years, the current datacenter was becoming inadequate in terms of cooling and electricity. Therefore part of the infrastructure needed to be migrated to a new location. This involved: 
+
+* Selecting and preparing a new housing facility and electricy needs
+* Preparing internet and inter-datacenter network connectivity redundancy including firewall and loadbalancer functionality
+* Testing, architecting a new storage solution (Nexenta and Netapp) and data migration scenario
+* Preparation of new blade HP infrastructure on the new site
+* Vmware esx cluster setup and virtual machine migration to the new site
+* Migration of application in high availability mode to become loadbalanced across both sites
+* Integration in Nagios monitoring
+
+At the same time another project was preparing an upgrade of the Oracle Database server
+* upgrade to a new security model, role based access
+* upgrade from Oracle 10 to Oracle 11
+* setup of test environment for application migration
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+netapp, vmware, nexenta, juniper, hp blades, citrix, nagios, comvault, j2ee
+	</div>
+	<div class="span-11 last">
+	
+*Tasks:*
+_Project Manager_
+* Structure the global approach in one consistent program of projects
+* Oversee the integration in the ITIL processes
+* Guide people to become more familiar with new technology
+* Promote and guide change within the organization
+* Keep budget and scope under control
+* Motivate people by working with minimal working steps
+
+	</div>
+</div>

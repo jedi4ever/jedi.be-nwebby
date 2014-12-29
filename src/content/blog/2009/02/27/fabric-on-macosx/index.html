@@ -1,0 +1,389 @@
+---
+title: "Fabric on MacosX"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=584
+created_at: 2009-02-27 15:57:40.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+---
+<blockquote><img class="alignleft" src="http://www.nongnu.org/fab/fabric-logo.png" height="48" alt="" width="48" />
+<br>
+Fabric is a simple pythonic remote deployment tool.
+<br>
+It is designed to upload files to, and run shell commands on, a number of
+servers in parallel or serially. These commands are grouped in tasks (regular
+python functions) and specified in a 'fabfile'.
+<br>
+It is a bit like a dumbed down Capistrano, except it's in Python, doesn't
+expect you to be deploying Rails applications, and the 'put' command works.
+<br>
+Unlike Capistrano, Fabric want's to stay small, light, easy to change and not
+bound to any specific framework.
+<br>
+Once installed, you can run 'fab help' to learn more about how to use Fabric.</blockquote>
+<strong>Download the Fabric Source code</strong>
+<br>
+Get is at <a href="http://www.nongnu.org/fab/source.html">http://www.nongnu.org/fab/source.html</a>
+<br>
+<strong>Extract the Archive</strong>
+localhost:patrick$ tar -xzvf Fabric-0.0.9.tar.gz
+Fabric-0.0.9/
+Fabric-0.0.9/Fabric.egg-info/
+Fabric-0.0.9/Fabric.egg-info/dependency_links.txt
+Fabric-0.0.9/Fabric.egg-info/entry_points.txt
+Fabric-0.0.9/Fabric.egg-info/PKG-INFO
+Fabric-0.0.9/Fabric.egg-info/requires.txt
+Fabric-0.0.9/Fabric.egg-info/SOURCES.txt
+Fabric-0.0.9/Fabric.egg-info/top_level.txt
+Fabric-0.0.9/fabric.py
+Fabric-0.0.9/PKG-INFO
+Fabric-0.0.9/README
+Fabric-0.0.9/setup.cfg
+Fabric-0.0.9/setup.py
+<br>
+<strong>Step into the Fabric Directory</strong>
+localhost:patrick$ cd Fabric-0.0.9<strong>
+</strong>
+<br>
+<strong>My first ERROR</strong> or is it Mistake
+localhost:Fabric-0.0.9 patrick$ python setup.py
+usage: setup.py [global_opts] cmd1 [cmd1_opts] [cmd2 [cmd2_opts] ...]
+or: setup.py --help [cmd1 cmd2 ...]
+or: setup.py --help-commands
+or: setup.py cmd --help
+<br>
+error: no commands supplied
+<br>
+<strong>Doing the installation the correct way</strong>
+localhost:Fabric-0.0.9 patrick$ sudo easy_install Fabric
+Password:
+Searching for Fabric
+Reading http://pypi.python.org/simple/Fabric/
+Reading https://savannah.nongnu.org/projects/fab/
+Reading http://www.nongnu.org/fab/
+Best match: Fabric 0.0.9
+Downloading http://pypi.python.org/packages/source/F/Fabric/Fabric-0.0.9.tar.gz#md5=ac79968ae85907dd45ecb4b09c826571
+Processing Fabric-0.0.9.tar.gz
+Running Fabric-0.0.9/setup.py -q bdist_egg --dist-dir /tmp/easy_install-8kc8Zq/Fabric-0.0.9/egg-dist-tmp-sBvxPf
+zip_safe flag not set; analyzing archive contents...
+Adding Fabric 0.0.9 to easy-install.pth file
+Installing fab script to /usr/local/bin
+<br>
+Installed /Library/Python/2.5/site-packages/Fabric-0.0.9-py2.5.egg
+Processing dependencies for Fabric
+Searching for paramiko&gt;=1.6,&lt;2.0
+Reading http://pypi.python.org/simple/paramiko/
+Reading http://www.lag.net/paramiko/
+Reading http://www.lag.net/~robey/paramiko/
+Best match: paramiko 1.7.4
+Downloading http://www.lag.net/paramiko/download/paramiko-1.7.4.zip
+Processing paramiko-1.7.4.zip
+Running paramiko-1.7.4/setup.py -q bdist_egg --dist-dir /tmp/easy_install-mxMs9N/paramiko-1.7.4/egg-dist-tmp-XNc4po
+zip_safe flag not set; analyzing archive contents...
+Adding paramiko 1.7.4 to easy-install.pth file
+<br>
+Installed /Library/Python/2.5/site-packages/paramiko-1.7.4-py2.5.egg
+Searching for pycrypto&gt;=1.9
+Reading http://pypi.python.org/simple/pycrypto/
+Reading http://pycrypto.sourceforge.net
+Reading http://www.amk.ca/python/code/crypto
+Best match: pycrypto 2.0.1
+Downloading http://www.amk.ca/files/python/crypto/pycrypto-2.0.1.tar.gz
+Processing pycrypto-2.0.1.tar.gz
+Running pycrypto-2.0.1/setup.py -q bdist_egg --dist-dir /tmp/easy_install-HUcPkq/pycrypto-2.0.1/egg-dist-tmp-7Vw7Iv
+src/MD2.c: In function 'hash_digest':
+src/MD2.c:115: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/MD2.c:118:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/MD2.c: In function 'hash_digest':
+src/MD2.c:115: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/MD2.c:118:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/MD4.c: In function 'hash_digest':
+src/MD4.c:200: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/MD4.c:203:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/MD4.c: In function 'hash_digest':
+src/MD4.c:200: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/MD4.c:203:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/RIPEMD.c: In function 'hash_digest':
+src/RIPEMD.c:218: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/RIPEMD.c: In function 'hash_digest':
+src/RIPEMD.c:218: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/RIPEMD.c:507:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/hash_template.c: In function 'ALG_update':
+src/hash_template.c:139: warning: pointer targets in passing argument 2 of 'hash_update' differ in signedness
+In file included from src/RIPEMD.c:507:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/hash_template.c: In function 'ALG_new':
+src/hash_template.c:211: warning: pointer targets in passing argument 2 of 'hash_update' differ in signedness
+src/hash_template.c: In function 'ALG_update':
+src/hash_template.c:139: warning: pointer targets in passing argument 2 of 'hash_update' differ in signedness
+src/hash_template.c: In function 'ALG_new':
+src/hash_template.c:211: warning: pointer targets in passing argument 2 of 'hash_update' differ in signedness
+src/SHA256.c: In function 'hash_digest':
+src/SHA256.c:197: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/SHA256.c:200:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+src/SHA256.c: In function 'hash_digest':
+src/SHA256.c:197: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/SHA256.c:200:
+src/hash_template.c: In function 'ALG_hexdigest':
+src/hash_template.c:108: warning: pointer targets in assignment differ in signedness
+src/hash_template.c:112: warning: pointer targets in assignment differ in signedness
+In file included from src/AES.c:1459:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/AES.c:1459:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/ARC2.c:185:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/ARC2.c:185:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/Blowfish.c:499:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/Blowfish.c:499:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/CAST.c:436:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/CAST.c:436:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/DES.c:665:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/DES.c:665:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/DES3.c:688:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/DES3.c:688:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/IDEA.c:196:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/IDEA.c:196:
+src/block_template.c: In function 'ALG_Encrypt':src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+<br>
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/RC5.c:212:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/RC5.c:212:
+src/block_template.c: In function 'ALG_Encrypt':
+src/block_template.c:371: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:388: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALG_Decrypt':
+src/block_template.c:561: warning: pointer targets in passing argument 2 of 'block_encrypt' differ in signedness
+src/block_template.c:578: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/block_template.c: In function 'ALGgetattr':
+src/block_template.c:680: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+In file included from src/ARC4.c:70:
+src/stream_template.c: In function 'ALG_Encrypt':
+src/stream_template.c:135: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/stream_template.c: In function 'ALG_Decrypt':
+src/stream_template.c:164: warning: pointer targets in passing argument 2 of 'stream_encrypt' differ in signedness
+In file included from src/ARC4.c:70:
+src/stream_template.c: In function 'ALG_Encrypt':
+src/stream_template.c:135: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/stream_template.c: In function 'ALG_Decrypt':
+src/stream_template.c:164: warning: pointer targets in passing argument 2 of 'stream_encrypt' differ in signedness
+In file included from src/XOR.c:52:
+src/stream_template.c: In function 'ALG_Encrypt':
+src/stream_template.c:135: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/stream_template.c: In function 'ALG_Decrypt':
+src/stream_template.c:164: warning: pointer targets in passing argument 2 of 'stream_encrypt' differ in signedness
+In file included from src/XOR.c:52:
+src/stream_template.c: In function 'ALG_Encrypt':
+src/stream_template.c:135: warning: pointer targets in passing argument 1 of 'PyString_FromStringAndSize' differ in signedness
+src/stream_template.c: In function 'ALG_Decrypt':
+src/stream_template.c:164: warning: pointer targets in passing argument 2 of 'stream_encrypt' differ in signedness
+zip_safe flag not set; analyzing archive contents...
+Adding pycrypto 2.0.1 to easy-install.pth file
+<br>
+Installed /Library/Python/2.5/site-packages/pycrypto-2.0.1-py2.5-macosx-10.5-i386.egg
+Finished processing dependencies for Fabric
+-----------------------------------------------------
+localhost:Fabric-0.0.9 patrick$ fab help:local
+Fabric v. 0.0.9, Copyright (C) 2008 Christian Vest Hansen.
+Fabric comes with ABSOLUTELY NO WARRANTY; for details type `fab warranty'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `fab license' for details.
+<br>
+Running help...
+Help for 'local':
+Run a command locally.
+<br>
+This operation is essentially 'os.system()' except that variables are
+expanded prior to running.
+<br>
+May take an additional 'fail' keyword argument with one of these values:
+* ignore - do nothing on failure
+* warn - print warning on failure
+* abort - terminate fabric on failure
+<br>
+Example:
+local("make clean dist", fail='abort')
+Done.
+<strong>
+Hello world for Fabric</strong>
+<br>
+Just follow the example at<a href="http://www.nongnu.org/fab/user_guide.html"> http://www.nongnu.org/fab/user_guide.html</a>
+localhost:Fabric-0.0.9 patrick$ cat fabfile
+<br>
+set(
+fab_hosts = ['myserver.com'],
+fab_user = 'patrick',
+)
+<br>
+def hello():
+"Prints hello."
+local("echo hello")
+<br>
+def hello_remote():
+"Prints hello on the remote hosts."
+run("echo hello from $(fab_host) to $(fab_user).")
+<br>
+<strong>Running hello world locally</strong>
+localhost:Fabric-0.0.9 patrick$ fab hello
+Fabric v. 0.0.9, Copyright (C) 2008 Christian Vest Hansen.
+Fabric comes with ABSOLUTELY NO WARRANTY; for details type `fab warranty'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `fab license' for details.
+<br>
+Running hello...
+[localhost] run: echo hello
+hello
+Done.
+<br>
+<strong>Running hello world Remote</strong>
+localhost:Fabric-0.0.9 patrick$ fab hello_remote
+Fabric v. 0.0.9, Copyright (C) 2008 Christian Vest Hansen.
+Fabric comes with ABSOLUTELY NO WARRANTY; for details type `fab warranty'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `fab license' for details.
+<br>
+Running hello_remote...
+Logging into the following hosts as deboispa:
+myserver.com
+Password for patrick@myserver.com:
+[myserver.com] run: echo hello from myserver.com to patrick.
+[myserver.com] out: hello from myserver.com to patrick.
+Done.

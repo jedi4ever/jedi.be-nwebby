@@ -1,0 +1,70 @@
+--- 
+title: Translating Code Smells in Server Smells
+created_at: 2009-11-27 11:29:05.779396 +01:00
+tags: 
+- code smells
+- migrations
+- sysadmin
+- devops
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<img src='/blog/wp-content/uploads/2009/11/server-smells.jpg' class='left'>
+
+At [xpdays Benelux 2009](http://www.xpday.net/Xpday2009/Program.html), I attended an [interesting session called 'Developing a Sense of Smells'](http://www.xpday.net/Xpday2009/sessions/Developing%20a%20Sense%20of%20Smell.html) by Kevin RutherFord and Lindsay McEwan.
+
+The exercise we did went as follows: suppose you are asked to do some work on code you never saw before. How would you assess this, go about estimating the effort and explaining that effort to justify the price/number of days. The first round resulted in terms like 'look for design patterns', 'readibility of the code', ... 
+
+Then they explained [code smells](http://www.codinghorror.com/blog/archives/000589.html) patterns: f.i. a *greedy function*: one function that does way to much making it difficult to change, *hidden secret*: internal knowledge such as the real interpretations of a CSV file data format that can not be deduced by looking at the code. The code smells made it easier to express the problems.
+
+The [devops](http://www.devopsdays.org) in me,thinks that this can be translated to the sysadmin world. Here are some of the 'smells' I've come up.
+
+### Private Playground
+The sysadmin uses the system as his toy playground, doesn't clean up.
+
+* /tmp & /var/tmp full of old install files
+* / full of files
+
+###  Gready Server
+One server that does every function
+
+* combined mail and web and dns and fileshares
+* all users on the same system
+
+### Root is the cause of all evil
+
+* last show login all root
+* no sudo is activated
+* no sshd keys for logins
+* nfs share/root?
+* Chmod 777
+* most processes run as root
+
+### Cranky Crutches
+Things that are needed to keep the system alive when failed 
+
+* /etc/ start but no stop scripts
+* kill /stop/start in cron jobs
+
+### Nobody lives here anymore
+Mainly indicate not much maintenance is done any more
+
+* Last update is a long time ago
+* Older kernel versions 
+* last login was more then x days ago
+* olders reboot is a long time ago
+
+### Complexity Conspiracy
+Loadbalancers, Cluster software, Dependencies
+
+### More is Less
+
+* All packages installed
+* All services running
+* All ports are open
+
+This is just the beginning, so if you have your own ideas/names, just leave a comment.
+
+

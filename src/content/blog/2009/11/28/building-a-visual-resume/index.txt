@@ -1,0 +1,108 @@
+--- 
+title: Building a Visual Resume
+created_at: 2009-11-28 15:06:26.411805 +01:00
+tags: 
+- cv
+- visual 
+- resume
+- curriculum
+blog_post: true
+filter: 
+- erb
+- markdown
+--- 
+As a freelancer I spent quite some time updating and sending my CV to different parties. Most recruiting companies ask me for a MS Word version of my CV without any markup. I understand why, they put on their own logo and copy and paste the relevant parts for the company they propose me to. To me this feels rather awkward. In these web oriented times, I would expect enterprises to check candidate backgrounds online. And a flat, unformatted list of job experience, is not what they expect online.  Sites like [Linkedin](http://www.linkedin.com) and [VisualCV](http://www.visualcv.com) try to make a difference here, but they are still text based, very similar to the dull paper documents.
+
+You can debate on the [usefulness of a visual resume for jobhunters](http://design-for-users.com/design/visual-resumes-for-job-hunters/), I think that potential resume evaluators [go through a resume in different passes](http://www.randsinrepose.com/archives/2007/02/25/a_glimpse_and_a_hook.html). The [right typography](http://blog.des-us.com/index.php/graphics/create-a-grid-based-resumecv-layout-in-indesign/) will already helps a lot in this process. 
+Also the visual has to be easily understood by the recruiter, [not only by the candidate himself](http://dnicolet1.tripod.com/agile/index.blog?entry_id=1804963).
+
+The most brilliant examples I've seen, come from graphical or art designers. They are [showcasing fonts, styles](http://freshpics.blogspot.com/2009/08/artistic-and-creative-resumes.html) or [other visuals](http://coffeepowered.co.uk/cv/). The problem is, I'm not into design jobs, and creating a resume that visual, will not send the right message.
+
+Another trend is using visual slides to convey [who you are](http://www.slideshare.net/Mariehdb/pieces-of-me-my-visual-resume-presentation) and [what you stand for](http://www.slideshare.net/saranyan/visual-resume). These examples work well when presenting in person, but without audio they don't work that well. Also printing these will result in a condensed overview. 
+
+Below is a list of the most beautiful examples I found. I'd love to make one myself, who knows.
+
+#### Visual CV - Examples:
+<table>
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/cv-industries.jpg' width='200'>
+<br>
+<a href="http://www.blog.cv-industries.com/2009/07/infographic-resume.html">CV Industries Infographic Resume</a>
+</td>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/lifemap.jpg' width='200'>
+<br>
+<a href="http://visualthinkmap.blogspot.com/2008/05/life-map.html">Visual ThinkMap Life Map</a>
+</td>
+</tr>
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/ISOMAP_2.png' width='200'>
+<br>
+<a href="http://visualthinkmap.ning.com/photo/photo/show?id=2168552%3APhoto%3A701">Visual Thinkmap Arnaud Velten</a>
+</td>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/creative_resumes_01.jpg' width='200'>
+<br>
+<a href="http://theportfolio.ofmichaelanderson.com/portfolio/resume-infographics/">Infographics Michael Anderson</a>
+</td>
+</tr>
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/SG-Resume2-737111.jpg' width='200'>
+<br>
+<a href="http://www.stephengates.com/Blog/2007/05/creative-visual-resume.html">Stephen Gates Visual Resume</a>
+
+</td>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/visualexpand.jpg' width='200'>
+<br>
+<a href="http://www.kevinshrugged.com/projects/shrugged/resume.html">Kevin Shrugged</a>
+</td>
+
+</tr>
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/timeline.png' width='200'>
+<br>
+<a href="http://www.cse.unt.edu/~mgomathi/">Mahadevan Gomathisankaran</a>
+</td>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/universal_3.png' width='200'>
+<br>
+<a href="http://design-for-users.com/wp-content/uploads/2008/12/universal_3.png">Kristi CV</a>
+</td>
+</tr>
+
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/professional_timeline_smaller.jpg' width='200'>
+<br>
+<a href="http://davidjdowns.com/musiced/images/professional_timeline_smaller.jpg">David J. Downs</a>
+
+</td>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/skillset.jpg' width='200'>
+<br>
+<a href="http://4.bp.blogspot.com/_6SeCWrONMDY/R--uwzl3NFI/AAAAAAAAAgA/IVETJiFIuxk/s1600-h/skillset.jpg">Interaction Designer Skillset</a>
+</td>
+</tr>
+<tr>
+<td>
+<img src='/blog/wp-content/uploads/2009/11/visual-resume/bob-van-vliet.jpg' width='200'>
+<br>
+<a href="http://tumblr.iamdanw.com/post/113938543/an-interesting-cv-design-by-shapesifter-that-shows">Shapeshifter - Bob Van Vliet</a>
+</td>
+</tr>
+</table>
+
+#### More stuff:
+* Google Birthday: the way the represent special events maybe a good candidate for an interactive CV. <http://www.google.com/tenthbirthday/#start>
+* Linked-In: <http://artwerk.com/2009/02/19/a-well-designed-cv-equals-job-at-first-sight/>
+* Other beautiful Infographics - <http://www.designlabelblog.com/2008/03/data-visualization-and-infographics_30.html>
+
+#### Future?
+Well the next thing is probably create my own... Another idea might be to create an application to visualize f.i. LinkedIn profiles with it using the hresume format.
+If any visual designers are interested in this project, just let me know.
+

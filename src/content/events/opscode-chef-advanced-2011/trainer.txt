@@ -1,0 +1,14 @@
+---
+layout: event
+extension: html
+title: Opscode Chef Advanced - Trainer
+filter:    
+- erb
+- markdown
+---
+### About Joshua Timberman:
+
+<table><tr><td><a href="http://opscode.com"><img src='<%= @page.url+"/../JoshuaTimberman.jpg" %>'></a></td><td>
+<p>He is a technologist, focused on automation and continual improvement of software processes. As such, he has become an Agile practitioner. He is one of the co-founders of the open source project called CruiseControl, a continuous integration framework.</p></td></tr></table>
+
+<p>Joshua Timberman has over 10 years experience in Linux and Unix system administration. He has worked for companies from 5 person startups, up to the largest IT company in the world. His background includes deploying highly available enterprise application environments and providing internal infrastructure services and team-based training. Joshua currently works for Opscode, where he is an infrastructure cooking expert with Chef. He speaks at local user group meetings and has a passion for teaching people how to make the most out of automation.</p>

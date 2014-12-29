@@ -1,0 +1,432 @@
+<HTML>
+<HEAD>
+<TITLE>Understanding Client Configuration</TITLE>
+<META NAME="AUTHOR" CONTENT="Greg Potter">
+
+<META NAME="keywords" CONTENT="configuration preferences client deploy
+deployment rollout files bookmark addressbook"></HEAD>
+
+<BODY BGCOLOR="ffffff" TEXT="#000000">
+
+<CENTER><B>A<FONT SIZE="-1">PPLYING </FONT> N<FONT SIZE="-1">ETSCAPE </FONT>
+T<FONT SIZE="-1">ECHNOLOGY</FONT>
+</B>
+<H2><FONT SIZE="+3">U</FONT>NDERSTANDING 
+<FONT SIZE="+3">C</FONT>LIENT 
+<FONT SIZE="+3">C</FONT>ONFIGURATION
+</H2>
+</CENTER>
+
+<HR NOSHADE="NOSHADE">
+
+Standardized client configuration is quite different in Netscape
+Communicator 4.0 and Netscape Communicator Professional Edition 4.0 than in its
+predecessors. You have more methods, more options  within those methods, and a
+new degree of platform independence. The methods you  choose and the extent to
+which you use them depends on how thoroughly you want to  standardize and
+customize Communicator (either version) in your enterprise. </P>
+<P>
+
+This documentation covers the overall subject of client configuration. It
+goes into depth only in areas not covered by specific resources such as Netscape
+Mission Control. </P>
+<P>
+
+You can control virtually every modifiable attribute of Communicator's 
+components with Mission Control. You can readily change many attributes through
+the Configuration Editor, and you can also customize those and other preferences
+by directly editing the JavaScript functions in Communicator's configuration
+files. On Windows platforms, you can control which  Communicator components open
+initially, and what they do when they open, with command line configuration
+options. On all platforms you can customize bookmark files to suit your
+enterprise. Each of these topics is covered in a section of its own. </P>
+<UL>
+<LI><A HREF="#Configuring_Preferences_with_JavaScript">Configuring Preferences
+ with JavaScript</A></LI>
+<LI><A HREF="#Command_Line_Configuration">Configuring from the Command Line</A></LI>
+<LI><A HREF="#Preconfiguring_Standard_Enterprise_Bookmarks">Deploying Standard
+Enterprise Bookmarks</A></LI></UL>
+<P>
+
+There are ways to customize Communicator that go beyond these configuration 
+techniques. More advanced customizing involves directly editing resources such 
+as bitmaps and Help files, and incorporating those changed files into an 
+installation set with the Install Builder component of Mission Control. See
+Mission Control for more information. </P>
+<P>
+
+There are also many indirect ways to influence Communicator's performance or
+ connections, such as through proxy servers or firewalls, but those methods fall
+outside this document. </P>
+
+<HR NOSHADE="NOSHADE" SIZE="5">
+<H2><A NAME="Configuring_Preferences_with_JavaScript">Configuring Preferences 
+with JavaScript</A></H2>
+<P>
+
+You can customize Communicator 4.0 for your enterprise by using Mission
+Control's Configuration Editor and Install Builder to create and deploy a
+standard configuration file with each installation. Communicator reads its
+configuration information from this file each time it starts. </P>
+<P>
+
+Communicator Professional Edition 4.0 also supports AutoConfig, a
+centralized, cross-platform capability that can dynamically customize a wide
+array of Communicator's features and operating characteristics. You can manage
+all these attributes through JavaScript configuration functions you add to a
+resource that Communicator reads at start-up, and if you want, re-reads at
+preset intervals while running. The resource can be a simple ASCII text file
+(typically named <TT>config.jsc</TT>) or any mechanism that can send the
+functions by HTTP, such as a CGI script. You can use the JavaScript functions
+with other JavaScript programming to evaluate dynamically what the resource
+tells Communicator Pro. </P>
+<P>
+
+You can control any available configuration feature through AutoConfig; any
+features you choose not to control are left to users or follow the local or
+built-in defaults.
+</P>
+<P>
+
+Similar to previous versions, you can also customize the standard
+Communicator product with Mission Control by editing and deploying the
+<TT>netscape.cfg</TT> file (formerly called <TT>netscape.lck</TT>) with each
+installation. But with the Professional Edition you can place the same (or even
+more dynamically evaluated) customization information in a central resource
+that's readily accessible to you and easy to change. </P>
+<P>
+
+These sections explore the details of configuring preferences with
+JavaScript. </P>
+<P>
+
+<A HREF="#What_to_Configure">What to Configure</A><BR><A
+HREF="#How_Configuration_Works">How Configuration Works</A><BR><A
+HREF="#Configuration_Functions">Configuration Functions</A><BR><A
+HREF="#Configuration_Preferences">Configuration Preferences</A></P>
+
+<H3><A NAME="What_to_Configure">What to Configure</A></H3>
+<P>
+
+To support broad-based administration you can place customization or
+configuration information in two resources: the <TT>netscape.cfg</TT> file you
+can deploy with each copy of Communicator (standard or Pro) and/or the
+AutoConfig configuration resource that the Professional Edition can read
+(typically an ASCII file named <TT>config.jsc</TT>). Professional Edition
+installations commonly use <TT>netscape.cfg</TT> just to supply the pointer to
+<TT>config.jsc</TT>. The more you'll benefit from administrative centralization
+and ease of configuration updating, the more likely you'll want to use
+AutoConfig. </P>
+<P>
+
+You use Mission Control's Configuration Editor to create a master copy of
+<TT>netscape.cfg</TT>. Through the Configuration Editor you can set the
+AutoAdmin URL and manage dozens of other preferences, including many not
+accessible to users, such as custom menus. When you use <TT>netscape.cfg</TT>
+to point to <TT>config.jsc</TT>, you can edit <TT>config.jsc</TT> with a text
+editor. See Mission Control's documentation for more information. </P>
+<P>
+
+You can also configure individual Communicator installations by modifying
+the <TT>prefs.js</TT> file with a text editor. The content of this file can be
+identical to <TT>netscape.cfg</TT> or <TT>config.jsc</TT>, within the
+limitations of Communicator standard or Pro and your operating environment.
+</P>
+
+<H3><A NAME="How_Configuration_Works">How Configuration Works</A></H3>
+<P>
+
+When the standard version of Communicator runs, it first reads a built-in
+set of configuration defaults. It next reads any preferences set by users, which
+are stored in <TT>prefs.js</TT> files. Then, Communicator reads any global
+(enterprise-wide) preferences contained in <TT>netscape.cfg</TT>, if it's
+present. </P>
+<P>
+
+Communicator Professional Edition carries this a step further. If <TT>netscape.cfg</TT>
+points to and enables an AutoConfig URL, Communicator Pro reads that too. At
+each stage of the configuration process the incoming preferences overwrite the
+defaults or previously set preferences, if any. </P>
+<P>
+
+Communicator Pro automatically retains a local copy of the configuration 
+information it last fetched from the AutoConfig URL. Communicator Pro reads this
+ copy when it starts up offline or a user runs it just to view local HTML files.
+
+</P>
+
+<H3><A NAME="Configuration_Functions">Configuration Functions</A></H3>
+<P>
+
+You customize Communicator by setting preference values with particular
+JavaScript functions. You can categorize these functions by the required object
+(or wrapper function) they appear within. These objects are <TT><A
+HREF="#PrefConfig_Functions">PrefConfig{}</A></TT> (for configuring general
+client preferences) and <TT><A HREF="#AutoInstall_Functions">AutoInstall{}</A></TT>
+(for setting client's software AutoUpdate triggers). </P>
+
+<H4><A NAME="PrefConfig_Functions">PrefConfig Functions</A></H4>
+<UL>
+<LI><TT>config( param, value )</TT> Sets configuration parameters for items 
+that aren't under user control. For example, custom logo art or menu commands.
+</LI>
+<LI><TT>defaultPref( name, value )</TT> Sets a preference but leaves it
+subject to user control. You use this to insure uniform initial deployments, 
+which helps training, yet allow users to make personal modifications later. Note
+that you may also see a <TT>userPref ( name, value )</TT> function in <TT>prefs.js</TT>
+files; this function is identical to <TT>defaultPref( name, value )</TT>.
+</LI>
+<LI><TT>lockPref( name, value )</TT> Sets and locks preferences that would 
+otherwise be subject to user control. This function can help both uniform 
+deployment and uniform operation. </LI>
+<LI><TT>unlockPref( name )</TT> Explicitly releases a preference to user 
+control. You use this to ensure that a preference is released, especially  one
+that may have been locked earlier. For example, you could program the <TT>config.jsc</TT>
+file to lock down certain preferences temporarily while you're tuning the
+network, then release them when you're done. </LI>
+<LI><TT>getPref( name )</TT> Returns the current value of the named 
+preference. A common use would be to switch users of a particular mail server to
+a new mail server automatically. </LI>
+<LI><TT>getLDAPAttributes( host, base, filter, attributes )</TT> Returns 
+attributes from an LDAP-capable server such as the Netscape Directory Server.
+Specifically: 
+<UL>
+<LI><TT>host</TT> - the LDAP server's name</LI>
+<LI><TT>base</TT> - the distinguished name (DN) of the root entry to search 
+from (or use &quot;&quot; to search the entire tree)</LI>
+<LI><TT>filter</TT> - the entry to look up (typically, the user's mail 
+address)</LI>
+<LI><TT>attributes</TT> - a comma-delimited list of attributes to fetch (or 
+use &quot;&quot; to fetch them all)</LI></UL>The returned value is a 'values' 
+object (a list of attribute-value pairs) to be passed to <TT>getLDAPValue</TT>.
+Watch for null return values in case of difficulty, such as an unavailable
+server or an unlocatable named user. </LI>
+<LI><TT>getLDAPValue( values, attribute )</TT> Returns values from an 
+LDAP-capable server such as the Netscape Directory Server. Specifically: 
+<UL>
+<LI><TT>values</TT> - the object returned by <TT>getLDAPAttributes</TT></LI>
+<LI><TT>attributes</TT> - the name of the attribute containing the value you 
+want</LI></UL>This returns the value of the attribute, or <TT>null</TT> if the
+attribute isn't defined.</LI></UL>
+<P>
+
+You wrap the above functions within the <TT>PrefConfig{}</TT> object.
+Precede the functions with: </P>
+<P>
+
+<TT>with (PrefConfig) {</TT></P>
+<P>
+
+ and follow them with: </P>
+<P>
+
+<TT>} // with (PrefConfig)</TT>. </P>
+
+<H4><A NAME="AutoInstall_Functions">AutoInstall Functions</A></H4>
+<UL>
+<LI><TT>VersionInfo( major, minor, release, build )</TT> Creates and returns a
+<TT>VersionInfo</TT> object. All parameters are integers and are optional (if
+omitted they default to <TT>0</TT>).</LI>
+<LI><TT>getVersion( component, vers )</TT> The returned value is an error code
+or <TT>0</TT> if successful, in which case <TT>vers</TT> is the version info
+of the specified component.
+<UL>
+<LI><TT>component</TT> - is the name of a component. </LI>
+<LI><TT>vers</TT> - is a <TT>VersionInfo()</TT> object to be filled in; it is
+returned by a new <TT>VersionInfo()</TT> function.</LI></UL></LI>
+<LI><TT>startUpdate( url )</TT> Triggers an unconditional update of the given
+URL.</LI>
+<LI><TT>startUpdate( url, component, vers )</TT> Triggers a conditional update
+of the given URL if the requested version <TT>vers</TT> is newer than the
+version of <TT>component</TT> in the version registry.</LI></UL>
+<P>
+
+You wrap the above functions within the AutoInstall object. Simply precede
+the functions with: </P>
+<P>
+<TT>with (AutoInstall) {</TT></P>
+<P>
+ and follow them with: </P>
+<P>
+<TT>} // with (AutoInstall)</TT>. </P>
+<P>
+</P>
+
+<H4>Examples</H4>
+<P>
+Here's an example of each of the above configuration functions.</P>
+<P>
+<TT>config( &quot;win_animation_file&quot;, &quot;mylogo.bmp&quot; )</TT></P>
+<DL>
+<DD>This function identifies a locally available custom animation file to 
+display for clients on the Windows platform.</DD></DL>
+<P>
+<TT>defaultPref( &quot;browser.anchor_color&quot;, &quot;#00FF00&quot; )</TT></P>
+<DL>
+<DD>This function causes Navigator to display links in green instead of the 
+default blue (#0000FF). Users can change this setting through the Preferences 
+dialog box. </DD></DL>
+<P>
+<TT>lockPref( &quot;browser.anchor_color&quot;, &quot;#00FF00&quot; )</TT></P>
+<DL>
+<DD>This function causes Navigator to display links in green instead of the 
+default blue (#0000FF). Users can see this setting in the Preferences dialog 
+box, but can't change it.</DD></DL>
+<P>
+<TT>unlockPref( &quot;browser.anchor_color&quot; )</TT></P>
+<DL>
+<DD>This function releases the anchor color preference to user control through
+the Preferences dialog box.</DD></DL>
+<P>
+<TT>getPref( &quot;network.hosts.pop_server&quot; )</TT></P>
+<DL>
+<DD>In this case, <TT>getPref()</TT> returns the name of the current POP mail
+server. With JavaScript you could, for example, compare the returned value to
+another, and if appropriate change to a different server using the <TT>defaultPref()</TT>
+function. </DD></DL>
+<P>
+<TT>getLDAPAttributes( host, base, filter, attributes )</TT></P>
+<DL>
+<DD>This function returns the current value or values, if any, for the
+LDAP-related arguments. For example, <TT>filter</TT> might reference a variable
+assembled from <TT>&quot;mail=&quot; + getPref(&quot;mail.identity.useremail&quot;)</TT>.
+This function is available in Communicator Professional Edition only.
+</DD></DL>
+<P>
+<TT>getLDAPValue( values, attribute )</TT></P>
+<DL>
+<DD>This function returns the current value or values, if any, for the
+LDAP-related arguments. For example, <TT>attribute</TT> might reference a
+variable created by <TT>var attribute = &quot;cn,telephonenumber,manager&quot;</TT>.
+This function is available in Communicator Professional Edition only. </DD></DL>
+<P>
+<TT>VersionInfo( major, minor, release, build)</TT></P>
+<DL>
+<DD>This function creates a <TT>VersionInfo</TT> object for a component and
+sets integers for its parameters (which default to <TT>0</TT> if not set). 
+</DD></DL>
+<P>
+<TT>getVersion( component, vers )</TT></P>
+<DL>
+<DD>This function begins an unconditional download of the named component and
+returns a value of <TT>0</TT> if successful (or an error code if not
+successful). If successful, this function also places the component's version
+number into the variable <TT>vers</TT>, where it can be used by <TT>startUpdate()</TT>.
+</DD></DL>
+<P>
+<TT>startUpdate( url )</TT></P>
+<DL>
+<DD>This function begins an unconditional update from the resource at the given
+URL. </DD></DL>
+<P>
+<TT>startUpdate( url, component, vers )</TT></P>
+<DL>
+<DD>This function begins a conditional update from the resource at the given
+URL. The update occurs only if the value placed in <TT>vers</TT> using <TT>getVersion()</TT>
+is newer than that component's version value in the local Client Version
+Registry.
+</DD></DL>
+
+<H3><A NAME="Configuration_Preferences">Configuration Preferences</A></H3>
+<P>
+The items you can configure through Mission Control's Configuration Editor
+are self evident. However, you can affect these and many other Communicator
+Professional Edition preferences if you choose to directly modify the AutoConfig
+file. </P>
+
+<H4>Detailed References</H4>
+<P>
+See <A HREF="jsprefs.htm">Communicator Preferences</A> for the complete
+list of configuration and preference items. </P>
+
+<HR NOSHADE="NOSHADE" SIZE="5">
+<H2><A NAME="Command_Line_Configuration">Configuring from the Command Line</A></H2>
+<P>
+The AutoConfig feature of Communicator Professional Edition is the most
+convenient and efficient cross-platform method for uniformly controlling 
+Communicator deployments. You can also activate some of these same settings,
+ones that affect how the program opens in Windows, through command line options.</P>
+<P>
+Communicator itself uses this mechanism to make its Windows 3.1x and Windows
+ 95 icons and shortcuts activate the right components. </P>
+<P>
+To edit a command line option, open the Properties dialog of an icon or 
+shortcut (on Windows 95 also click the Shortcut tab). On the Command or Target 
+line you can add, following a blank space, an option such as <TT>-news</TT> to 
+have Communicator open with a particular component. For example, the command 
+line <TT>c:\communicator\program\netscape.exe -news</TT> would open Netscape
+Collabra. You can put multiple options on a line. </P>
+<P>
+Command line options, by nature, aren't an effective tool for large-scale
+client rollouts because installations can be modified only individually. This
+same functionality (and much more) is readily available through Mission Control.
+</P>
+
+<H4>Detailed References</H4>
+<P>
+See <A HREF="options.htm">Command Line Options</A> for a table of options 
+and parameters. </P>
+
+<HR NOSHADE="NOSHADE" SIZE="5">
+<H2><A NAME="Preconfiguring_Standard_Enterprise_Bookmarks">Deploying  Standard
+Enterprise Bookmarks</A></H2>
+
+<P>
+Your users can have a complete set of bookmarks to your intranet the first
+time they use Communicator. </P>
+
+<P>
+Navigator stores bookmarks (URL strings for web resources) in an HTML file
+named <TT>bookmark.htm</TT> or <TT>bookmark.html</TT>, located in Netscape's
+Program directory on Windows or in the Netscape folder within Preferences in the
+Mac OS System Folder. The Bookmarks menu displays these URLs by document title
+if available or by the URL string itself if a title isn't available. Navigator
+ships with a default bookmark file containing a general collection of pointers
+to useful resources on the World Wide Web. </P>
+<P>
+You can customize <TT>bookmark.htm</TT> for your enterprise. For example,
+your bookmarks could include departmental homepages or FTP directories. </P>
+
+
+<H3>Customizing Bookmarks</H3>
+<P>
+There are two ways you can customize the bookmarks file. </P>
+<P>
+The first and easiest way is to edit the file through Communicator's
+Bookmarks window. Using the Bookmarks window in conjuction with Navigator, you
+can quickly add, delete, import, and rearrange bookmarks to produce the set you
+want. When you have finished, just close the Bookmarks window and the local copy
+of the <TT>bookmark.htm</TT> file is ready. </P>
+<P>
+Because the bookmark file is an HTML file, you can also edit it with an
+ordinary text editor. This may be handy if you want to quickly change some
+bookmark names or descriptions or do search-and-replace. Otherwise, you'll find
+the Bookmarks window easier to use. Note that HTML editor applications probably
+aren't useful for editing this file because they can introduce unnecessary HTML
+coding, or they fail to recognize the structure needed for bookmarks and
+erroneously &quot;complain&quot; that the file is somehow incorrect. </P>
+
+<H3>Deploying Bookmarks</H3>
+<P>
+Once you've tailored your enterprise bookmarks file, you deploy it as part
+of the standard installation by including the file in the master file set you
+create with Install Builder. See Install Builder's documentation for more
+information about including customized files. </P>
+<P>
+Note that the content of <TT>bookmark.htm</TT> remains flexible. Users will
+be able to add and delete bookmarks after you've deployed Communicator. You can
+deploy the equivalent of &quot;fixed&quot; bookmarks by customizing the commands
+on Communicator's Help menu or the Guide button on the personal toolbar using
+the Configuration Editor. </P>
+<P>
+There is one exception to the above description. Ordinarily there is one
+bookmark file for each Communicator installation. However, on multi-user
+installations (where one copy serves more than one person, as commonly happens
+with Communicator Personal Edition) there can be a <TT>bookmark.htm</TT> file
+for each user. These per-profile bookmark files are located in directories
+reserved for each user profile. </P>
+
+<HR NOSHADE="NOSHADE" SIZE="5">
+<P>
+</P>
+<P ALIGN="CENTER"><FONT SIZE="-1">970702.1149</FONT></P></BODY></HTML>

@@ -1,0 +1,31 @@
+---
+period: "2006"
+customer: Ministerie Vlaamse Gemeenschap (ACA-IT)
+role: Technical project manager
+title: Windows Groups Identity Management
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/mvg.jpg" class="left"></div>
+		<div class="span-18 last">
+* In order to manage the access control of printers and fileshares, a webbased  solution was developed. This solution provided the necessary workflow in order to match the business processes as close as possible.
+
+* The integration was based upon a web-services based front-end for the windows management system. This allowed to bridge the Unix based Identity solution and the Active Directory Management.
+
+* Details Use Cases were used to describe the functionality. These use cases were divided into different sets and using iterative development techniques, a working product was delivered every iteration.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+active directory, sun identity management, soap, j2ee, 
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+
+_Project manager_
+* Coaching the development team and translating the customer demands into technical tasks.
+</div>
+
+
+

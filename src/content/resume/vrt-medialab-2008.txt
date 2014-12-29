@@ -1,0 +1,55 @@
+---
+period: "2008 - 2009"
+customer: VRT Medialab
+role: Technical Consultant
+title: Research on Multimedia Search
+job: true
+layout: job
+technology: 
+   - ruby, rails, solr, lucene, java, virtualbox, ardome, jquery, flash, typography, quicktime, jwplayer, jquery-ui, timeline, webby, red5, flash, centos, ffmpeg, passenger, maven2, corbetura, puppet, cobbler,
+   - xmlrpc, rabbitmq, amqp
+roles: developer, architect
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/medialab.jpeg" class="left"></div>
+		<div class="span-18 last">
+In the past two year the VRT has been feeding a new media archive system with all the new content it is producing. The purpose of this project is to make this data more "searchable". Combining this new data with the old archive data, new ways of exploring are tested. F.i. faceted searches, timeline, coverflow and so on. 
+
+Aside from the content that is handcoded, new ways of extracting metadata like face detection, audio detection are explored to feed even more information into the system
+* Exploring new User interfaces for faster retrieval of video items
+* Wikipedia as collaborative thesaurus effort instead of VRT thesaurus
+* Creation of a Media Asset Management System (MAM) for storing video content
+* Large File Upload, Transfer and Storage management
+* Collaborative Moodboard,/ideaboard for micro-commissioning new movie Projects(IFIP project)
+* Integrate drupal with rails application using REST API
+* Publish corporate video and metadata to the public and mining of descriptions (Memento Project)
+		</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+ruby, rails, solr, lucene, java, virtualbox, ardome, jquery, flash, typography, quicktime, jwplayer, jquery-ui, timeline, webby, red5, flash, centos, ffmpeg, passenger, maven2, corbetura, puppet, cobbler, xmlrpc, rabbitmq, amqp, objective-j , objective-c, vmware, drupal, memcached, xen, squid proxy
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Developer_
+
+* As a product expert on Search technology, explore new ways of presenting and querying the data and metadata
+* develop proof of concepts of new ideas (Java/Ruby/Rails)
+* Integration with Natural Language algorithms and Vector Machines 
+* Media Process Integration with XMLRPC, Soap , JMS and AMQP systems
+* Frontend Development using Jquery and Ruby on Rails in combination with Drupal
+* Development of RIA in Objective-J
+
+_Sysadmin_
+* Setup an automated test environment on vmware
+* Manage vmware virtual machine environment
+
+_Tester_
+* Setup of Continuous Integration environment
+
+_Architect_
+* Architecting an integration platform
+* Designing the overall project technical architecture
+	</div>
+</div>

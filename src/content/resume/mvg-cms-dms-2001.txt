@@ -1,0 +1,38 @@
+---
+period: "2001 - 2002"
+customer: Ministerie Vlaamse Gemeenschap (SBS)
+role: System Architect/Technical Project Manager
+title: webtrends - dms cms
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/sbs.gif" class="left"></div>
+		<div class="span-18 last">
+* Building upon the success of their first Internet Portal, the infrastructure was extended with a complete Content Management System (OpenMarket/Fatwire). This allowed a better workflow to publish information on the internet from within the organization.  This CMS system was further integrated with the concept of Document Management system (based upon a shared environment of Documentum) .
+
+* The search engine system was migrated from Iplanet Compass Server to Autonomy Indexing Services. This mainly because the existing content was too large to categorize manually. Still a taxonomy based application was developed allowing the categorization of content in a demand-centered approach.
+
+* The existing intranet and internet applications were converted to the new Application server standard (J2EE Iplanet Application Server/Tomcat). 
+
+* Increasingly, data sources from outside the Vlaamse Gemeenschap were integrated using Webservices and Message Queuing (Iplanet Message Queuing).  Based upon this environment new applications were developed, tested and installed: Opleidingcheques, AdviesCheques (integration with Sodexho), E-Taxes integration.
+
+* All traffic logs were centralized (Webtrends) to monitor the usage of the different websites. This allowed further enhancements of the content that the public was interested in.
+
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+webtrends, compass server, search engine, tomcat, soap, documentum</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+* Design search, CMS and DMS infrastructure
+* Design migration towards J2EE infrastructure
+* Design extranet services integration
+* Design new application integration platform
+
+_Project Management_
+* Create Project plan and resource estimation
+* Technical follow-up of projects.
+</div>

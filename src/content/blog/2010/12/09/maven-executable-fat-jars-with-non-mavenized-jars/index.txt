@@ -1,0 +1,112 @@
+--- 
+title:    Maven - Executable Fat Jars With Non Mavenized Jars
+created_at: 2010-12-09 14:30:06.126087 +01:00
+tags: 
+- maven
+- jars
+- executable
+- external jars
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+
+[Maven](http://maven.apache.org/), the final frontier... This is one of these beasts that can really give you some fun time: some would say, it's merely a build tool. But sometimes the complexity and syntax and dependencies makes me think this is like a profession apart.
+
+I'm writing this blogpost for my own documentation purposes but it might prove you useful.
+
+The task I was facing was to: 
+
+1. include jars that didn't have maven version i.e. could not simply be added by adding a maven dependency
+2. build a fat jar that includes all the jars it needs instead of only itself
+3. make the jar file executable
+
+#### Non-maven jars in your project
+I got most information from [Can I add jars to maven 2 build classpath without installing them?](http://stackoverflow.com/questions/364114/can-i-add-jars-to-maven-2-build-classpath-without-installing-them
+)
+
+The trick seems to be to create a directory inside your java project that can act as a maven repo that you can refer to based upon the project ${basedir} variable.
+
+<% codify(:shell) do %>
+$ cd my-project
+$ mkdir my-repo
+$ mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file -Dfile=/Users/patrick/cooljar.jar -DgroupId=be.jedi -DartifactId=cooljar -Dversion=1.5.1 -Dpackaging=jar -DlocalRepositoryPath=`pwd`/my-repo
+<% end %>
+
+Now you can add this part to your maven pom file: 
+<% codify(:xml) do %>
+<dependency>
+    <groupId>be.jedi</groupId>
+    <artifactId>cooljar</artifactId>
+    <version>1.5.1</version>
+	<scope>compile</scope>
+    </dependency>
+ <repositories>
+  <repository>
+    <id>my-local-repo</id>
+    <url>file://${basedir}/my-repo</url>
+  </repository>
+</repositories>
+<% end %>
+
+Also have a look at [A maven friendly pattern for storing dependencies in version control](http://brettporter.wordpress.com/2009/06/10/a-maven-friendly-pattern-for-storing-dependencies-in-version-control/) for an alternative.
+
+#### Building a fat jar & make it executable
+The document I used to figure out this combination where: 
+
+- For the fat jar use the [Maven Assembly Plugin](http://maven.apache.org/plugins/maven-assembly-plugin/usage.html)
+- For the executable part use the [Maven Archiver](http://maven.apache.org/shared/maven-archiver/examples/classpath.html)
+
+I struggled with the combination of the two and finally found the answer in this [Stack Overflow post on the exact problem I had](http://stackoverflow.com/questions/1814526/problem-building-executable-jar-with-maven)
+
+It seems that depending on the versions of the archiver and Assembly plugin you have to move things around in the maven config file. And if you're on jdk 1.6 you need extra options. The following worked for me:
+
+<% codify(:xml) do %>
+    <build>
+    <plugins>
+      <plugin>
+        <!-- NOTE: We don't need a groupId specification because the group is
+             org.apache.maven.plugins ...which is assumed by default.
+         -->
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.2-beta-4</version>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+			  <archive>
+				<manifest>
+				     <addClasspath>true</addClasspath>
+ 				     <mainClass>be.jedi.jvncsender.VncSenderMain</mainClass>
+ 			   </manifest>
+			  </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- append to the packaging phase. -->
+            <goals>
+              <goal>single</goal> <!-- goals == mojos -->
+            </goals>
+          </execution>
+        </executions>
+       </plugin>
+        <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+         <version>2.2</version>
+        </plugin>
+                <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>1.6</source>
+              <target>1.6</target>
+            </configuration>
+          </plugin>    
+      </plugins>
+      </build>
+</project>
+<% end %>
+

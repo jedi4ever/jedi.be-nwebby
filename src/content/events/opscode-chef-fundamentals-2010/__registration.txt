@@ -1,0 +1,27 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Fundamentals Training - Registration
+tags: 
+- opscode
+- chef
+- infrastructure as code
+- configuration management
+- devops
+- course
+- training
+---
+### Sorry registration is closed. 
+
+We reached the maximum of people for this course. 
+
+We are looking into having a new one soon, if there is enough interest.
+
+[Drop me a mail](mailto:patrick.debois@jedi.be?subject=chef-training-waiting-list) to put yourself on the waitinglist or be informed of a new one.
+
+Thanks for your understanding.
+
+<hr>

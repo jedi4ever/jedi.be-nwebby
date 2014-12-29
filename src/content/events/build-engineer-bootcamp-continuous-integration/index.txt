@@ -1,0 +1,36 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Build Engineer Bootcamp - Europe 2010
+period: "2/11/2010 - 3/11/2010"
+short: "Build Engineer Bootcamp - Europe 2010: A two day intensive training course designed to get build engineers off to a good start by the leading continuous integration expert - Paul Julius"
+tags: 
+- continuous integration
+- build engineer
+- build
+- continuous delivery
+- citcon
+- hudson
+- course
+- training
+event: true
+---
+<table><tr><td><a href="http://pauljulius.com"><img src='<%= @page.url+"PaulJulius.jpg" %>'></a></td>
+<td>
+A two day intensive training course designed to get build engineers off to a good start. The course covers all the fundamentals required to maintain and enhance a solid continuous integration infrastructure. These include, but are not limited to, build tools like Ant and Maven, automated testing platforms like jUnit and Fitnesse, and continuous integration tools like CruiseControl and Hudson. All this is wrapped in a solid basis in the fundamental principles of CI – repeatable, independent, and portable. </td></tr></table>
+Check out the [detailed course description](program.html)
+
+
+### Date: 2 and 3 November 2010 in <a href="location.html">Gent, Belgium @ Tomtom/Teleatlas</a></b>
+
+<p><em>This is a limited and unique offer</em>:</p><p>As <a href="trainer.html">Paul Julius</a> is coming over for the <a href="http://citconf.com/london2010/">Citcon 2010 London Conference</a>, we have managed to convince him to teach this course for all you Continuous Integration lovers!</p>
+
+<ul>
+<li>Early Bird: <b>€ 840</b> (excl. Taxes/VAT) - Valid Until 15 October 2010</li>
+<li>Regular Fee: <b>€ 940</b> (excl. Taxes/VAT)</li>
+</ul>
+
+Don't wait too long to [register](registration.html) as places are limited!

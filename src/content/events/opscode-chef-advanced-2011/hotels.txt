@@ -1,0 +1,21 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Advanced Training - Hotels
+tags: 
+- opscode
+- chef
+- infrastructure as code
+- configuration management
+- devops
+- course
+- training
+---
+We've heard good things about the [Hancelot Hotel](http://www.hancelot.be/indexeng.shtml) .  
+
+But depending on your budget and interests you can choose whatever you like:
+
+<iframe width="600" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="http://maps.google.be/maps/ms?ie=UTF8&amp;hl=nl&amp;source=embed&amp;msa=0&amp;msid=216291915283056351682.000483f5ccfad5cfc38c1&amp;ll=51.047168,3.730202&amp;spn=0.032376,0.051584&amp;z=14&amp;output=embed"></iframe><br /><small><a href="http://maps.google.be/maps/ms?ie=UTF8&amp;hl=nl&amp;source=embed&amp;msa=0&amp;msid=216291915283056351682.000483f5ccfad5cfc38c1&amp;ll=51.047168,3.730202&amp;spn=0.032376,0.051584&amp;z=14" style="color:#0000FF;text-align:left">Chef Training Gent</a> weergeven op een grotere kaart</small>

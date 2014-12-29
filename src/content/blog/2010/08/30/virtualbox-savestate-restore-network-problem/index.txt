@@ -1,0 +1,32 @@
+--- 
+title:      Virtualbox Savestate Restore Network Problems
+created_at: 2010-08-30 21:04:27.484298 +02:00
+tags: 
+- virtualbox
+- NAT
+- savestate
+- restore
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+### Virtualbox Savestate and restore does not restore the network
+I make extensive use of Virtualbox to test my installations. When I automate the installation , I use the savestate and restore to rollback changes I do to the virtual machine. Recently the network of the virtual machine would not be accessible anymore after the restore. A network ping from both inside or outside the virtualmachine fails. Several tickets have been created for it, and the bug seems to pop up every new update or so [Fixed in 25205](http://www.virtualbox.org/changeset/25205) , [re-introduced in Ticket 5666](http://www.virtualbox.org/ticket/5666), [Ticket 5654](http://www.virtualbox.org/ticket/5654) . 
+
+The first work-around I found was: 
+
+On a linux machine restart the network stack with  a */etc/init.d/network restart* . But that is not very portable, and it's hard to automate because the network is gone. 
+
+A more generic work-around is to temporary disable the network link: 
+
+<% codify(:lang => "shell") do %>
+$ VBoxManage controlvm <yourvmname> setlinkstate1 off
+$ VBoxManage controlvm <yourvmname> setlinkstate1 on
+$ sleep 2
+
+<% end %>
+
+### NAT: re-establish port-forwarding after savestate / restore state
+Another quite annoying bug is that virtualbox sometimes looses it's NAT mappings [Ticket 25402](http://www.virtualbox.org/changeset/25402)
+There is no other way then re-executing the NAT mapping. 

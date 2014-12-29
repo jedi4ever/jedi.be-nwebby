@@ -1,0 +1,25 @@
+---
+title: "Disk full and Wordpress asks to run install.php again"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/10/15/disk-full-and-wordpress-asks-to-run-installphp-again/
+created_at: 2008-10-15 09:12:56.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - wordpress
+---
+This night, our disk was full and I had to restart the apache and mysql server. My blog greeted me with an Wordpress error message: It asked me to re-run the install.php thinking it was not yet installed.
+<br>
+I found that my database was corrupt and tried to make a dump to repair:
+<br>
+$ mysqldump mysite_blog -u myuser -p
+<br>
+And after a while it gave up with:
+<pre>mysqldump: Can't get CREATE TABLE for table `wp_options` (Can't open file: 'wp_options.MYD'. (errno: 145))</pre>
+I found the solution at <a href="http://support.discusware.com/center/resources/errors/mysql145.html">http://support.discusware.com/center/resources/errors/mysql145.html</a>
+<pre>$ mysql -u myuser -p mysite_blogmysql> REPAIR TABLE wp_options;</pre>
+That did the trick! We're back in business...

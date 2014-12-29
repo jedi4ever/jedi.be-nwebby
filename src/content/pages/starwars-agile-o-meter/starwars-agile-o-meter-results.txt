@@ -1,0 +1,62 @@
+you=+2|customer=-3|sales=-3|management=-3|develop=+1|IT=-3|testers=-3|support=-3|finance=-3|legal=-3|visitorID=+0.6172276576980948
+you=+2|customer=+1|sales=-2|management=-2|develop=+2|IT=-3|testers=+2|support=-1|finance=-3|legal=-3|visitorID=+0.30789412924381443
+you=+2|customer=-2|sales=+0|management=-2|develop=+1|IT=+2|testers=+2|support=-1|finance=-1|legal=-1|visitorID=+0.6705700226593763
+you=+2|customer=+2|sales=  |management=+1|develop=-1|IT=-3|testers=  |support=-3|finance=  |legal=  |visitorID=+0.9140370037129694
+you=+3|customer=-3|sales=-2|management=+2|develop=+3|IT=-3|testers=+3|support=-1|finance=-3|legal=-3|visitorID=+0.30980389300103245
+you=+3|customer=+1|sales=-2|management=+1|develop=+2|IT=-1|testers=+2|support=-1|finance=-1|legal=-1|visitorID=+0.633053126181623
+you=+2|customer=+1|sales=  |management=+2|develop=+2|IT=  |testers=+2|support=+0|finance=  |legal=  |visitorID=+0.3578359118496867
+you=+3|customer=+2|sales=+2|management=+2|develop=+2|IT=+1|testers=+2|support=+1|finance=-1|legal=-1|visitorID=+0.512337915814518
+you=+1|customer=-3|sales=-3|management=-3|develop=-3|IT=-3|testers=-1|support=-3|finance=-3|legal=-3|visitorID=+0.9989276426022309
+you=+3|customer=+2|sales=-3|management=+3|develop=+3|IT=-3|testers=+3|support=-3|finance=-3|legal=-3|visitorID=+0.9273578576535858
+you=+2|customer=+1|sales=-1|management=+1|develop=+2|IT=-1|testers=+2|support=+1|finance=+1|legal=+2|visitorID=+0.46069949429518525
+you=+3|customer=-1|sales=-3|management=-2|develop=+2|IT=+1|testers=+2|support=+1|finance=-3|legal=  |visitorID=+0.17038060124534893
+you=+2|customer=-3|sales=-3|management=-3|develop=+1|IT=-1|testers=-1|support=-1|finance=-3|legal=-3|visitorID=+0.9181043058633804
+you=+3|customer=+1|sales=-1|management=-3|develop=+2|IT=-2|testers=-2|support=-3|finance=-3|legal=-3|visitorID=+0.2752538303929848
+you=+2|customer=-1|sales=-1|management=+1|develop=+0|IT=-1|testers=+0|support=-3|finance=-1|legal=-1|visitorID=+0.1697154605711942
+you=+2|customer=+1|sales=+1|management=+1|develop=+2|IT=-1|testers=+1|support=+3|finance=-1|legal=-1|visitorID=+0.4192515296534473
+you=+3|customer=+2|sales=+2|management=+0|develop=+3|IT=+1|testers=+3|support=+2|finance=+1|legal=+1|visitorID=+0.8885016959212059
+you=+2|customer=-1|sales=-1|management=+2|develop=+2|IT=+2|testers=+2|support=-1|finance=-1|legal=-1|visitorID=+0.038217381173452414
+you=+3|customer=+2|sales=-2|management=+1|develop=+3|IT=-2|testers=+3|support=-1|finance=-1|legal=-1|visitorID=+0.21816062788520613
+you=+3|customer=+1|sales=-1|management=+1|develop=+2|IT=-1|testers=+1|support=-1|finance=-1|legal=-1|visitorID=+0.9246660254944749
+you=+1|customer=-3|sales=-3|management=-3|develop=-1|IT=-1|testers=-1|support=-1|finance=-3|legal=-3|visitorID=+0.3404561152892067
+you=+0|customer=+1|sales=-1|management=+0|develop=+2|IT=+0|testers=+2|support=+1|finance=+0|legal=  |visitorID=+0.7944821299723557
+you=+3|customer=-3|sales=-2|management=-2|develop=+1|IT=-3|testers=-3|support=-3|finance=-1|legal=-1|visitorID=+0.5387680408498393
+you=+3|customer=-2|sales=+1|management=+2|develop=+0|IT=+0|testers=+0|support=+1|finance=-1|legal=-1|visitorID=+0.27130868910605377
+you=+3|customer=+1|sales=-1|management=+2|develop=+2|IT=-1|testers=+2|support=-1|finance=  |legal=  |visitorID=+0.48029962842090346
+you=+2|customer=+1|sales=+1|management=+2|develop=+2|IT=-1|testers=-3|support=-1|finance=-3|legal=-3|visitorID=+0.17950647729991653
+you=+1|customer=-3|sales=-1|management=-1|develop=+3|IT=+1|testers=+3|support=-2|finance=-3|legal=-3|visitorID=+0.44425142899129855
+you=+3|customer=+1|sales=+1|management=-1|develop=+2|IT=-3|testers=+2|support=-3|finance=-3|legal=-3|visitorID=+0.37483614613124006
+you=-1|customer=-2|sales=-2|management=-3|develop=+1|IT=-3|testers=-3|support=-3|finance=-3|legal=-3|visitorID=+0.9916048501618207
+you=+3|customer=+2|sales=+3|management=+3|develop=+3|IT=+2|testers=+3|support=+3|finance=+3|legal=+3|visitorID=+0.7949316834089481
+you=+3|customer=-3|sales=-3|management=-3|develop=+2|IT=-3|testers=-3|support=-3|finance=-3|legal=-3|visitorID=+0.9439974434559991
+you=+3|customer=+1|sales=-2|management=-2|develop=+3|IT=-2|testers=+1|support=-1|finance=-1|legal=-1|visitorID=+0.4729722058714084
+you=+3|customer=+1|sales=-2|management=+2|develop=+2|IT=-3|testers=-1|support=-3|finance=-2|legal=-2|visitorID=+0.07729571284409698
+you=+3|customer=-2|sales=-2|management=+1|develop=+2|IT=-1|testers=+2|support=-1|finance=-3|legal=-3|visitorID=+0.7248680633158394
+you=+1|customer=-2|sales=-1|management=-3|develop=+2|IT=+1|testers=-1|support=+1|finance=-3|legal=-3|visitorID=+0.14889995709065484
+you=+3|customer=  |sales=  |management=  |develop=  |IT=  |testers=  |support=  |finance=  |legal=  |visitorID=+0.7529310426089519
+you=+2|customer=+2|sales=-3|management=-2|develop=+2|IT=-3|testers=-3|support=+2|finance=-3|legal=-3|visitorID=+0.1227786313623459
+you=+2|customer=+2|sales=-3|management=-3|develop=+2|IT=-1|testers=-1|support=-1|finance=-3|legal=-3|visitorID=+0.5247474759997524
+you=+2|customer=+1|sales=-1|management=-2|develop=-1|IT=-3|testers=-1|support=-1|finance=-1|legal=-1|visitorID=+0.9460354459893753
+you=+2|customer=+1|sales=-2|management=-3|develop=+2|IT=-1|testers=-1|support=-1|finance=-3|legal=-3|visitorID=+0.14069305590239778
+you=+3|customer=-2|sales=-1|management=-2|develop=+2|IT=+1|testers=  |support=-1|finance=-1|legal=-1|visitorID=+0.864911095435742
+you=+2|customer=+0|sales=-3|management=-3|develop=+2|IT=+2|testers=+2|support=  |finance=  |legal=  |visitorID=+0.496229791085339
+you=+2|customer=-2|sales=-1|management=+2|develop=+2|IT=+2|testers=+2|support=-3|finance=-3|legal=-1|visitorID=+0.7935179746667431
+you=+1|customer=+2|sales=-2|management=-3|develop=+2|IT=-3|testers=-3|support=-2|finance=-3|legal=-3|visitorID=+0.19623372895983
+you=+3|customer=+2|sales=-1|management=+1|develop=+3|IT=+1|testers=+2|support=+1|finance=-3|legal=-3|visitorID=+0.4336467699889741
+you=+2|customer=-3|sales=  |management=+1|develop=-1|IT=-1|testers=-3|support=+2|finance=+0|legal=+2|visitorID=+0.659720159505616
+you=+0|customer=-3|sales=-3|management=+1|develop=-1|IT=-1|testers=-2|support=+2|finance=+0|legal=+2|visitorID=+0.659720159505616
+you=+0|customer=+0|sales=+0|management=+0|develop=+0|IT=+0|testers=+0|support=  |finance=  |legal=  |visitorID=+0.4581267438099078
+you=+2|customer=+1|sales=+1|management=+1|develop=+2|IT=-3|testers=+2|support=+2|finance=-3|legal=-3|visitorID=+0.09289600972212919
+you=+2|customer=-1|sales=-3|management=-3|develop=-3|IT=-1|testers=+2|support=-1|finance=-1|legal=-1|visitorID=+0.6213069909161543
+you=+2|customer=-2|sales=-1|management=-2|develop=+3|IT=+1|testers=+1|support=-1|finance=-1|legal=-1|visitorID=+0.10040108961376815
+you=+0|customer=+0|sales=+0|management=+0|develop=+0|IT=  |testers=  |support=  |finance=  |legal=  |visitorID=+0.03479251180664922
+you=+2|customer=-1|sales=-3|management=+1|develop=+2|IT=+1|testers=-3|support=-2|finance=-3|legal=-3|visitorID=+0.871750415939323
+you=+2|customer=-1|sales=+1|management=+2|develop=+2|IT=-3|testers=+2|support=+1|finance=-3|legal=-3|visitorID=+0.6594215883174703
+you=+3|customer=-3|sales=-3|management=-2|develop=+1|IT=-1|testers=+2|support=-1|finance=-2|legal=-3|visitorID=+0.3683661754383245
+you=+2|customer=-2|sales=-1|management=-1|develop=+1|IT=-1|testers=+1|support=-1|finance=-1|legal=-1|visitorID=+0.9145391639216364
+you=+3|customer=+2|sales=-1|management=-2|develop=+1|IT=-1|testers=-1|support=-1|finance=-3|legal=-3|visitorID=+0.57393044635846
+you=+1|customer=-3|sales=  |management=  |develop=  |IT=+1|testers=-1|support=+1|finance=-3|legal=  |visitorID=+0.6900352192482803
+you=+3|customer=-2|sales=+3|management=+2|develop=+3|IT=+3|testers=+3|support=+2|finance=-1|legal=-1|visitorID=+0.6451733773574233
+you=+2|customer=+1|sales=-1|management=+1|develop=+2|IT=-1|testers=-3|support=-3|finance=-3|legal=-3|visitorID=+0.6112650382857169
+you=+3|customer=-1|sales=-1|management=-2|develop=+2|IT=-1|testers=+3|support=-1|finance=-1|legal=-1|visitorID=+0.1971358330665115
+you=+2|customer=-3|sales=-1|management=-2|develop=+2|IT=-1|testers=-1|support=-1|finance=-1|legal=-1|visitorID=+0.3150017604158264

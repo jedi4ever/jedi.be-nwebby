@@ -1,0 +1,19 @@
+---
+title: "A few cases of (Tunnel) Piercings for firewalls for SSH access"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/11/07/a-few-cases-of-tunnel-piercings-for-firewalls-for-ssh-access/
+created_at: 2008-11-07 14:59:04.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - ntlmaps
+   - firewallpiercing
+   - ssh
+   - corkscrew
+   - httptunnel
+---
+As consultant I go around in multiple companies. In order to get access to all of my resources and testing systems, I have to be able to reach outside their corporate LAN with shell (SSH) access.<br /><br /><i>Case 1: Customer allows all access outside<br /></i>Ok this one, is each, just SSH outside and this works.<br /><br /><i>Case 2: Port 22 is blocked, only HTTP and HTTP/S is allowed (No Proxy)<br /></i>If no proxy is used, I have a server running an SSH server on port 443 (HTTP/S), using the listen command in the SSH server config.<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProxyCommand /usr/bin/corkscrew proxy-ip 8080 %h %p ~/.ssh/myauth<br />&nbsp;<br /><i>Case 3: only HTTP and HTTP/S with corporate Basic Authentication HTTP proxy&nbsp;<br /></i> I use <a href="http://www.agroman.net/corkscrew/">corkscrew</a> as a proxycommand in my sshconfig and configure it to use the proxy to reach outside. This relies on the 'CONNECT' command to be allowed. I once had this site filtered by a filtering proxy, but there enough mirror sites available. Or if you are a windows man, Putty has this functionality built in. <br /><br /><a href="See%20http://daniel.haxx.se/docs/sshproxy.html%20">See also: <a href="http://daniel.haxx.se/docs/sshproxy.html">http://daniel.haxx.se/docs/sshproxy.html</a><br /></a><br /><br /><i>Case 4: only HTTP and HTTP/S with NTLM or ISA based proxy Server<br /></i>I run the tool <a href="http://ntlmaps.sourceforge.net/">ntlmMaps</a> and run a local proxy, and then configure my corkscrew to use this local proxy for connecting outside.<br /><br /><i>Case 5: CONNECT command is denied in proxy, plain HTTP only<br /></i>Install htc on my client and hts on the server (<a href="www.nocrew.org/software/httptunnel.html">httptunnel</a>) to convert the SSH traffic into http native protocal so that it goes by the proxy.<br /><br />Case 6: HTTP access only available on port 80 and my websites run on port 80. <br />Install a proxy (squid) locally or use the apache mod_proxy module. Then you can use this as your proxy similar to case 3. Be cautious on using a proxy on your apache , because they might access more then you want.<br /><br />You see it's hard to stop me. Off course a policy would discourge me, but this only happened with one customer.&nbsp; I also wonder, how can you stop this as an administrator, http/s is hard to see. Off course you could block some sites but disable access to all http/s sites is impossible.<br />Decrypting the tunnel would trigger suspicion. Maybe based on the number of connects you can disable stations using the tunnel.<br /><br />

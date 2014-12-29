@@ -1,0 +1,23 @@
+---
+title: "Windows Update from behind a web proxy"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2006/06/15/windows-update-from-behind-a-web-proxy/
+created_at: 2006-06-15 09:24:26.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+---
+<p>Problems arise with Windows update when running windows from behind a web proxy.
+It seems that the internet explorer settings are not taken by the windows update program.
+</p><p>
+The reason is that it does not work with automatic proxy configuration. So if you try to find your proxy itself and configure it manually in IE. Then you can run the command proxycfg -u to set the settings correctly.
+<ul>
+	<li><a href="http://www.heise.de/ct/faq/hotline/04/21/05.shtml">http://www.heise.de/ct/faq/hotline/04/21/05.shtml</a> describes the usage of proxycfg -u under windows to set it.</li>
+	<li><a href="http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winhttp/http/proxycfg_exe__a_proxy_configuration_tool.asp">http://msdn.microsoft.com/library/default.asp?url=/library/en-us/winhttp/http/proxycfg_exe__a_proxy_configuration_tool.asp</a></li>
+	<li><a href="http://support.microsoft.com/kb/900935/">How the Windows Update client determines which proxy server to use to connect to the Windows Update Web site</a>
+	</li>
+</ul>
+</p>

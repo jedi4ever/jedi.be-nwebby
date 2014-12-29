@@ -1,0 +1,46 @@
+--- 
+title:      Devopsdays09 - Two Weeks Later
+author: Patrick Debois
+created_at: 2009-11-15 17:24:43.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - markdown
+  - basepath
+categories:
+   - devopsdays
+tags:
+   - devopsdays
+   - devops
+   - agile system administration
+   - agile sysadmin
+   - monthy python
+---
+<img class="left" src="/blog/wp-content/uploads/2009/11/devopsdays-09-logo.png">
+I had real fun organizing <a href="http://www.devopsdays.org/">Devopsdays 09</a>. There was such a warm family feeling, it felt great hanging out with all these like minded people. Impressive to see so many brilliant minds together in one room. Have a look at the [presentations](http://www.devopsdays.org/ghent09/programme) and see the [buzz](http://www.devopsdays.org/ghent09/buzz) it created.
+ 
+I'll be honest, for the past few years, when I went to some of the Agile conferences, it felt like preaching in the dessert. I was kinda giving up, maybe the idea was too crazy: developers and ops working together.
+
+But now, oh boy, the fire is really spreading: 
+
+- there are discussions starting both on the [puppet](http://groups.google.com/group/puppet-users) and [agile administration](http://groups.google.com/group/agile-system-administration) mailinglists.
+- on the [lrug conference](http://lrug.org/) some devopsdays attendees made a fantastic extension to it.
+- and in their tweets, I see people having a look at how agile can help them
+
+That's all really valuable, because there still is a lot to discuss. As [Bart](http://bart.vanbrabant.eu/2009/10/31/devops/) and [Dan](http://www.agileweboperations.com/devopsdays-2009/) both mentioned in their reports, we are still in a very alpha state:
+
+- we need to build up more detailed descriptions of our ideas
+- more examples so that enterprises can also pick up
+- try to translate all this in windows oriented environments
+- actively try to involve more developers into this line of thinking
+
+The conference really inspired me to continue to promote these ideas and some actions are bound happen:
+ 
+- there is a devopsdays USA coming up (probably around end of april 2010)
+- devops.info is coming , a site where we gather all related material
+- put up a wiki on this. We already got a [Confluence](http://www.atlassian.com/software/confluence/) community license with the support of [Atlassian](http://www.atlassian.com)!
+- start on a book on it (anyone want to help?)
+- startup a kind of alliance, to support new initiatives 
+
+And remember it's all about putting the fun back into IT!
+<center><object width="425" height="344"><param name="movie" value="http://www.youtube.com/v/EOveXZhJpr4&hl=en_US&fs=1&"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/EOveXZhJpr4&hl=en_US&fs=1&" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="344"></embed></object></center>

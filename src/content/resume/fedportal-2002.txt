@@ -1,0 +1,39 @@
+---
+job: true
+period: "2002"
+customer: Federal Government (Siemens Business Services)
+role: System Architect
+title: RFP Federal Portal
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/siemens.jpeg" class="left"></div>
+		<div class="span-18 last">
+* The federal government decided to do a request for proposal for their Internet Portal project. Given the experience of Siemens Business Services within large government infrastructure, they proposed to the request.
+* In the solution proposed, all major parts of a corporate web solution were included: web and application servers (IPlanet), Database (Oracle).  To feed these application, a document and content management based upon Documentum was proposed.
+* As the base system, Unix Sun Solaris systems were proposed. All redundancy was taken into account using clustering and loadbalancing mechanisms (Nortel).  
+* Networking and security was envisioned with Checkpoint Firewall and Cisco material. Internet connectivity was achieved via redundant BGP4 internet routing.
+* The proposal was not selected by Fedict but was said to have the best technical solution of all proposals.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+oracle, nortel, cisco, checkpoint, solaris, iplanet, documentum</div>
+	<div class="span-11 last">
+*Tasks:*
+_Architect_
+
+* Design of the technical solution proposed
+* SLA definition 
+
+_Project Management_
+* Technical coordinator for the proposal between Telindus, Accenture, Porthus and Siemens Business Services
+* Responsible for bill of material and price control on infrastructure.
+</div>
+
+
+
+
+
+
+

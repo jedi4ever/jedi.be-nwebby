@@ -1,0 +1,35 @@
+---
+period: "2007 - 2008"
+customer: "Eurocontrol (Sun Microsystems)"
+role: Technical Consultant
+title: Intranet Portal proof of Concept
+layout: job
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/eurocontrol.jpeg" class="left"></div>
+		<div class="span-18 last">
+* Version 7.x of the Sun ONE Portal includes several collaboration tools like wiki's, forums and chat. The purpose of this proof of concept was the integration of these new tools within the existing Eurocontrol environment. 
+
+* The integration between a web based portal environment and a thin client environment based upon Sun Secure Global Desktop (Tarantella) was established using portlet and netlet technology. 
+		</div>
+	</div>
+	<div class="span-9 first append-2 border">
+*Technology:*
+Tarantella, Sun Global Desktop, Solaris, Cisco Loadbalancers, portlet, java, citrix
+	</div>
+	<div class="span-11 last">
+*Tasks:*
+_Sysadmin_
+
+* As a product expert, install necessary components (portal, application server, tarantella)
+
+_Developer_
+* Customize default portal application using portlet standards
+
+_Architect_
+* Prepare the roadmap for rollout
+* Prepare the showcase for the business user
+	</div>
+</div>

@@ -1,0 +1,148 @@
+--- 
+title:      VMWare Fusion - Scripted Installation
+created_at: 2010-12-09 15:04:09.958168 +01:00
+tags: 
+- vmware fusion
+- vmware
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+This probably falls in the category of useless automation for a lot of people. In my never ending search for automation , I wondered how far vmware fusion could be automated.
+
+#### Prepare VMWare fusion
+The first step is to download the Vmware Fusion disk image. Because this requires registration, this can't be automated: 
+
+You can download vmware fusion from the [vmware website URL](https://www.vmware.com/tryvmware/?p=vmware-fusion31&lp=1)
+
+This will propose you two options:
+ 
+- Option1 : Download including VMware Fusion and a 12 month complimentary subscription to McAfee VirusScan Plus 2009 (Recommended)	  434 MB
+- Option2 : Download including only VMware Fusion software	  151 MB	 
+
+I suggest downloading the Option1 , as it includes the OVF Tools which I find handy for importing ovf format virtual machines
+
+New machines are created in :
+$HOME/Documents/Virtual Machines.localized
+
+#### Running the installation by commandline
+<% codify(:shell) do %>
+# Point to the downloaded version
+VMFUSION_DMG="$HOME/SavedDownloads/VMware-Fusion-3.1.1-282344.dmg"
+# Mount the disk image
+VMFUSION_MOUNT_POINT=$( hdiutil mount $VMFUSION_DMG -nobrowse |tail -1|cut -d ' ' -f 2-|cut -d '/' -f 2-)
+echo $VMFUSION_MOUNT_POINT
+
+# Install the packages
+sudo installer -pkg "$VMFUSION_MOUNT_POINT/Install VMware Fusion.app/Contents/Resources/Install VMware Fusion.mpkg/Contents/Packages/Install VMware Fusion.pkg" -target /
+sudo installer -pkg "$VMFUSION_MOUNT_POINT/Install VMware Fusion.app/Contents/Resources/Install VMware Fusion.mpkg/Contents/Packages/com.vmware.fusion.ovftool.pkg" -target /
+
+# Unmount the disk image
+hdiutil unmount "$VMFUSION_MOUNT_POINT"
+
+# List the vmware packages installed
+pkgutil --pkgs=com.vmware.*
+#com.vmware.fusion.antivirus.windows
+#com.vmware.fusion.application
+#com.vmware.fusion.ovftool
+#com.vmware.fusion.tools.darwin
+#com.vmware.fusion.tools.freebsd
+#com.vmware.fusion.tools.linux
+#com.vmware.fusion.tools.netware
+#com.vmware.fusion.tools.solaris
+#com.vmware.fusion.tools.windows
+#com.vmware.fusion.tools.winPre2k
+
+# Next set the license number
+VMFUSION_SERIALNR="<please enter yours :)>"
+VMFUSION_COMPANY="Jedi BVBA"
+VMFUSION_NAME="Patrick Debois"
+VMFUSION_VERSION="3.0"
+
+# Check if the provided license is valid
+/Library/Application\ Support/VMware\ Fusion/vmware-licenseTool check "$VMFUSION_SERIALNR" $VMFUSION_VERSION "Vmware Fusion for Mac OS"  ""
+
+# Set the license
+sudo /Library/Application\ Support/VMware\ Fusion/vmware-licenseTool enter "$VMFUSION_SERIALNR" "$VMFUSION_NAME" "$VMFUSION_COMPANY" $VMFUSION_VERSION "Vmware Fusion for Mac OS" ""
+
+# Show the license file
+cat /Library/Application\ Support/VMware\ Fusion/license-*
+
+# List the Binaries in /Applications/VMware\ Fusion.app/Contents/MacOS/vmware
+ls /Applications/VMware\ Fusion.app/Contents/MacOS/vmware
+
+# Extra stuff in /Library/Application\ Support/VMware\ Fusion
+ls /Library/Application\ Support/VMware\ Fusion
+
+# Getting Started.app		icu				mozilla-root-certs.crt		vmnet-bridge			vmss2core		vmware-vmx
+# Uninstall VMware Fusion.app	isoimages			networking			vmnet-cli			vmware-authd			vmware-vmx-debug
+# VMDKMounter.app			kexts				networking.bak.0		vmnet-dhcpd			vmware-cloneBootCamp		vmware-vmx-stats
+# VMware Fusion Helper.app	languageSpecificMacToWinKeymap	proxyApp-template-app		vmnet-natd			vmware-licenseTool		vnckeymap
+# VMware Fusion Start Menu.app	license-fusion-30-e1-200902	proxyApp-template-info.plist	vmnet-netifup			vmware-ntfs
+# boot.sh				licenses			thnuclnt			vmnet-sniffer			vmware-rawdiskAuthTool
+# choose-vmx.sh			locations			tools-upgraders			vmnet1				vmware-rawdiskCreator
+# fusionRepairPermissionsTool	messages			unrar				vmnet8				vmware-usbArbitratorTool
+# fusionShareTool			mkisofs				vm-support.tool			vmrun				vmware-vdiskmanager
+
+# Machines go into $HOME/Documents/Virtual Machines.localized
+ls $HOME/Documents/Virtual\ Machines.localized
+
+# Restart network services!?
+sudo sh -c "/Library/Application\ Support/VMware\ Fusion/boot.sh --restart"
+
+<% end %>
+
+##### Cleaning an existing installation
+<% codify(:shell) do %>
+
+#Find the vmware packages installed
+pkgutil --pkgs=com.vmware.fusion.*
+
+# Stop the network listeners
+sudo sh -c "cd /Library/Application\ Support/VMware\ Fusion/ ; test -f boot.sh && ./boot.sh --stop"
+
+# Kill the vmware fusion running
+FUSION_PID=$(ps -eo pid,command  |grep -i "/Applications/VMware Fusion.app/Contents/MacOS/vmware"|grep -v grep| sed -e "s/^[ ]*//"|cut -d ' ' -f 1)
+echo $FUSION_PID
+kill $FUSION_PID
+
+# Also kill the headless ones
+FUSION_PID=$(ps -eo pid,command  |grep -i "vmrun"|grep -v grep| sed -e "s/^[ ]*//"|cut -d ' ' -f 1)
+echo $FUSION_PID
+kill $FUSION_PID
+
+# And some other processes
+FUSION_PID=$(ps -eo pid,command  |grep -i "vmware-vmx"|grep -v grep| sed -e "s/^[ ]*//"|cut -d ' ' -f 1)
+echo $FUSION_PID
+kill $FUSION_PID
+
+FUSION_PID=$(ps -eo pid,command  |grep -i "/Library/Application Support/VMware Fusion/"|grep -v grep| sed -e "s/^[ ]*//"|cut -d ' ' -f 1)
+echo $FUSION_PID
+kill $FUSION_PID
+
+sleep 2
+
+# Verify the version
+pkgutil --pkg-info com.vmware.fusion.application 2>/dev/null| grep -i ^version
+
+# To remove the sofware: 
+# Option 1: Unlink the files
+for pkg in `pkgutil --pkgs=com.vmware.fusion.*`; do sudo pkgutil --verbose --unlink $pkg -f; done
+# Make the OS forget about the files
+for pkg in `pkgutil --pkgs=com.vmware.fusion.*`; do sudo pkgutil --verbose --forget $pkg -f; done "
+
+# Option 2: Run the uninstaller
+# Suggested by Eric on 9/12/2010
+sudo /Library/Application\ Support/VMware\ Fusion/Uninstall\ VMware\ Fusion.app/Contents/Resources/fusion-uninstaller.tool
+
+# Note that we don't delete virtual machines!
+
+<% end %>
+
+#### References: 
+- vmware ovftool : [http://www.daemonchild.com/install-fusion-31-ovftool](http://www.daemonchild.com/install-fusion-31-ovftool)
+- vmware fusion exhaustive documentation : [http://communities.vmware.com/docs/DOC-1201](http://communities.vmware.com/docs/DOC-1201)
+- installing the serialkey from cmdline : [http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1009244](http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1009244)
+- Using ASR for mac Mass deployment : [http://www.peachpit.com/articles/article.aspx?p=419258&seqNum=2](http://www.peachpit.com/articles/article.aspx?p=419258&seqNum=2)
+- Mass Deployment of Vmware Fusion : [http://www.vmware.com/files/pdf/Mass_Deployment_of_VMware_Fusion_wp2.pdff](http://www.vmware.com/files/pdf/Mass_Deployment_of_VMware_Fusion_wp2.pdf)

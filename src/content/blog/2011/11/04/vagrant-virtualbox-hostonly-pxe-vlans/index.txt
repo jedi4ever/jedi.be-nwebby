@@ -1,0 +1,350 @@
+---
+title: Advanced Virtualbox and Vagrant tips for VLAN,PXE and Hostonly networking
+created_at: 2011-10-04 10:35:34.199577 +02:00
+tags:
+- virtualbox
+- vagrant
+- pxe
+- vlan
+- hostonly
+blog_post: true
+filter:
+- erb
+- markdown
+---
+I've raved about [Vagrant](http://vagrant.up) [many](http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011) [many](http://www.jedi.be/blog/2011/03/28/using-vagrant-as-a-team/) times before.
+
+Initially it was concieved for single machines running behind a NAT interface. Later support for hostonly-networking was added, opening the possibility to have multiple host talk together over a private network.
+
+But what if the network setup of production is much more complex than this? In this blogpost I'm going to explain to reproduce the following network setup in a vagrant setup:
+
+### The network setup
+<pre>
+          HOST
+            |
+            |
+          eth2                          eth2
+          (NAT)                         (NAT)
+            |                             |
+        [ Gateway ]      <---->      [ Mgmt Host]  <----->   [Servers1,2]
+               br10              br10          eth3       br0
+              (eth0.10,        (eth0.10,                  (eth0
+               eth1.10)         eth1.10)                   eth1)
+              vboxnet0          vboxnet0     vboxnet1    vboxnet1
+</pre>
+
+This is quite a typical production setup:
+
+_gateway_
+
+- it acts as a incoming/outgoing firewall, squid caching proxy , nginx etc...
+- it has two production interfaces eth0,eth1 which are VLAN-ed (ID 10) and bridged together
+
+_management host_
+
+- connected to the gateway for in and outside traffic
+- contains all necessary tools to manage the servers, dhcp, tftpboot, etc..
+
+_servers_
+
+- all servers get installed via the mgmt host
+- server1 will only get installed via PXE
+- server2 will have no disk attached and will boot from the network everytime
+
+### Preparing a basebox
+Almost all baseboxes out there assume that the DHCP interface for the NAT interface resides on the eth0 interface. Moving the NAT interface to eth2, requires you to change the /etc/network/interfaces to indicate that dhcp is done on eth2, and eth0,eth1 are not dhcp. Otherwise bootup will be very slow, waiting for a timeout, resulting in no ip addresses.
+
+We've used [Veewee](https://github.com/jedi4ever/veewee) to add another postinstall script to change the /etc/network/interfaces file to the state we needed. Resulting in a 'squeeze64'
+
+<pre>
+sed -i -e "s/eth0/eth2/" /etc/network/interfaces
+</pre>
+
+### Hostonly networking in Vagrant
+While Vagrant has [support for hostonly networking](http://vagrantup.com/docs/host_only_networking.html), it assumes that it has to assign the interface an IP-address. In our case the interfaces eth0,eth1 do not get an IP-address, only the bridge gets an IP-address.
+
+Also using the hostonly networking support built into vagrant, we found that it changed the order of the interfaces: it seems to dynamically remove all host interfaces and recreate them.
+
+We resorted to :
+
+- adding our hostonly interfaces to our 'basebox' via the VBoxManage commands
+- exporting it via 'vagrant basebox export' subcommand
+
+And thus creating a 'gateway.box' and 'manager.box' vagrant box.
+
+For the gateway node:
+<pre>
+IFTYPE="virtio"
+VBoxManage modifyvm squeeze64 --nic1 hostonly
+VBoxManage modifyvm squeeze64 --nic2 hostonly
+VBoxManage modifyvm squeeze64 --nic3 nat
+VBoxManage modifyvm squeeze64 --nic4 none
+VBoxManage modifyvm squeeze64 --macaddress1 auto
+VBoxManage modifyvm squeeze64 --macaddress2 auto
+VBoxManage modifyvm squeeze64 --macaddress3 auto
+VBoxManage modifyvm squeeze64 --nictype1 $IFTYPE
+VBoxManage modifyvm squeeze64 --nictype2 $IFTYPE
+VBoxManage modifyvm squeeze64 --nictype3 $IFTYPE
+VBoxManage modifyvm squeeze64 --cableconnected2 off
+VBoxManage controlvm squeeze64 setlinkstate2 off
+VBoxManage modifyvm squeeze64 --hostonlyadapter1 vboxnet0
+VBoxManage modifyvm squeeze64 --hostonlyadapter2 vboxnet0
+
+rm squeeze64.box
+bundle exec vagrant basebox export squeeze64
+mv  squeeze64.box boxes/manager.box
+bundle exec vagrant box remove 'manager'
+bundle exec vagrant box add 'manager' 'boxes/manager.box
+</pre>
+
+For the manager node:
+<pre>
+IFTYPE="virtio"
+VBoxManage modifyvm squeeze64 --nic1 hostonly
+VBoxManage modifyvm squeeze64 --nic2 hostonly
+VBoxManage modifyvm squeeze64 --nic3 nat
+VBoxManage modifyvm squeeze64 --nic4 hostonly
+VBoxManage modifyvm squeeze64 --macaddress1 auto
+VBoxManage modifyvm squeeze64 --macaddress2 auto
+VBoxManage modifyvm squeeze64 --macaddress3 auto
+VBoxManage modifyvm squeeze64 --macaddress4 auto
+VBoxManage modifyvm squeeze64 --nictype1 $IFTYPE
+VBoxManage modifyvm squeeze64 --nictype2 $IFTYPE
+VBoxManage modifyvm squeeze64 --nictype3 $IFTYPE
+VBoxManage modifyvm squeeze64 --nictype4 $IFTYPE
+VBoxManage modifyvm squeeze64 --cableconnected2 off
+VBoxManage controlvm squeeze64 setlinkstate2 off
+VBoxManage modifyvm squeeze64 --hostonlyadapter1 vboxnet0
+VBoxManage modifyvm squeeze64 --hostonlyadapter2 vboxnet0
+VBoxManage modifyvm squeeze64 --hostonlyadapter4 vboxnet1
+
+mv squeeze64.box manager.box
+
+bundle exec vagrant box remove 'manager'
+bundle exec vagrant basebox export squeeze64
+mv  squeeze64.box boxes/manager.box
+bundle exec vagrant box add 'manager' 'boxes/manager.box'
+
+</pre>
+
+### Adapting Vagrant to use eth2 for NAT
+Not specifying the hostonly network in the Vagrantfile, kept the order and the interface names of the hostonly networks intact. But by default, vagrant assumes it has to put the NAT ssh-port mapping on eth0. To make it point to eth2, you can specify the adaptor by explicitly adding the ssh portforwarding mapping to the Vagrantfile.
+
+<pre>
+  config.vm.forward_port("ssh",22,2222,{:auto => true,:adapter => 2})
+</pre>
+
+### VLAN support in Virtualbox
+I would have expected VLAN-ing to work out of the box with Virtualbox, but it didn't.
+
+For some reason, both gateway and manager were not able to talk to each other. I would see packets come in from both sides on the interfaces, but it just would not work.
+
+After some digging , I found this blogpost on [VLAN Stripping in Virtualbox](http://humbledown.org/virtualbox-intel-vlan-tag-stripping.xhtml) and [the research he did](http://www.telecom.otago.ac.nz/tele301/student_html/virtualbox-vyatta-ubuntu-vlan.html) . 
+
+It turns out that the Intel Pro Network drivers providers, provided by Virtualbox, strip the VLAN tags. The blog suggested changing the interface types to the older AMD PCNet Fast III. This indeed worked.
+
+But on large bursts of network traffic, I was confronted with a kernel warning [NETDEV Watchdog: eth0: transmit timed out](http://www.linuxquestions.org/questions/linux-networking-3/netdev-watchdog-eth0-transmit-timed-out-492159/) .
+
+Luckily there is a third option for networking listed on the [Virtualbox network documentation](http://www.virtualbox.org/manual/ch06.html): virtio drivers. At first I thought this was not usable because I was running an a Mac, but the virtio are drivers inside the Guest OS, not on the host.
+
+That is why in the above box modifications we set the nictype to *virtio*
+
+<pre>
+VBoxManage modifyvm squeeze64 --nictype1 virtio
+</pre>
+
+### Bridging in Virtualbox
+While recreating the vms, many times, I noticed that bridging sometimes would not work. When I looked in the VirtualBox gui, I noticed that sometimes virtualbox indicated, that the active network connection was on eth0 in the gateway and on eth1 in the manager. To fake the behavior and have them both on the same interfaces, I disconnected the cable on the eth1.
+
+<pre>
+VBoxManage modifyvm squeeze64 --cableconnected2 off
+VBoxManage controlvm squeeze64 setlinkstate2 off
+</pre>
+
+Now the bridging network interfaces could always see eachother.
+
+### PXE booting in Virtualbox
+If you want to use pxe booting in virtualbox, be sure to install the Extension pack. This will include the PXE boot functionality. 
+
+<pre>
+$ VBoxManage list extpacks
+Extension Packs: 1
+Pack no. 0:   Oracle VM VirtualBox Extension Pack
+Version:      4.1.4
+Revision:     74291
+Description:  USB 2.0 Host Controller, VirtualBox RDP, PXE ROM with E1000 support.
+VRDE Module:  VBoxVRDP
+Usable:       true 
+Why unusable: 
+</pre>
+
+More details can be found in the [documentation of Virtualbox](http://www.virtualbox.org/manual/ch08.html#vboxmanage-extpack)
+
+### Creating a pxe-booting basebox
+For server1 and server2, we want them to pxe boot from the manager node. This means that we want to have an empty disk, but with network boot enabled.
+
+<pre>
+VBoxManage modifyvm pxe-server1 --boot4 net
+</pre>
+
+Veewee is not yet capable of doing this, but here are the commands we used to create an empty netboot basebox.
+<pre>
+
+VMPATH="/"$(VBoxManage list systemproperties|grep "^Default"| cut -d '/' -f 2-)"/pxe/"
+DISKPATH="/"$VMPATH/"/pxe.vdi"
+VBoxManage unregistervm pxe --delete
+rm -rf "$VMPATH"
+VBoxManage createvm --name pxe --ostype Debian_64 --register
+VBoxManage storagectl 'pxe' --name 'IDE Controller' --add ide
+VBoxManage storagectl 'pxe' --name 'SATA Controller' --add sata --hostiocache off --sataportcount 1
+
+VBoxManage createhd --filename "$DISKPATH" --size 20000 --format VDI 
+VBoxManage storageattach 'pxe' --storagectl 'SATA Controller' --port 0 --device 0 --type hdd --medium "$DISKPATH"
+</pre>
+
+
+
+
+### PXE boot install on server1
+Now that we have a  pxe boot basebox, we can start modifying it to:
+
+- fix the macaddress, so we can put them in dhcp
+- create the necessary hostonly interfaces
+
+Because the first pxe boot takes a long time, we increased the ssh timeouts in the Vagrantfile
+
+<pre>
+    config.ssh.timeout = 1000000
+    config.ssh.max_tries = 50
+</pre>
+
+Again, the virtio driver is used
+<pre>
+IF_TYPE=virtio
+VBoxManage unregistervm pxe-server1 --delete
+VBoxManage clonevm pxe --name pxe-server1 --register
+
+VBoxManage modifyvm pxe-server1 --memory 256 --ostype Debian_64
+
+VBoxManage modifyvm pxe-server1 --nic1 hostonly
+VBoxManage modifyvm pxe-server1 --nic2 hostonly
+VBoxManage modifyvm pxe-server1 --nic3 nat
+VBoxManage modifyvm pxe-server1 --nic4 none
+VBoxManage modifyvm pxe-server1 --macaddress1 080027BA2DAE
+VBoxManage modifyvm pxe-server1 --macaddress2 080027BE8E74
+VBoxManage modifyvm pxe-server1 --macaddress3 auto
+VBoxManage modifyvm pxe-server1 --macaddress4 auto
+VBoxManage modifyvm pxe-server1 --nictype1 $IF_TYPE
+VBoxManage modifyvm pxe-server1 --nictype2 $IF_TYPE
+VBoxManage modifyvm pxe-server1 --nictype3 $IF_TYPE
+VBoxManage modifyvm pxe-server1 --nictype4 $IF_TYPE
+VBoxManage modifyvm pxe-server1 --cableconnected2 off
+VBoxManage controlvm pxe-server1 setlinkstate2 off
+VBoxManage modifyvm pxe-server1 --cableconnected3 off
+VBoxManage controlvm pxe-server1 setlinkstate3 off
+VBoxManage modifyvm pxe-server1 --hostonlyadapter1 vboxnet1
+VBoxManage modifyvm pxe-server1 --hostonlyadapter2 vboxnet1
+VBoxManage modifyvm pxe-server1 --boot4 net
+rm boxes/pxe-server1.box
+bundle exec vagrant box remove 'server1'
+bundle exec vagrant basebox export pxe-server1
+mv 'pxe-server1.box' boxes/
+bundle exec vagrant box add 'server1' 'boxes/pxe-server1.box'
+</pre>
+
+### Fixing the mac address of a bridge
+Even though we can control the mac address from the physical interfaces, the macaddress of the bridge is randomly assigned.
+
+The trick is to [specify the macaddress on if-up of the bridge interface](http://backreference.org/2010/07/28/linux-bridge-mac-addresses-and-dynamic-ports/)
+
+<pre>
+auto br0
+iface br0 inet dhcp
+  bridge_ports eth0
+  bridge_maxage 12
+  bridge_hello 2
+  bridge_fd 6
+  bridge_stp on
+  post-up ip link set br0 address 08:00:27:ba:2d:ae
+</pre>
+
+### PXE boot for server2
+The main difference with server1, is that server2 always boots from memory.
+
+Vagrant basebox export, expects a disk to be there. So we have to assign it one, even if we don't need one.
+
+We also found that the internal pxe support is limited, using of [ipxe.org](http://ipxe.org), allowed us to boot with many special pxe options.
+
+This lead us to put the ipxe boot code on the first disk.
+
+<pre>
+VBoxManage convertfromraw ../ipxe/ipxe.usb "$DISKPATH"
+</pre>
+
+And replace the disk with it, making it play nice with vagrant export
+
+The full creation script looks like this
+
+<pre>
+VMPATH="/"$(VBoxManage list systemproperties|grep "^Default"| cut -d '/' -f 2-)"/pxe-server2/"
+DISKPATH="$VMPATH/pxe-server2.vdi"
+VBoxManage storageattach 'pxe-server2' --storagectl 'SATA Controller'  --port 0 --device 0 --medium none
+VBoxManage closemedium disk  "$DISKPATH" --delete
+VBoxManage unregistervm pxe-server2 --delete
+rm -rf "$VMPATH"
+VBoxManage clonevm pxe --name pxe-server2 --register
+VBoxManage modifyvm pxe-server2 --memory 1024 --ostype Debian_64
+VBoxManage modifyvm pxe-server2 --nic1 hostonly
+VBoxManage modifyvm pxe-server2 --nic2 hostonly
+VBoxManage modifyvm pxe-server2 --nic3 nat
+VBoxManage modifyvm pxe-server2 --nic4 none
+VBoxManage modifyvm pxe-server2 --macaddress1 080027C5DAB8
+VBoxManage modifyvm pxe-server2 --macaddress2 0800274020F8
+VBoxManage modifyvm pxe-server2 --macaddress3 auto
+VBoxManage modifyvm pxe-server2 --macaddress4 auto
+
+VBoxManage modifyvm pxe-server2 --nictype1 virtio
+VBoxManage modifyvm pxe-server2 --nictype2 virtio
+VBoxManage modifyvm pxe-server2 --nictype3 virtio
+VBoxManage modifyvm pxe-server2 --nictype4 virtio
+VBoxManage modifyvm pxe-server2 --cableconnected2 off
+VBoxManage controlvm pxe-server2 setlinkstate2 off
+VBoxManage modifyvm pxe-server2 --cableconnected3 off
+VBoxManage controlvm pxe-server2 setlinkstate3 off
+VBoxManage modifyvm pxe-server2 --hostonlyadapter1 vboxnet1
+VBoxManage modifyvm pxe-server2 --hostonlyadapter2 vboxnet1
+VBoxManage modifyvm pxe-server2 --boot4 net
+rm "$DISKPATH"
+VBoxManage storageattach 'pxe-server2' --storagectl 'SATA Controller'  --port 0 --device 0 --medium none
+VBoxManage closemedium disk  "$DISKPATH" --delete
+VBoxManage convertfromraw ../ipxe/ipxe.usb "$DISKPATH"
+VBoxManage storageattach 'pxe-server2' --storagectl 'SATA Controller' --type hdd --port 1 --device 0 --medium "$DISKPATH"
+
+rm boxes/pxe-server2.box
+bundle exec vagrant box remove 'server2'
+bundle exec vagrant basebox export pxe-server2
+mv 'pxe-server2.box' boxes/
+bundle exec vagrant box add 'server2' 'boxes/pxe-server2.box'
+</pre>
+
+### Direct ssh into vagrant VM via Hostonly IF
+Instead of doing the portmapping to server1 or server2 via NAT, we found it useful to put an interface of our host into the hostonly network. This allowed for connection to services in server1,server2 for example.
+
+<pre>
+VBoxManage hostonlyif ipconfig vboxnet1 --ip 172.168.0.1
+</pre>
+
+And then adjust for example the ssh properties of server2, as follows:
+
+<pre>
+    config.ssh.host = "172.168.0.22"
+    config.ssh.port = 22
+</pre>
+
+### Conclusion:
+
+It takes a bit of massaging to get it working but it's possible:
+
+- use virtio driver where possible
+- use ipxe to boot complex pxe setups
+- use hostonly networking for direct access to services

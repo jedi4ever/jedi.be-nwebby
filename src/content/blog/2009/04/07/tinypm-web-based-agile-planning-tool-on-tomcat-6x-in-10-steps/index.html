@@ -1,0 +1,103 @@
+---
+title: "Tinypm - Web Based Agile Planning Tool - on Tomcat 6.x in 10 Steps"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=679
+created_at: 2009-04-07 08:44:22.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - tinypm
+   - tomcat
+   - scrum
+   - agile
+---
+<a href="http://www.tinypm.com"><img title="tpm_logo" class="size-medium wp-image-680 alignleft" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/tpm_logo.gif" height="50" alt="" width="180" /></a>For organizing our new project we were on the lookout for a light weight Agile Planning Tool.<a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/tomcat.gif"> We came across a good </a><a href="http://scrum4you.wordpress.com/2009/03/01/scrum-tools-list/">list of Scrum Tools compiled by Boris Gloger</a> and we finally selected <a href="http://www.tinypm.com">TinyPM</a> and like it so far.
+<br>
+There is also <a href="http://scrum4you.wordpress.com/2008/10/29/scrum-tools-tinypm-review/">a review of TinyPM availabl</a>e on the same site. We had to make to some adjustments to the install procedure to make it run on Tomcat 6.x. This is our installation procedure (we assume you allready have a tomcat setup). <img title="tomcat" class="size-medium wp-image-682 alignright" src="http://www.jedi.be/blog/wp-content/uploads/2009/04/tomcat.gif" height="92" alt="" width="130" />
+<br>
+<em>Step 1: Download the source and extract</em>
+<br>
+We went for the 1.2 version named <em>tinypm-1.2-tomcat5.5.zip</em>
+<pre>mkdir tinypm-1.2
+cd tinypm-1.2
+unzip ../tinypm-1.2-tomcat5.5.zip</pre>
+<br>
+<em>Step 2: Setup the database </em>
+<br>
+Create a database<em> tinydb</em> with user<em> tinyuser </em>and password<em> tinypassword</em>
+<br>
+<pre>mysql -u <strong><em>youraccount</em></strong> -p
+mysql&gt; create database <em><strong>tinydb</strong> </em>character set = 'utf8' COLLATE= 'utf8_general_ci'
+mysql&gt; grant select, update, insert, delete on <strong><span>tinydb</span></strong><em>.*</em> to '<em><strong>tinyuser</strong></em>'@'localhost' IDENTIFIED BY '<strong><em>tinypassword</em></strong>';
+mysql&gt; FLUSH PRIVILEGES;</pre>
+<br>
+<em>Step 3: Load the schema and data into the database</em>
+<br>
+<pre>cd database/mysql
+mysql -u <strong><em>youraccount</em></strong> -p
+mysql&gt; \u t<em>inydb</em>
+mysql&gt; \. create_schema-1.2.sql
+mysql&gt; \. create_data-1.2.sql
+cd ../..</pre>
+<br>
+<em>Step 4 : Extract the war in the tomcat dir</em>
+<br>
+Unzip tinypm.war to your %CATALINA_HOME%/webapps/tinypm
+<br>
+<em>Step 5: Configure the username, database, password in the application</em>
+<p>%CATALINA_HOME%/webapps/tinypm/META-INF/context.xml</p>
+<br>
+<pre>&lt;Context&gt;
+    &lt;Resource name="jdbc/tinypmDatasource" auth="Container"
+        type="javax.sql.DataSource"
+        maxActive="100"
+        maxIdle="30"
+        maxWait="10000"
+        username="<strong>tinyuser</strong>"
+        password="<strong>tinypassword</strong>"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost:3306/<strong>tinydb</strong>"
+        testWhileIdle="true"
+        validationQuery="SELECT 1;" /&gt;
+&lt;/Context&gt;</pre>
+<em>Step 6: Copy the required jars to the tomcat directory</em>
+<br>
+Copy the jars located in the dependencies dir to the library of your tomcat install
+<pre>cd dependencies
+cp activation.jar mail.jar naming-factory-dbcp.jar %CATALINA_HOME%/lib</pre>
+<p>Download the MySQL Connector/J 5.1.x (the JDBC driver for MySQL Server) fro <a href="http://dev.mysql.com/downloads/connector/j">http://dev.mysql.com/downloads/connector/j</a></p>
+<br>
+<pre>cp mysql-connector-java-5.1.7-bin.jar %CATALINA_HOME%/lib</pre>
+<em>Step 7: Remove jars from the war (to make it actually work)</em>
+<br>
+Up until now, everything was straight out of the tinyPM install manual. If you would start tomcat right now you would face some errors.
+<p><span>error 1</span>: all JSP pages would fail with a null pointer in the jspInit</p>
+<p>the reason is that tinypm bundles the jsp-api.jar file and overrides the tomcat jsp-api.jar with that. So we have to remove the one in</p>
+<br>
+<pre>$ find %CATALINA_HOME% -name jsp-api.jar
+./apache-tomcat-6.0.18/webapps/tinypm/WEB-INF/lib/jsp-api.jar
+./apache-tomcat-6.0.18/lib/jsp-api.jar
+$ <strong>rm</strong> apache-tomcat-6.0.18/webapps/tinypm/WEB-INF/lib/<span>jsp-api.jar
+</span></pre>
+<p><span>error 2</span>: "java.lang.LinkageError: loader constraint violation"</p>
+<br>
+<pre>$ find %CATALINA_HOME% -name el-api.jar
+./apache-tomcat-6.0.18/webapps/tinypm/WEB-INF/lib/el-api.jar
+./apache-tomcat-6.0.18/lib/el-api.jar
+$ <strong>rm</strong> apache-tomcat-6.0.18/webapps/tinypm/WEB-INF/lib/<span>el-api.jar
+</span></pre>
+<em>Step 8: (re-)Startup tomcat</em>
+<pre>%CATALINA_HOME%/bin/start.sh</pre>
+<em>Step 9: Install License</em>
+<br>
+In order to obtain a free license you have to create an account for this and then you can request a free license. This will give you a license file <em>tinyPM-1.0.CE.lic</em>
+<br>
+To install the license login as admin/admin, and go to the tinyPM settings page to install it.
+<br>
+<em>Step 10: De-activate the Admin user</em>
+<br>
+TinyPM's free license allows up to 5 users. By default admin counts for 1 user. What you can do is to disable the user admin and give another user admin privileges.

@@ -1,0 +1,414 @@
+<BASE HREF="http://www.sousystems.com/faq/commonly/">
+<HTML>
+<HEAD>
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.04 [en]C-VU_ArtSci  (WinNT; U) [Netscape]">
+   <TITLE>Advanced Communicator Preference Settings</TITLE>
+</HEAD>
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#551A8B" ALINK="#FF0000">
+<B>Applies to:</B> Communicator
+4.0x
+<BR><B>Operating Systems:</B> Windows 3.x, Windows 95, and Windows NT.
+<BR>&nbsp;
+<CENTER>
+<H2>
+<FONT SIZE=+3>A</FONT>DVANCED <FONT SIZE=+3>C</FONT>OMMUNICATOR <FONT SIZE=+3>P</FONT>REFERENCES</H2></CENTER>
+
+<CENTER>
+<H3>
+user_pref Settings for the prefs.js Configuration File</H3></CENTER>
+<B>IMPORTANT NOTE: </B>This page contains information regarding direct
+modification of the core Communicator preferences file, prefs.js. This
+file is located in your ...\Netscape\Users\{username}\ directory. Before
+making changes to this file, Netscape <B>must not</B> be running, you should
+always make a backup copy of the file before beginning, and the file should
+be edited from a text editor such as Notepad. Editing of prefs.js is not
+a procedure officially supported by Netscape, so do so at your own risk.
+<BR>&nbsp;
+<CENTER>
+<H2>
+How to Modify the prefs.js File (Please Read First)</H2></CENTER>
+Before editing, close Communicator and make a backup of prefs.js, then
+open the original in a text edit such as Notepad. To add a line, simply
+type or copy it to a line of its own in the prefs.js file in the same fashion
+as other options already in the file. Keep in mind that parameters in this
+file are case sensitive (meaning that it <B>does</B> matter whether you
+type an uppercase vs. a lowercase letter), and spelling and syntax errors
+may cause the contents of the file to be deleted when you restart Netscape.
+So be careful and back up everything first.
+
+<P>This page documents preferences that can be set in prefs.js, but cannot
+be set from within the Edit | Preferences menu in the Communicator graphical
+user interface. The basic structure of a prefs.js entry is as follows:
+
+<P>user_pref("browser.cache.directory", "C:\\Netscape\\Cache");
+
+<P>In the above entry, browser.cache.directory is the <B>parameter</B>,
+and C:\\Netscape\\Cache is the <B>value</B>. Note that parameters are always
+enclosed in quotes. Values are enclosed in quotes when alphanumeric (containing
+letters or letters and numbers), however numeric-only values and true/false
+values are not enclosed in quotes. For example:
+
+<P>user_pref("browser.cache.directory", "C:\\Netscape\\Cache"); <I>(alphanumeric
+value)</I>
+<BR>user_pref("browser.link_expiration", 10); <I>(numeric value)</I>
+<BR>user_pref("browser.wfe.ignore_def_check", true); <I>(true/false value)</I>
+
+<P>Also remember that JavaScript is case-sensitive (it matters whether
+something is in uppercase or lowercase), and as a result so is prefs.js.
+An error in the case of a letter is equal to a spelling mistake. You must
+also be careful to include all punctuation, such as parentheses, commas,
+semicolons, and quotes. If you set a value equivalent to the Communicator
+default value, the line will be removed when you start Communicator.
+
+<P>When you are done modifying the file, save changes then open Communicator
+to test your new settings. If you have multiple user profiles, changes
+must be made to each user profile's prefs.js in order to implement the
+changes for all users.
+<CENTER>
+<HR WIDTH="100%"><A HREF="#browser">Browser Settings</A> -- <A HREF="#mailnews">Mail
+and News Settings</A> -- <A HREF="#usedtobecoffee">Java Settings</A> --
+<A HREF="#other">Other Options</A></CENTER>
+
+<CENTER>
+<HR WIDTH="100%"></CENTER>
+
+<CENTER>
+<H2>
+<A NAME="browser"></A>Browser Settings</H2></CENTER>
+
+<H3>
+<B>Maximum Number of Simultaneous Connections</B></H3>
+The maximum number of concurrent HTTP connections to a web server. Increasing
+the value will only speed page loading if there is sufficient bandwidth
+as available bandwidth is divided among the connections, and decreasing
+the value may degrade performance. Default is 4 (fine for most modem users),
+minimum is 1. There is no maximum, but there is a limit of 6 open connections
+per browser window.
+
+<P>user_pref("network.max_connections", 6);
+<BR>&nbsp;
+<H3>
+Network TCP Buffer Size</H3>
+The amount of RAM (in bytes) to use for the TCP buffer. Larger values mean
+more data but can saturate the system on faster networks. Default is 10240
+(10K) and is also the minimum, maximum is 31744 (31K). Values outside the limits
+will be taken to mean whatever limit is closest; i.e. 65536 will be taken
+to mean 31744.
+
+<P>user_pref("network.tcpbufsize", 31744);
+<BR>&nbsp;
+<H3>
+Network TCP Timeout</H3>
+The time, in seconds, before a timeout error appears when attempting to
+contact a server or perform a DNS lookup. This value should not be changed
+unless the user is experiencing frequent timeout errors (if this is the
+case, network maintenance is probably needed). A value of 0 for this parameter
+will use the default.
+
+<P>user_pref("network.tcptimeout", 120);
+<BR>&nbsp;
+<H3>
+DNS Cache Expiration Time</H3>
+The time, in seconds, before a server's IP address is purged from local
+memory. Subsequent requests to the server will require another lookup against
+the DNS server. The default value is 900 seconds. Unless there is a specific
+need to change this preference, it should remain the default value - reducing
+the value may negatively impact performance and increasing the value may
+cause problems against server farms.
+
+<P>user_pref("network.dnsCacheExpiration", 1000);
+<BR>&nbsp;
+<H3>
+Disable Automatic URL Completion</H3>
+Disables automatic URL completion ("AutoComplete") when typing in the browser
+location toolbar. Remove the line below to restore the feature.
+
+<P>user_pref("network.enableUrlMatch", false);
+<BR>&nbsp;
+<H3>
+Specify a Custom Bookmark File Location</H3>
+Allows the user profile's bookmark file to be located anywhere on the hard
+drive or network drive rather than in its default location in the user
+profile directory. The Communicator bookmark filename is <B>bookmark.htm</B>.
+Note the double-backslashes in the path example below - use \\ where you
+would normally use \ in the path. (This feature is available in the GUI
+in 4.02 and up.)
+
+<P>user_pref("browser.bookmark_location", "C:\\Netscape\\bookmark.htm");
+<BR>&nbsp;
+<H3>
+Disable HTTP_REFERER Headers</H3>
+Disables the HTTP_REFERER header sent to the destination web server when
+you click a link. Be aware that disabling this header may cause failures
+in some scripts and pages requiring authentication partly dependent on
+this header. Remove the line below to reenable the header.
+
+<P>user_pref("network.sendRefererHeader", false);
+<BR>&nbsp;
+<H3>
+Disable Asynchronous DNS</H3>
+Disables browser use of asynchronous DNS. Disabling this feature may negatively
+impact performance and users should only disable this if so instructed
+by a system administrator or are troubleshooting winsock problems. Remove
+the lines below to reenable Asynch DNS.
+
+<P>user_pref("network.use_async_dns", false);
+<BR>user_pref("network.wfe.use_async_dns", false);
+<BR>&nbsp;
+<H3>
+Cache HTML Pages Accessed via SSL</H3>
+Allows HTML pages accessed over secure (SSL) HTTP connections to be stored
+in the local disk cache. While this may aid performance as the pages can
+be stored locally, enabling local SSL page caching can represent a security
+risk since the secure pages linger on the local system. The default for
+this is to not allow local SSL page caching, and to disallow it again,
+remove the line below.
+
+<P>user_pref("browser.cache.disk_cache_ssl", true);
+<BR>&nbsp;
+<H3>
+Show Images After Loading</H3>
+Forces the browser to load the entire image before displaying it in the
+window. Remove the line below to allow images to display while loading
+once again. Note that this parameter may not work in all configurations.
+A setting of false is not recommended on modem connections.
+
+<P>user_pref("browser.display_while_loading", false);
+<BR>&nbsp;
+<H3>
+Check to See if Default Browser on Startup</H3>
+Forces Communicator to determine whether it is the default browser on startup.
+
+<P>user_pref("browser.wfe.ignore_def_check", false);
+<BR>&nbsp;
+<H3>
+<B>Modify the Default Search Engine</B></H3>
+Changes the default search engine called when you type ?{search keyword}
+on the location toolbar. Note that this does not affect the Search button
+on the main navigation toolbar. The target URL should complete a form submission
+- for example, the AltaVista URL is http://www.altavista.digital.com/cgi-bin/query?pg=q&amp;what=web&amp;q=
+where the value for q will be filled in by whatever text follows the ?
+input by the user on the location toolbar. The default value for this parameter
+is http://cgi.netscape.com/cgi-bin/url_search.cgi?search= which will randomly
+select a search engine for the value of ? on the toolbar.
+
+<P>user_pref("network.search.url", "http://search.yahoo.com/bin/search?p=");
+<BR>&nbsp;
+<H3>
+Options for Sorting Server Directory Listings</H3>
+Controls the sorting of server directories, such as FTP directories. Default
+is 0 (display alphabetically), 1 is sort by file type, 2 is by file size,
+3 is by date.
+
+<P>user_pref("network.file_sort_method", 3);
+<BR>&nbsp;
+<BR>&nbsp;
+<CENTER>
+<H2>
+<A NAME="mailnews"></A>Mail and News Settings</H2></CENTER>
+
+<H3>
+Reply on Bottom</H3>
+(Communicator 4.02 and up only) Allows you to by default reply after quoted
+text. Default is 1 (reply on top), 0 is reply on bottom.
+
+<P>To set it to reply on the bottom, cut and paste the pref below into
+your prefs.js file. Backup the file "Before" editing !!!
+
+<P>user_pref("mailnews.reply_on_top", 0);
+<BR>&nbsp;
+<H3>
+Add Extra Lines after Quoted Text</H3>
+(Communicator 4.02 and up only) Allows you to specify an amount of extra
+lines to add after quoted material. The value is the number of lines to
+add.
+
+<P>user_pref("mailnews.reply_with_extra_lines", 2);
+<BR>&nbsp;
+<H3>
+Control Movement Across Multiple Mail Folders and Newsgroups</H3>
+(Communicator 4.02 and up only) Controls the behavior when the user clicks
+the 'Next' button to go to the next mail folder or newsgroup containing
+unread messages. Default is 1 (ask for user confirmation). 0 will cross
+folders without asking and 2 will restrict the Next button to the current
+folder or group (so it cannot be used to go to the next folder or group
+containing unread messages).
+
+<P>user_pref("mailnews.nav_crosses_folders",&nbsp; 1);
+<BR>&nbsp;
+<H3>
+Use MS Word Custom Dictionary</H3>
+(Communicator 4.04 and up only) Allows sharing of the MS Word custom dictionary
+to augment Communicator's spell checker. The value is the full path to
+the dictionary (the filename is <B>custom.dic</B> and is found in the Office
+directory). Adjust the path below as necessary for your system.
+
+<P>user_pref("SpellChecker.PersonalDictionary", "C:\\Office\\custom.dic");
+<BR>&nbsp;
+<H3>
+Use X-Sender Mail/News Header</H3>
+Adds a X-Sender header to outgoing messages. If authenticated SMTP is not
+used, Unverified will appear after the user's e-mail address. Default value
+is false. An example X-Sender header is: X-Sender: "Moi" &lt;moi@myisp.net>
+(Unverified)
+
+<P>user_pref("mail.use_x_sender", true);
+<BR>&nbsp;
+<H3>
+Specify a Custom Address Book Location</H3>
+Allows the user profile's address book file to be located anywhere on the
+hard drive or network drive rather than in its default location in the
+user profile directory. The Communicator address book filename is <B>abook.nab</B>.
+Note the double-backslashes in the path example below - use \\ where you
+would normally use \ in the path.
+
+<P>user_pref("ldap_1.directory1.filename", "C:\\Program Files\\Netscape\\Users\\your_profile\\abook.nab");
+<BR>&nbsp;
+<H3>
+MIME-Encode 8-bit Headers</H3>
+Always encodes 8-bit headers (separate from encode 8-bit characters in
+the GUI). Use strongly discouraged except where necessary.
+
+<P>user_pref("mail.strictly_mime_headers", true);
+<BR>&nbsp;
+<H3>
+Disable JavaScript in Mail and News</H3>
+Disables interpretation of the JavaScript language in the Collabra (news)
+and Messenger (mail) components of Communicator. JavaScript will remain
+available to the web browser unless JavaScript is globally disabled in
+Edit | Preferences | Advanced in the GUI preferences. Remove the below
+line and be sure JavaScript is enabled in preferences to restore full JavaScript
+functionality.
+
+<P>user_pref("javascript.allow.mailnews", false);
+<BR>&nbsp;
+<H3>
+Disable Address Book LDAP Capabilities</H3>
+Disables LDAP (Lightweight Directory Access Protocol) features in the address
+book. Remove the line to restore functionality.
+
+<P>user_pref("mail.addr_book.ldap.disabled", true);
+<BR>&nbsp;
+<H3>
+Send Charset Data to Server for IMAP Searches</H3>
+Allows character set data to be sent to the IMAP server for a search. Only
+needed in limited international use where the IMAP server also supports
+this functionality.
+
+<P>user_pref("mailnews.force_ascii_search", false);
+<BR>&nbsp;
+<H3>
+Disable Registry Lookup of Unknown MIME Types</H3>
+When a message is encountered containing a MIME type that Communicator
+does not know how to handle, it will fall back on the Windows 95/NT registry
+to determine a default action for the MIME type. This will disable that
+lookup in mail and news. Remove the line to restore functionality.
+
+<P>user_pref("mailnews.autolookup_unknown_mime_types", false);
+<BR>&nbsp;
+<H3>
+Add HTML Domains to Address Book</H3>
+Adds domains to the list in Edit | HTML Domains in the Address Book. All
+recipients in these domains are considered to have a mail/news reader capable
+of reading HTML. Add additional domains as demonstrated below (Communicator
+defaults to the netscape.com and mcom.com domains).
+
+<P>user_pref("mail.htmldomains", "netscape.com,mcom.com,foo.com");
+<BR>&nbsp;
+<CENTER>
+<H2>
+&nbsp;<A NAME="usedtobecoffee"></A>Java Settings</H2></CENTER>
+
+<H3>
+Disable Security for Unsigned Applets</H3>
+Disables Java security for applets. <B>WARNING:</B> Since this parameter
+completely disables Java security, it should be only used for local applet
+testing and should never be used over a network and the Internet. Remove
+the line to restore Java security.
+
+<P>user_pref("signed.applets.codebase_principal_support", true);
+<BR>&nbsp;
+<H3>
+Lock Java User Capabilities Database</H3>
+Prevents users from adding additional functionality to the capabilities
+database (signed.db) such as by accepting signed applets from the Internet.
+If needed in a controlled environment, it is recommended that <A HREF="http://home.netscape.com/comprod/products/communicator/mission_control/overview.html">Mission
+Control</A> be used to lock this preference.
+
+<P>user_pref("signed.applets.capabilitiesDB.lock_to_current", true);
+<BR>&nbsp;
+<H3>
+Simulate Navigator 3.0x Behavior for Local Classes</H3>
+Allows local classes in the classpath to have special privileges such as
+universal network connections and the ability to load Dynamic Link Libraries.
+Access to the file system is not permitted with this option - the Capabilities
+API must be used instead.
+
+<P>user_pref("signed.applets.local_classes_have_30_powers", true);
+
+<P>More information on Communicator Java options can be found in the <A HREF="http://developer.netscape.com/library/technote/security/sectn3.html">Security
+Preferences Documentation</A>.
+<BR>&nbsp;
+<CENTER>
+<H2>
+<A NAME="other"></A>Other Options and Locking Preferences</H2></CENTER>
+Please note that the above options can be set by any user able to modify
+prefs.js. If you operate in an environment that requires preferences to
+be locked in a certain state, you should consider <A HREF="http://home.netscape.com/comprod/products/communicator/mission_control/overview.html">Mission
+Control</A>, which allows you to lock both GUI preferences and those above
+plus several others. Mission Control also allows you to universally set
+and/or lock preferences in all users' Communicators, eliminating the need
+to modify each and every prefs.js.
+
+<P><B>Command Line Options</B> are detailed in the <A HREF="http://help.netscape.com/kb/client/970621-11.html">Netscape
+Support Knowledge Base</A>. An additional command line switch, -start_java,
+is not mentioned on that page but can be used to preload the Java subsystem
+when starting Communicator.
+
+<P>Netscape also has a number of undocumented functions, some useful, some
+fun. The following keystrokes are available in the browser window:
+
+<P>CTRL-ALT-T&nbsp; Show the current state of HTTP connections (monitor
+progress of a loading page at protocol level).
+<BR>CTRL-ALT-S&nbsp; Hide/Show the browser status bar.
+<BR>CTRL-ALT-F&nbsp; Go to the <A HREF="http://home.netscape.com/fishcam/fishcam.html">Fishcam</A>.
+
+<P>Additionally there are a number of about: functions which are mainly
+internal URLs (such as <A HREF="about:">about:,</A> <A HREF="about:javalogo">about:javalogo</A>,
+and <A HREF="about:license">about:license</A>) while others link to developers'
+pages or are <A HREF="http://www.eeggs.com/">Easter Eggs</A> (such as <A HREF="about:mozilla">about:mozilla</A>).
+The <A HREF="http://www.secureforms.com/mozilla/">Netscape Tricks and Easter
+Eggs page</A> is one of several that provide more information on other
+about: functions.
+
+<P>Other options, such as HTTP_USER_AGENT/X-Mailer header customization,
+logo image ("throbber") alteration, additions to dropdown buttons, and
+"about text" are only available in Mission Control and cannot be set from
+the prefs.js file.
+
+<P>Kevin Hecht
+<CENTER>
+<HR><FONT FACE="arial,helvetica"><FONT COLOR="#0000FF"><FONT SIZE=+0>Visit
+the <A HREF="http://www.sousystems.com/faq/default.htm">Main UFAQ Page</A>
+for other Tips, Tricks and Setup Examples</FONT></FONT></FONT></CENTER>
+
+<CENTER>
+<HR width=50% noshade size=1></CENTER>
+
+<CENTER>
+<ADDRESS>
+This page is maintained by Frank Tabor, Jay Garcia and Kevin Hecht</ADDRESS></CENTER>
+
+<CENTER>
+<DT>
+and</DT></CENTER>
+
+<CENTER><B><I>This material is being made available to you subject to some
+<A HREF="http://www.sousystems.com/faq/discljpo.html">Legal Stuff</A></I></B>&nbsp;
+<HR>&nbsp;This page was created with the Netscape Communicator Composer</CENTER>
+
+<P>Last Updated: Fri Nov 28 17:23:57 1997
+
+<BR><FORM><INPUT TYPE=BUTTON VALUE="Previous Page" onClick="history.go(-1)"></FORM>
+</BODY>
+</HTML>

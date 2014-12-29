@@ -1,0 +1,343 @@
+--- 
+title:      ssh tricks - the usual and beyond
+created_at: 2010-08-27 15:16:34.560905 +02:00
+tags: 
+- ssh
+- automation
+blog_post: true
+filter: 
+- erb
+- markdown
+- basepath
+related:
+- desc: Eleven ssh tricks
+  url: http://segfault.in/2010/02/5-ssh-tricks-you-must-know/
+- desc: 5 ssh tricks you must know
+  url: http://www.linuxjournal.com/article/6602
+- desc: Ssh tricks
+  url: http://diogomelo.net/drupal/blog/09/ssh-tricks
+- desc: The ultimate ssh tricks manual
+  url: http://www.mynitor.com/2010/08/07/the-ultimate-ssh-tricks-manual/
+- desc: SSH Tips and Tricks you need
+  url: http://symkat.com/35/ssh-tips-and-tricks-you-need/
+- desc: Stupid SSH config tricks
+  url: http://www.evilsoft.org/2009/10/23/stupid-ssh-config-tricks
+- desc: Six things I wish Mom told me (about ssh)
+  url: http://blog.ksplice.com/2010/08/six-things-i-wish-mom-told-me-about-ssh/
+- desc: How do you manage your ssh host keys
+  url: http://www.debian-administration.org/articles/503
+- desc: SSH Key Management with SKM
+  url: http://sites.google.com/site/jeromeboismartel/code-s-corner/ssh-key-management-with-skimp
+- desc: Manage SSH known_hosts entries
+  url: http://gablog.eu/online/node/35
+- desc: How to Set Up and Use SSH Step 1 — Administrative Work
+  url: http://www.cromwell-intl.com/unix/ssh-5-monitoring.html
+- desc: Strange ssh tricks
+  url: http://crawlicious.com/wp/2010/06/02/strange-ssh-tricks/
+- desc: Top 50 SSH Helper tools - OMG!
+  url: http://www.mynitor.com/2010/08/16/top-50-ssh-helper-tools-omg/
+- desc: SSH ProxyCommand without netcat
+  url: http://www.rschulz.eu/2008/09/ssh-proxycommand-without-netcat.html
+- desc: Chaining SSH Tunnels - Easy SSH Hopping
+  url: /blog/2008/11/07/chaining-ssh-tunnels-easy-ssh-hopping/
+- desc: Rate limiting for netcat and ssh
+  url: http://log.jmce.eu/23679614
+- desc: OpenSSH New Feature - Netcat mode
+  url: http://blog.rootshell.be/2010/03/08/openssh-new-feature-netcat-mode/
+---
+<table><tr><td>
+<img src='{{ page.url }}/ssh-bank.jpg'></td><td>SSH is an amazing beast. I nearly use it everyday and I'm amazed every time I learn something new. The following is a list of my tricks in the bag. It starts with the usual tricks that you find all over the place, but I hope there will be some new tricks for you too. <br><br>
+What's your best trick? Share it in the comments with the world. Nobody can know enough of ssh!
+</td></tr></table>
+
+<hr>
+## The basics:
+### **Password-less login:**
+
+This is usually the first thing start doing when want automation with ssh
+<% codify(:lang => "shell") do %>
+#Create a new keypair
+$ ssh-keygen -t dsa
+Generating public/private dsa key pair.
+Enter file in which to save the key (/Users/patrick/.ssh/id_dsa): 
+Enter passphrase (empty for no passphrase): 
+Enter same passphrase again: 
+Your identification has been saved in /Users/patrick/.ssh/id_dsa.
+Your public key has been saved in /Users/patrick/.ssh/id_dsa.pub.
+The key fingerprint is:
+87:66:b7:a0:f6:0e:6a:71:2c:5d:ee:5f:17:2a:b7:2f patrick@localhost
+The key's randomart image is:
++--[ DSA 1024]----+
+|                 |
+|                 |
+|                 |
+|        ..       |
+|     o oS o   .  |
+|    o ++.+ . . . |
+|     ++.  o + .  |
+|    .o o.  +Eo   |
+|   ..  .o.. .o.  |
++-----------------+
+$ cat ~/.ssh/id_dsa.pub | ssh user@remotehost "cat - >> ~/.ssh/authorized_keys"
+$ ssh user@remotehost
+<% end %>
+
+### **Install your keys on a remote server:**
+<% codify(:lang => "shell") do %>
+$ ssh-copy-id -i ~/.ssh/id_dsa.pub user@remotehost
+#Alternative 
+$ cat ~/.ssh/id_dsa.pub | ssh user@remotehost "cat - >> ~/.ssh/authorized_keys"
+<% end %>
+
+### **Passphrase automation:**
+If you have protected your keys with a passphrase (which you should), then it is annoying to re-enter that all the time. You can avoid that by running your environment inside an *ssh-agent* and using *ssh-add* to enter the passphrase once.
+
+<% codify(:lang => "shell") do %>
+$ ssh-add ~/.ssh/id_dsa
+Need passphrase for /home/mah/.ssh/id_dsa (you@example.com).
+Enter passphrase:
+$
+<% end %>
+
+
+### **Pseudo Terminal** : 
+some commands like sudo require a pseudo terminal to be activated
+
+<% codify(:lang => "shell") do %>
+$ ssh -t patrick@remotehost sudo cat /etc/passwd
+<% end %>
+
+### **Avoid lastlog:**
+Log in without appearing in lastlog/w and who output.
+<% codify(:lang=>"shell") do %>
+$ ssh -T user@hostname.com
+<% end %>
+
+### **Piping**
+Example of using piping to backup over the network
+<%- codify(:lang => "shell") do %>
+$ ufsdump 0uf - /dev/md/rdsk/d33 | ssh r280n "dd obs=32k ibs=32k of=/dev/rmt/0n"
+<% end -%>
+
+### **Rsync over ssh**
+<% codify(:lang=>"shell") do %>
+$ rsync -avz -e "ssh -i /home/thisuser/cron/thishost-rsync-key" remoteuser@remotehost:/remote/dir /this/dir/ 
+<% end %>
+
+<hr>
+## Tunnels and firewall-piercings:
+
+### **X-forwarding:**
+<% codify(:lang => "shell") do %>
+$ ssh -X patrick@remotehost
+Warning: untrusted X11 forwarding setup failed: xauth key data not generated
+Warning: No xauth data; using fake authentication data for X11 forwarding.
+Last login: Fri Aug 27 20:27:40 2010
+<% end %>
+
+### **Port forwarding:**
+Set up a localforward from the remote machine port 25 to a local port 9025
+<%- codify(:lang => "shell") do %>
+$ ssh -L 9025:localhost:25 patrick@remotehost
+<% end -%>
+
+### **No command:** 
+Sometimes you just want to setup a forward with having a shell
+<%- codify(:lang => "shell") do %>
+$ ssh -N -L 9025:localhost:25 patrick@remotehost
+<% end -%>
+
+### **KeepAlive:**
+Getting tired of those timeouts by the firewall? Have ssh send a keepalive/
+
+Put the following options in your $HOME/.ssh/ssh_config
+<% codify(:lang => "ssh-config") do %>
+	KeepAlive yes
+	ServerAliveInterval 60
+<% end %>
+
+### **Socks Daemon for proxying:** (-D)
+Sometimes it's interesting to start a socks daemon. You can configure this in your browser to surf as it seems to come from the remote machine.
+<%- codify(:lang => "shell") do %>
+$ ssh -D 9999 patrick@remotehost
+<% end %>
+
+### **Tunneling over an http proxy:**
+Corporate firewalls often only allow http to go outside. See [corkscrew](http://www.agroman.net/corkscrew/)
+<% codify(:lang => "ssh-config") do %>
+ProxyCommand /usr/bin/corkscrew proxy-ip 8080 %h %p ~/.ssh/myauth
+<% end %>
+
+### **Chaining ssh hopping:**
+<% codify(:lang => "ssh-config") do %>
+Host pc1.example.org pc2.example.org
+ForwardAgent yes
+ProxyCommand ssh -qax bastion.example.org /usr/bin/nc -w 120 %h %p
+<% end %>
+
+### **Netcat mode:**
+Starting from openssh 5.4: we can have ssh act as netcat. (-W) This connects stdio on the client to a single port forward on the server. This allows, for example, using ssh as a ProxyCommand to route connections via intermediate servers.”
+
+<% codify(:lang => "shell") do %>
+$ ssh -p 443 -W remotehost2:23 patrick@remotehost
+Trying remotehost2...
+Connected to remotehost2.
+Escape character is '^]'.
+
+User Name : ^]
+telnet> close
+$
+
+<% end %>
+### **Mounting over ssh:**
+Sometimes it's nice to mount a remote directory over ssh. Fuse and sshfs are your friend
+
+<% codify(:lang => "ssh-config") do %>
+$ sshfs remote-user@remote.server:/remote/directory /mnt/remote-fs/
+<% end %>
+[http://fuse.sourceforge.net/sshfs.html](http://fuse.sourceforge.net/sshfs.html)
+
+### **VPN Tunneling:**
+Did you know that ssh can do layer 2 and 3 VPN tunneling?
+
+Check out ssh -w. Example from manpage:
+<% codify(:lang => "shell") do %>
+$ ssh -f -w 0:1 192.168.1.15 true
+$ ifconfig tun0 10.0.50.1 10.0.99.1 netmask 255.255.255.252
+<% end %>
+
+### **SSH http multiplexer:**
+sslh lets one accept both HTTPS and SSH connections on the same port. It makes it possible to connect to an SSH server on port 443 (e.g. from inside a corporate firewall) while still serving HTTPS on that port. 
+[http://www.rutschle.net/tech/sslh.shtml](http://www.rutschle.net/tech/sslh.shtml)
+
+<hr>
+## Speed
+### **Compression**
+If you are working on a slow link, compression (-C) and using a simple cipher (-c blowfish) saves you speed
+<%- codify(:lang => "shell") do %>
+$ ssh -C -c blowfish patrick@remotehost
+<% end -%>
+
+### **Multiplexing - ControlMaster:**
+Another great way to speed up ssh is to re-use the same connection when you connect multiple times to the same host
+<% codify(:lang=>"shell") do %>
+$ mkdir –p ~/.ssh/connections
+$ chmod 700 ~/.ssh/connections
+
+Add this to your ~/.ssh/config file:
+Host *
+ControlMaster auto
+ControlPath ~/.ssh/connections/%r_%h_%p
+<% end %>
+
+<hr>
+## Managing keys
+### **Ignore Hostkeys:**
+When you're re-installing a machine over and over again, you often want to get rid of the hostfile key verification. This is what you need: 
+<% codify(:lang => "shell") do %>
+$ ssh user@host -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
+<% end %>
+
+### **Check if hostkey exists:**
+<% codify(:lang => "shell") do %>
+k$ ssh-keygen -F 192.168.2.152
+# Host 192.168.2.152 found: line 31 type RSA
+192.168.2.152 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwHH15HpeJo21wyqpe2iFM8/0CtoYnE9DDXfCewws7iMhM+vgp7pjnaC83IgAt7G/x/VDHcbnyuI4odrGSEAE5wm7LNuT6uSfQMbXCayE+uoOIrAVhf41ZnAFQrs/+Mutk5LFEjPPNhuriq5ltBT4UwMlYQMa5z/SzmxV0ZAGXks5GMDz0o89yUwRarRfsGudASEtzUxgnxnOo5STBMZOdQ0GNEVdfJDgfJDAOi34T1FidpCqAtm8akYuB+Qsj3/hDQmIT+GsKYaGNZvz8ZNnPBAc9kWlS6VqXXNreyEeu7AmHDWXjMP3NW1tsibmZ8zeOSZdmEVEiuaYCIvERDq3MQ==
+<% end %>
+
+### **Remove a hostkey:**
+<% codify(:lang => "shell") do %>
+$ ssh-keygen -R 192.168.2.152
+/Users/patrick/.ssh/known_hosts updated.
+Original contents retained as /Users/patrick/.ssh/known_hosts.old
+<% end %>
+
+### **Get hostkey of remote server:**
+<% codify(:lang => "shell") do %>
+$ ssh-keyscan remotehost
+# remotehost SSH-2.0-OpenSSH_5.2
+remotehost ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAyREFGMBB6Qi1uoEYIk4GlqLXdS26moAxmV69UX0icQjp0Rw53xZ/2L0ZQwhsUiFV1vq4QfZNeUO142IzBgSspgsJZ7wJq213tsE7WIJGIBqvWnhU3vJuL9wgYT8f6BAvLoEfapFhLy24TDmn2DXldJAYgo8MnUbRrJlvnhQZPpd5cDWCXkzPGQE8r7REZsAWbWNlVOFRvZioPoGCGYMtsDWSBelBISGkedoNpTSpRkMmBAnsHBfvIzDPoTDYL4PZR0jJ8MaJrDhRtD4caRw4HVyhzSa3/FCpcm09PyBRabH/CyxNSOZjLc2+N9Ph9AKeTNgvmxP70wx668XaGYwCrQ==
+<% end %>
+
+### **SSH DNS Keys**
+Instead of using your local hostfile, you can store your keys in DNS. Have a look at [sshfp](http://freshmeat.net/projects/sshfp/) to do the job. Then you can specify that ssh needs to 
+
+<% codify(:lang => "shell") do %>
+$ ssh localhost -o "VerifyHostKeyDNS=yes"
+yes authenticity of host 'localhost (127.0.0.1)' can't be established.
+RSA key fingerprint is 2d:d3:29:bd:4d:e2:7d:a3:b0:15:96:26:d4:60:13:34.
+Matching host key fingerprint found in DNS.
+Are you sure you want to continue connecting (yes/no)?
+<% end %>
+
+### **SSH Escape Sequences:**
+It often happens to me that I'm working into an ssh shell that used forwarding. I always thought there was no way to change the forwarding rules and that I had to logout. It seems not! SSh has an internal shell activated by a tilde. Seeing is believing!
+
+Escape sequences are only recognized after a newline and are initiated with a tilde (~) unless you modify it with the -e flag.
+<% codify(:lang => "text") do %>
+Hit ENTER ~? on a running ssh session to see a list of escapes:
+
+Supported escape sequences:
+
+~. – terminate connection
+~B – send a BREAK to the remote system
+~C – open a command line
+~R – Request rekey (SSH protocol 2 only)
+~^Z – suspend ssh
+~# – list forwarded connections
+~& – background ssh (when waiting for connections to terminate)
+~? – this message
+~~ – send the escape character by typing it twice
+(Note that escapes are only recognized immediately after newline.)
+~. and ~# are particularly useful.
+<% end %>
+
+### **Visualize hostkeys:**
+Every host key has it's own visual fingerprint 
+<% codify(:lang => "shell") do %>
+$ ssh -o VisualHostKey=yes patrick@localhost
+Host key fingerprint is 9f:a0:03:c1:63:8b:b8:c6:d6:83:cb:22:33:cb:83:cc
++--[ RSA 2048]----+
+|                 |
+|   .             |
+|    =            |
+| . o +           |
+|. . o   S        |
+|..o  . . o .     |
+|== o  o   o      |
+|@E. .  .         |
+|+B.              |
++-----------------+
+<% end %>
+
+<hr>
+## Security hacks
+### **Local Password sniffing:**
+If you have process that connects to your ssh and you want to see the password it's using, then strace is your friend.
+<% codify(:lang => "shell") do %>
+$ ps axuww | egrep 'PID|ssh'
+#Now become root and attach to the running daemon with strace, changing the PID as appropriate:
+
+$ sudo strace -f -e 'read,write' -p12345
+<% end %>
+
+### **Remote Password sniffing:**
+A more passive way of listening into ssh sessions (v1) is using dsniff
+- [Dsniff](http://www.allguru.net/security/running-network-sniffer-dsniff/)
+
+### **Fingerprint fuzzing:**
+This one is to lure a lazy administrator into accepting your certificate. It generates keys with an almost similar fingerprint. 
+[http://freeworld.thc.org/papers/ffp.html](http://freeworld.thc.org/papers/ffp.html)
+
+### **SSH Honeypot:**
+And to go totally security. Launch your own ssh honeypot and capture all the remote commands (and typos) with Kippo
+
+- [http://code.google.com/p/kippo/](http://code.google.com/p/kippo/)
+- [http://www.securitytube.net/SSH-Password-Capture-using-Kippo-video.aspx](http://www.securitytube.net/SSH-Password-Capture-using-Kippo-video.aspx)
+
+<hr>
+## Need more?
+[Top 50 SSH Helper tools - OMG!](http://www.mynitor.com/2010/08/16/top-50-ssh-helper-tools-omg/)
+
+<hr>
+## Share yours! I'm definitely interested

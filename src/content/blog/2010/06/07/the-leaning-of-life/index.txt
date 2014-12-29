@@ -1,0 +1,67 @@
+--- 
+title: The leaning of life - History of the Silos
+created_at: 2010-07-07 12:11:20.848050 +02:00
+tags: 
+- devops
+- lean
+- enterprise silos
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<a href="http://blog.global-integration.com/wp-content/uploads/2008/12/life-in-a-matrix-9-breaking-the-silos.jpg"><img src="http://blog.global-integration.com/wp-content/uploads/2008/12/life-in-a-matrix-9-breaking-the-silos.jpg"></a><br>
+
+'Break down the silos', that is a rallying cry that you will often hear amongst devops people: the word *silo* in an enterprise context usually has a bad connotation. Still they keep on existing and I figure there must be good reasons for that. Maybe if we understand the reasoning behind silos better, we stand a better chance overcoming the downsides of their existence.
+
+As usual wikipedia is quite helpful to find the origin of the word [Silo effect](http://en.wikipedia.org/wiki/Information_silo) and explains: 
+
+- The *silo effect* gets its name from the farm storage silo; each silo is designated for one specific grain, and a lack of communication causes departmental thinking to lack ideas from other departments.
+- A second slightly more academic, suggestion as to the term *silo effect* focuses on the gradual draining of the entire silo's grain from a remarkably small opening in the bottom. The homogeneous state of the entire volume of grain makes it highly susceptible to small changes as they occur further and further down.
+
+[Julian Simpson](http://www.juliansimpson.org/) (aka The [@builddoctor](http://twitter.com/builddoctor)) said in his presentation [Silos are for Farmers](http://www.slideshare.net/simpsonjulian/solos-are-for-farmers) and right he is, but why do they keep existing? 
+
+My initial findings on the internet seemed to indicate two other reasons: 
+
+- [Marcel explains](http://www.camagazine.com/archives/print-edition/2002/march/columns/camagazine23400.aspx) that the root of the problem is an *offshoot of decentralized management*
+- For others [it's a communication problem](http://www.zdnet.com/blog/projectfailures/reflecting-on-it-business-silos/7948)
+
+<table>
+<tr ><td><a href="http://www.amazon.com/Rebirth-American-Industry-William-Waddell/dp/0971243638"><img src="http://ecx.images-amazon.com/images/I/512V593NEAL._SL500_AA300_.jpg"></a></td><td>We discussed it further at <a href="http://www.agileopen.net/agile-open-belgium-2010">Agile Open Benelux 2010</a> earlier this year but we didn't get to the root of the matter IMHO. We all have a hunch or certainty that this is a bad thing. Still we fail to explain why they are so pre-dominantly existent in big enterprises. Sure, people see managers as wanting their own empire, but why is it those people have the idea they are doing a good job?
+<br>
+<br>After chatting with <a href="http://www.nayima.be/">Pascal Van Cauwenberghe</a> , he suggested I read <a href="http://www.amazon.com/Rebirth-American-Industry-William-Waddell/dp/0971243638">Rebirth of American Industry - A study of Lean Management by William H. Waddell & Norman Bodek</a> and now things have become much clearer to me. </p> </td></tr></table>
+
+The book explains on the difference in culture in manufacturing between the [Sloan](http://en.wikipedia.org/wiki/Alfred_P._Sloan) and the [Toyoda](http://en.wikipedia.org/wiki/Eiji_Toyoda) model (aka as Lean). The sloan model was used at the successful (ahum) General Motors, and has been copied over to other management cultures. Some of it's design decisions are:
+
+- Management knows it best: Sloan by design has put people in different groups and put management on top of it, to make sure it works
+- It values the concept of ROI and ROS which makes the divide even further, as unfinished products as they float from division to another can be seen as assets (or is it inventory), even if they are of no use to the actual customer. 
+- People are seen as a variable cost that can be gotten under control by automation. Toyota has made a point of [never firing people](http://www.youtube.com/watch?v=CN5NM9RE_WI&feature=related ) because they see people as fixed asset. Some argue this is [one of the reasons of the current problems](http://www.drjohnsullivan.com/articles-mainmenu-27/articles/hr-strategy-mainmenu-33/502-a-think-piece-how-hr-caused-toyota-to-crash) of Toyota but nevertheless I believe in it. 
+
+Toyota/Ford or lean for that matter focus on different aspects:
+
+- **Cycle time**: the time it takes to go through the whole process. If this can be shortened it means that the process can run much smoother
+- **Quality**: they have a zero defect tolerance, where they understand whatever defect that will occur during manufacturing will be easier and less costly to fix as soon as possible within the process
+- **Synchronization**: make the different processes work together in lock step together and also work at the requested speed of the customer (pull not push)
+
+They pressure the whole of the cycle and not each specific part of the chain. Off course, this is my quick interpretation, so if you want to know more , I urge you to read the book.
+
+You might ask where does this lead me , I'm in IT ? Well, when hearing many of the stories and interpretation of devops, I see a lot of similarity between lean and devops subjects:
+
+- **The enabler**: just as the electric motor enabled automation within manufacturing, virtualization and in it's extend cloud has made many more things possible
+- Reducing waste: similar to the focus of the engineers in manufacturing, people are trying to improve cycle time by eliminating waste. F.i. cucumber-nagios reduces the waste of rewriting monitoring scripts when you already have testing scripts. Config Management tools like chef or puppet reduce the setup time of a machine again decreasing cycle-time.
+- **Avoid Batches**: by using continuous deployment in small steps, people avoid both large inventory of features and better understanding of when things fails because they do it in small steps.
+- **Poka Yoke/FailProof**: using Continuous Integration with test, they create a harness to make sure things don't fail. Some companies are getting so confident that they let new employees deploy their own code, because they trust their failproofing of the system.
+- **Takt Time**: the ability to produce at the requested speed of the customer. Sysadmins make sure that the last mile to the customers keeps on working and even though they don't develop software, they still add value to the process. Also the fact that scaling can happen
+- **Andon/Stop the line**: It requires the complete attention of everybody to fix it, as the cycle time is broken. Teams performing Continuous Integration already have this habit for the build status. It should always be fixed first. Similar sysadmins that have monitoring software that goes red, assign it the highest priority. To take it even further both should be focused to fix each other's problems if one of these go wrong.
+- **Kanban**: the equivalent has been introduced in Software development by [David Anderson](http://www.agilemanagement.net/), to visualize the process and work out the required buffers, waste and other things to improve in your process. It is described in more detail here by [Stephen Nelson-Smith](http://sysadvent.blogspot.com/2009/12/day-19-kanban-for-sysadmins.html)
+- **Measuring cycle time**: a lot of companies are actively providing metrics of their # of deploys, errors they have (or tickets). While they improve things they can measure their progress. If you don't measure things you don't know what's happening.
+- **Zero defect**: it doesn't matter if its a functional defect or things like security and performance. Things need to be fixed as early as possible in the process
+- **Listen to the people on the floor**: Lean instructs management to listen to people that do the job and encourages them to watch and learn first. They are not better then anyone else and t
+- **Understanding the tools you use**: it might be a biased observation, but Open Source allows you better to inspect problems and potentially fix them. It's one of it's strengths of using it.
+- **Single piece flow**: Single piece flow is the ideal state where parts are manufactured one at a time, and flow throughout the manufacturing and supply chain as single unit, transferred as customer’s order. You could the fact that people push out single feature out all of the time as a kind of single piece flow. 
+
+It's just common sense? We'll lost of people have tried to introduce lean within their enterprise and failed (maybe not on paper). It requires a culture and not only going through the mojo: oh yes, we have a CI system and do puppet or chef, hurraah! There's more to it then just tools, you also need the culture. Agreed culture is hard to change and you might start with the behavior first [Israel Gat](http://theagileexecutive.com/), but only the behavior will only get you so far.
+
+Another topic that keeps crawling up is, will sysadmins disappear? Engineers have never disappeared from factories either. There will always be someone needed to manage the machines. If your management doesn't value people they risk that you don't improve things because you fear for your job. But if you can overcome that fear, make sure you are open for other work at the same place: maybe spend more time in testing phase, or even become partly a programmer. Just like the HR policy of Toyota  you can be retrained, the rest is up to you. So it is not about being a sysadmin or a devops: it doesn't matter what label you put on it, as long as you are improving things. And when you improve things make sure they improve things for the complete cycle and for the customer. 
+
+Some of these thought might still see very blurry. I hope to refine this in the future, but I wanted to get you informed on the book anyway. Any comments, feedback , corrections are more then welcome!

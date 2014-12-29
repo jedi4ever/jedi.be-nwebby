@@ -1,0 +1,126 @@
+--- 
+title: What Is This Devops Thing, Anyway?
+created_at: 2010-02-12 09:30:30.508745 +01:00
+tags: 
+- devops
+- Stephen Nelson-Smith
+- agile sysadmin
+- opsdev
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<table><tr><td><img src='/blog/wp-content/uploads/2010/02/butterfly-stages.jpg' alt="emerging butterfly"></td>
+<td> In the last few months, a movement has begun to take shape.  It's a movement of people who think it's time for change in the IT industry - time to stop wasting money, time to start delivering great software, and building systems that scale and last.  This movement is being called Devops.  But what is Devops?  Where did it come from?  And what can it achieve? </td></tr><tr><td colspan=2>
+<i>Guest post by : Stephen Nelson-Smith <a href="http://twitter.com/lordcope">@lordcope</a> a Technical Manager and Devop based in Hampshire, UK and author of <a href="http://agilesysadmin.net">Agile Sysadmin</a></i>
+</td></tr></table> 
+
+### What problems are we trying to solve?
+
+Let's face it - where we are right now sucks.  In the IT industry, or perhaps to be more specific, in the software industry, particularly in the web-enabled sphere, there's a tacit assumption that projects will run late, and when they're delivered (if they’re ever delivered), they will underperform, and not deliver well against investment.  It's a wonder any of us have a job at all!
+
+Let’s have a look at some of the common problems we experience in the software world today.
+
+### Fear of change
+
+Once an application is delivered, the business tends to be tremendously afraid of change.  The suspicion is that the software itself, and the platform upon which it sits, is somewhat brittle and vulnerable.  Bureaucratic change-management systems are put in place, and it takes a painfully long time to introduce new features, or fix problems with the application.
+
+### Risky deployments
+
+Another symptom of the malaise is the concept of the ‘risky deployment’.  This is the situation in which no-one is really terribly confident that the software will work in the live environment.  Will the code behave as expected?  Will it cope with the load?  Often we don’t have the answers to these questions - we just push it out at a quiet time, and watch to see if it falls over.
+
+### It works on my machine!
+
+A common situation we experience is one in which a problem manifests itself once the site is live.  These problems are typically picked up by systems administrators, or helpdesk / client services people.  After investigation (although to be fair frequently without) the problem is reported to the developers.  The developers take a cursory look, and retort: “It works on my machine”.
+
+However, this is frequently meaningless.  I’ve worked in places where the code is developed on Windows 2000 workstations, and tested with Tomcat on Windows, and then deployed on Redhat Linux, with software load balancers, different Java versions and different Tomcat versions.  This is not to mention the entirely different properties files on developer workstations compared to live machines.
+
+### Siloisation
+
+On most projects I’ve worked on, the project team is split into developers, testers, release managers and sysadmins working in separate silos.  From a process perspective this is dreadfully wasteful.  It can also lead to a 'lob it over the wall' philosophy - problems are passed between business analysts, developers, QA specialists and sysadmins.  Furthermore, we see a replication of this silo structure within the teams - it’s not uncommon to see dedicated database and network people in the same system team, alongside sysadmins.  Often the larger silos aren't in the same office, the same city, or in sometimes not even in the same country.  The result is an ‘us and them’ mentality - groups of people who are simultaneously suspicious of and afraid of each other.
+
+The Devops movement is bold enough to believe that there’s a better way - a way of building teams, and building software that can solve these problems.
+
+## How does Devops help?
+
+The Devops movement is built around a group of people who believe that the application of a combination of appropriate technology and attitude can revolutionize the world of software development and delivery.
+
+The demographic seems to be experienced, talented 30-something sysadmin coders with a clear understanding that writing software is about making money and shipping product.  More importantly, these people understand the key point - we’re all on the same side!  All of us - developers, testers, managers, DBAs, network technicians, and sysadmins - are all trying to achieve the same thing: the delivery of great quality, reliable software that delivers business benefit to those who commissioned it.
+
+Breaking this down a bit - one of  the key statements there is ‘sysadmin coders’.  There’s been a certain amount of popularity recently around the concept of ‘polyglot programmers’.  These are developers who know multiple languages, and multiple approaches to programming, such that when appropriate they can move swiftly between object-oriented Ruby and a functional language such as Erlang or OCaml.  This is simply an example of a larger observation - there is no one IT skill that is more useful or more powerful than another.  To solve problems well you need all the skills.  When you build teams around people who can be developers, testers, and sysadmins, you build remarkable teams.
+
+Beyond this multi-disciplinary approach, the Devops movement is attempting to encourage the development of communication skills, understanding of  the domain in which the software is being written, and, crucially, a sensitivity and passion for the underlying business, and for ensuring it succeeds.
+
+It might seem obvious, but communication really is one of the biggest keys.  Devops are bridge-builders.  The fact of the matter is that building quality software is really hard - it's error prone, it's risky, it's unpredictable.  In the last ten years or so, software developers have started to realise this.  The development of the Agile Manifesto, and the consequent improvements in process and peopleware, together with some technology advances around testing have had a massive impact.  
+
+However, there's still a gaping hole in what Chris Read calls 'the last mile'.  The thing is, 'dev complete' is a long long way from 'live, in production, stable, making money'.  
+
+The problem is that it's typically the sysadmins who are responsible for getting the software out live - but often they don't know, trust, like, or even work in the same city as the developers.  How on earth are we expected to deliver good software that way?
+
+So, the Devops movement is characterized by people with a multidisciplinary skill set - people who are comfortable with infrastructure and configuration, but also happy to roll up their sleeves, write tests, debug, and ship features.  These are people who making connections, because they can - because they have feet in multiple camps, they can be ambassadors, peace makers, facilitators and communicators.  And the point of the movement is to identify these, currently rare, people and encourage them, compare ideas, and start to identify, train, recruit and popularize this way of doing IT.
+
+This has a tremendous impact on the business.  Suddenly the technical team starts trying to pull together as one.  An 'all hands on deck' mentality emerges, with all technical people feeling empowered, and capable of helping in all areas.  The traditionally problematic areas of deployment and maintenance once live become tractable - and the key battlegrounds of developers ('the sysadmin built an unreliable platform') versus sysadmins ('the developers wrote unreliable code') begins to transform into a cross-disciplinary approach to maximizing reliability in all areas.  This, of course, has a positive effect on the bottom line - better reliability and availability, happier clients, faster time to market, and more time to focus the team's energy on core business rather than wasteful administration and firefighting.
+
+## Criticisms of the movement
+
+Some people have been a little suspicious - the movement really looks a lot like just a bunch of European sysadmins, many of whom know each other.  Is this just an elitist club?  Some kind of rebranding exercise?  
+
+Well, it's true - Devops as a movement is characterized by a number of sysadmins, many of whom know each other - but then this isn't a surprise.  We've already explored the problems that we're trying to solve - these are problems centred around the deployment and management of applications that are, from a simplistic position, completed work.   Developers have already realized that change was long overdue, and they’ve started taking steps to aleviate the pain.  The result of this is that the problem has moved, and it’s in the systems area that the pain is now being felt.  Consequently it's only natural that the majority of the people who have realized it's time to change things operate in the systems area.
+
+Yes, there are some senior, experience, and talented people in the movement - but again, that's no surprise - the kind of sysadmin who is going to recognize the problem, care about fixing it, and have the combination of skills in terms of programming, systems and infrastructure and personal and management skills will by the very definition be a highly skilled and capable person.  That’s not to be confused with elitist - the movement is friendly, welcoming, and open.
+
+To draw a comparison, when the Agile Manifesto was drawn up, that was a gathering of well known, experienced, figurehead developers. It could easily have been perceived as exclusive, and elitist, but that didn't invalidate the ideas, its value, or prevent the movement from growing and thriving
+
+The fact that the movement has grown up in Northern Europe is simply the coincidence of a concentration of good Agile groups, and capable sysadmin / developers gathering together in a Belgian city for the inaugural DevopsDays unconference.
+
+So if you’re feeling wary of the movement, or worried that you might not be accepted or fit in, don’t worry at all - if you’ve got a desire to change the world, hop on board.
+
+## How to get involved
+
+In my view becoming a Devop requires a certain state of mind.  It's an attitude which says: I'm going to make a difference, I'm going to cooperate and communicate, and I'm going to understand that in the business of delivering great software, we're all in it together.  If you're a sysadmin, this means spending time with the developers.  Get to know your way around the code base.  Contribute to it.  If you don't know how to  program, get started - there are good tutorials available for Python and Ruby, which are both excellent, powerful general purpose languages that will serve you well.  Start thinking about systems management as a programming task - use Puppet or Chef to manage your machines, and start thinking about how to test your infrastructure.
+
+If you're a developer, go and make friends with your sysadmins.  Don't view them as lower life forms, or as people to lob problems to.  Go and join in - pair with them.  If they're using Puppet or Chef, get involved - start contributing to their codebase.  If you're an experienced programmer, especially if you have an understanding of test driven development, consider mentoring your sysadmins - get them confident in programming, and encourage them to start to take ownership of the code base.  Start to understand the roles within your (soon to be removed) silos.  Try to understand what skills the QA team brings, and how they work - see if there's a way for you to help.  Try to cross-pollenate - sysadmins, DBAs, network people, business analysts - you're all on he same team.
+
+If you're a manager, advertise positions as 'Devop' not just ‘Developer’ or 'SysAdmin'.  Make it clear you're interested in hiring people with cross-functional skills, and that you'll provide training to help this.  Start implementing configuration management systems, get sysadmin code into version control, get the systems team involved in continuous integration and deployment activities.  If you need to hire in consultancy to help get you on the right track, there are people available who do this kind of thing every day.
+
+## Summary
+
+The Devops movement is still in its infancy, but it's gathering pace - there are conferences, mailing lists, irc channels, blogs and people to get to know.  I'm convinced this isn't just a fad, and we're on the brink of a revolution in the software industry - a paradigm shift in which developers and sysadmins start to work together, to train each other, and ultimately to blur the boundary - welcome to the world of the Devop.
+
+#### About the author
+Stephen Nelson-Smith is a Technical Manager and Devop based in Hampshire, UK.  His company, [Atalanta Systems](http://atalanta-systems.com), specializes in applying a blend of automation technologies and agile and lean work practices to enable clients to concentrate on their core business, be more effective, and make more money.  You can follow him on [Twitter](http://twitter.com/LordCope), and read his blog at [Agile Sysadmin](http://agilesysadmin.net) 
+
+## Resources
+
+If this sounds like the kind of thing you already do, or like the kind of thing you want to do, there are plenty of resources available to help.
+
+### Blogs
+
+The following blogs are written from a Devops perspective, and offer high quality, technically rich content. 
+[The Build Doctor](http://www.build-doctor.com), [Patrick Debois (This One)](http://www.jedi.be/blog),  [Agile Sysadmin](http://agilesysadmin.net),  [RI](http://www.devco.net), [Bitfield](http://bitfieldconsulting.com) ,  [Planet Infra](http://www.zanet.net),  [Unix Daemon](http://blog.unixdaemon.net/)
+
+### Mailing lists
+
+The is a low volume Google group called [Agile System Administration](http://groups.google.com/group/agile-system-administration).  Most of the founders of the movement can be found there.
+
+### IRC
+
+IRC is a superb resource - the following channels on [freenode](http://freenode.net/) cover the kinds of tools and approcahes that are central to the movement, and many of the current members are the movement can be found in the channels.
+
+\#\#infra-talk , \#puppet ,  \#chef
+
+### Twitter
+
+Most of the inaugural Devops people can be found on Twitter.  You can also search for the hash tag #Devops.  Here are a selection of interesting people to follow:
+
+[Stephen Nelson-Smith](http://twitter.com/LordCope) , [Julian Simpson](http://twitter.com/builddoctor) , [Matthias Marschall](http://twitter.com/mmarschall)
+ , [Patrick Debois](http://twitter.com/patrickdebois) , [Mike Poutney](http://twitter.com/mikepea) , [Paul Nasrat](http://twitter.com/nasrat) , [Dean Wilson](http://twitter.com/unixdaemon) , [R.I.Pienaar](http://twitter.com/ripienaar) , [Lindsay Holmwood](http://twitter.com/auxesis) , [Chris Read](http://twitter.com/cread) , [Branden Faulls](http://twitter.com/omphe) , [James Turnbull](http://twitter.com/kartar) , [John Willis](http://twitter.com/botchagalupe), [Kris Buytaert](http://twitter.com/KrisBuytaert) , [Gildas Lenadan](http:/twitter.com/endemics), [John Arundel](http://twitter.com/bitfield) , [Andrew Shafer](http://twitter.com/littleidea), [John Allspaw](http://twitter.com/allspaw), [Michael Cote](http://twitter.com/cote) ,[Damon Edwards](http://twitter.com/damonedwards) , [Israel Gat](http://twitter.com/agileexec)
+
+
+### Tools
+
+And finally, here are some of the tools that you're likely to find in the box of a Devop.
+
+[Hudson]() , [Cucumber](http://cukes.info/) ,  [Cucumber Nagios](http://auxesis.github.com/cucumber-nagios/) , [Puppet](http://reductivelabs.com/products/puppet/) , [mcollective](http://code.google.com/p/mcollective/) ,  [cobbler](https://fedorahosted.org/cobbler/) ,  [Chef](http://www.opscode.com/chef) , [Flapjack](http://flapjack-project.com/) , [Visage](http://github.com/auxesis/visage) ,  [Collectd](http://collectd.org/)
+

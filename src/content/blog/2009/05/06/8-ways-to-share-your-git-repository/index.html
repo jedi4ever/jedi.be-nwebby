@@ -1,0 +1,680 @@
+---
+title: "8 ways to share your git repository"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=748
+created_at: 2009-05-06 10:34:46.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - gitosis
+   - curl
+   - gitweb
+   - github
+   - webdav
+   - centos
+   - netrc
+   - git
+   - apache
+---
+This blogpost provides a summary of different ways to share a git repository. Depending on your needs you can opt for different solutions. 
+<table border="1">
+	<tr><th>Repository</th><th width="200">Pro</th><th width="200">Con</th><th width="200">Controlling Access</th><th>Create Repositories</th></tr>
+	<tr><td><a href="#fileshare">File share</a></td><td>No network access required</td><td>Not internet friendly</td><td>Using filepermissions</td><td>Needs preparation per project on the share</td></tr>
+	<tr><td><a href="#gitdaemon">Git daemon</a></td><td>Fast git protocol</td><td>Not internet friendly port</td><td>no good permission control. Read by default, Write can be enabled , but only anonymous</td><td>per project needs to be blessed</td></tr>
+	<tr><td><a href="#sshserver">Plain SSH server</a></td><td>Allows good security</td><td>Not internet friendly port, requires account creation per user on server </td><td>Uses filepermissions</td><td>per project inited </td></tr>
+	<tr><td><a href="#gitshell">SSH server git-shell</a></td><td>Enhancement of Plain SSH Server scenario</td><td>Not internet friendly port, requires account creation per user on server</td><td>Uses filepermissions</td><td>per project inited </td></tr>
+	<tr><td><a href="#gitosis">Gitosis</a></td><td>Adds good remote management of users and repositories, only requires one system account</td><td>Not internet friendly port</td><td>Uses gitosis-config file</td><td>No server initalisation, only config is needed </td></tr>
+	<tr><td><a href="#apachehttp">Apache http</a></td><td>Falls back to standard apache config, only requires one system account, internet friendly</td><td>Slightly overhead</td><td>Uses htpasswd</td><td>per project inited</td></tr>
+	<tr><td><a href="#apachehttpgitweb">Apache http + gitweb</a></td><td>Falls back to standard apache config, only requires one system account, internet friendly, adds nice view of repository </td><td>Slightly overhead, read-only access</td><td>Uses htpasswd</td><td>per project inited</td></tr>
+	<tr><td><a href="http://www.github.com/">github</a></td><td>Internet accessible, easy to use webinterface</td><td>Hosted externally</td><td>Managing sshkeys</td><td>Web interface</td></tr>
+</table>
+<br>
+<a href="http://www.kernel.org/pub/software/scm/git/docs/user-manual.html#setting-up-a-public-repository">http://www.kernel.org/pub/software/scm/git/docs/user-manual.html#setting-up-a-public-repository</a>
+<br>
+<h3>Preparation:Git enable a simple project-X</h3>
+Let's say you have project called project-X that you have been working on, on your local machine. It contains one file called README.<br>
+To enable git on this project you can:<br>
+<pre>
+$ cd $HOME/project-X
+<br>
+# git init enables the git repository
+$ git init
+<br>
+# You add the readme file to the repository
+$ git add README
+<br>
+# You commit your changed to your local repository
+$ git commit -a -m 'Added README'
+</pre>
+<br>
+this will give you a .git directory in the project-X directory , ready to use in this tutorial
+<br>
+<a name="fileshare"></a>
+<h3>Share it over a file share</h3>
+Instead of having people reference your local repository, you can put your repository on a file share.
+<br> Let's say we have share path /share/git/ where we want to put our project-X<br>
+<br>
+<i>Preparing the repository</i><br>
+<pre>
+# First we navigate to the repository place and will create a new project-X dir
+$ cd /share/git
+$ mkdir project-X	
+$ cd project-X
+<br>
+# now we initialize this directory
+# but instead of using git init, we use  git --bare init
+# "A short aside about what git means by bare: A default git repository assumes that you will be using it as your working directory, 
+# so git stores the actual bare repository files in a .git directory alongside all the project files. Remote repositories don't need 
+# copies of the files on the filesystem unlike working copies, all they need are the deltas and binary what-nots of the repository itself. This is what "bare" means to git. Just the repository itself."
+$ git --bare init
+</pre>
+<br>
+<i>Pushing your local repository to the shared repository</i><br>
+<pre>
+# First go to your local repository
+$ cd $HOME/project-X
+# Then make the link to the shared repository
+$ git remote add origin file:///share/git/project-X
+<br>
+# We push to the remote repository
+$ git push origin master
+</pre>
+<br>
+<i>Controlling access </i><br>
+As we are dealing with a fileshare, permissions are handled by filesystem permissions. You could create two groups: project-X-read, project-X-write.
+To set these different group permissions you could use:
+<ul>
+<li><a href="http://articles.techrepublic.com.com/5100-10878_11-6091748.html">Using extended permissions on Linux with setfacl - http://articles.techrepublic.com.com/5100-10878_11-6091748.html</a>
+</li><li><a href="http://www.afp548.com/article.php?story=20050506085817850">Extended permissions on MacOSX -  chmod +a Groking Darwin ACLs - http://www.afp548.com/article.php?story=20050506085817850</a>
+</li></ul>
+<br>
+<i>Accessing the repository</i><br>
+<pre>
+# Another user can now clone the repository using:
+$ git clone file:///share/git/project-X
+# Change something
+$ ....
+# Commit the changes
+$ git commit -a
+# Push the changes to the central repository
+$ git push
+</pre>
+<br>
+<a name="gitdaemon"></a>
+<h3>Share using git-daemon</h3>
+<i>Installing git-daemon</i><br>
+Git includes a simple daemon that you use to share your project using the git protocol.<br>
+On Centos,Redhat this seems to required another package:
+<pre>
+$ sudo yum install git-daemon
+</pre>
+More detail can be found <a href="http://www.kernel.org/pub/software/scm/git/docs/git-daemon.html"> http://www.kernel.org/pub/software/scm/git/docs/git-daemon.html</a>
+<br>
+<pre>
+# Start the git daemon
+$ git daemon
+</pre>
+This creates a network listener on the GIT port. It allows by default read access to git projects.<br><br>
+<i>Prepare the repository</i><br>
+To allow git-daemon to read your project you have to add the file <b>.git/git-daemon-export-ok</b> to your project.<br>
+<br>
+<i>Controlling access</i><br>
+Git daemon has no notion of users. By default is allows read to everybody, if you want to give write access, then you have to enable it to everybody anonymously.<br>
+This is what makes is less suitable for controlling access. <br>
+If you try to update you receive the following erors:
+<pre>
+# On the local side
+$ git push git://localhost/...
+Initialized empty Git repository in ....
+localhost[0: ::1]: errno=Connection refused
+localhost[0: fe80::1]: errno=Connection refused
+fatal: The remote end hung up unexpectedly
+<br>
+# On the git daemon side
+Error on daemon side:
+ [9027] 'receive-pack': service not enabled for git://localhost/...
+..
+<br>
+</pre>
+<br>
+<i>Accessing the repository</i><br>
+<pre>
+$ git clone git:localhost/<i>your-path</i>/project-X
+</pre>
+<br>
+
+<a name="sshserver"></a>
+<h3>Share using ssh server</h3>
+Sharing over ssh is similar to sharing it over a filesystem.<br>
+<ul>
+<li><a href="http://toolmantim.com/articles/setting_up_a_new_remote_git_repository">http://toolmantim.com/articles/setting_up_a_new_remote_git_repository</a></li>
+<li><a href="http://blog.bhushangahire.net/2009/02/19/setting-up-a-new-remote-git-repository/">http://blog.bhushangahire.net/2009/02/19/setting-up-a-new-remote-git-repository/</a></li>
+</ul>
+<i>Preparing the repository</i><br>
+<pre>
+# On the SSH server we assume var/git as the central repository place and will create a new project-X dir
+$ cd /var/git
+$ mkdir project-X       
+$ cd project-X
+<br>
+# now we initialize this directory
+# but instead of using git init, we use  git --bare init
+# "A short aside about what git means by bare: A default git repository assumes that you will be using it as your working directory
+# , so git stores the actual bare repository files in a .git directory alongside all the project files. Remote repositories don't need copies of the
+ files on the filesystem unlike working copies, all they need are the deltas and binary what-nots of the repository itself. This is what "bare" means to git. Just the repository itself."
+$ git --bare init
+</pre>
+<br>
+<i>Pushing your local repository to the shared repository</i>
+<pre>
+# First go to your local repository
+$ cd $HOME/project-X
+# Then make the link to the shared repository
+$ git remote add origin ssh://user@gitserver/var/git/project-X
+<br>
+# We push to the remote repository
+$ git push origin master
+</pre>
+<br>
+<i>Controlling access </i><br>
+To have access, all users must have an account on the ssh server. So that means user-add for each user. <br>
+Permissions are handled by filesystem permissions. You could create two groups: project-X-read, project-X-write.<br>
+To set these different group permissions you could use:
+<ul>
+<li><a href="http://articles.techrepublic.com.com/5100-10878_11-6091748.html">Using extended permissions on Linux with setfacl - http://articles.techrepublic.com.com/5100-10878_11-6091748.html</a>
+</li><li><a href="http://www.afp548.com/article.php?story=20050506085817850">Extended permissions on MacOSX -  chmod +a Groking Darwin ACLs - http://www.afp548.com/article.php?story=20050506085817850</a>
+</li></ul>
+<br>
+<i>Accessing the repository</i><br>
+<pre>
+# Another user can now clone the repository using:
+$ git clone file:///share/git/project-X
+# Change something
+$ ....
+# Commit the changes
+$ git commit -a
+# Push the changes to the central repository
+$ git push
+</pre>
+<br>
+<a name="gitdaemon"></a>
+<h3>Share using git-daemon</h3>
+<i>Starting the daemin</i><br>
+Git includes a simple daemon that you use to share your project using the git protocol.
+<br>
+More detail can be found http://www.kernel.org/pub/software/scm/git/docs/git-daemon.html
+<br>
+<pre>
+# Start the git daemon
+$ git daemon
+</pre>
+This creates a network listener on the GIT port. It allows by default read access to git projects.<br>
+<i>Prepare the repository</i><br>
+To allow git-daemon to read your project you have to add the file <b>.git/git-daemon-export-ok</b> to your project.<br><br>
+<br>
+<i>Controlling access</i><br>
+Git daemon has no notion of users. By default is allows read to everybody, if you want to give write access, then you have to enable it to everybody anonymously.<br>
+This is what makes is less suitable for controlling access. <br>
+If you try to update you receive the following erors:
+<pre>
+# On the local side
+$ git push git://localhost/...
+Initialized empty Git repository in ....
+localhost[0: ::1]: errno=Connection refused
+localhost[0: fe80::1]: errno=Connection refused
+fatal: The remote end hung up unexpectedly
+<br>
+# On the git daemon side
+Error on daemon side:
+ [9027] 'receive-pack': service not enabled for git://localhost/...
+..
+<br>
+</pre>
+<br>
+<i>Accessing the repository</i><br>
+<pre>
+$ git clone git:localhost/<i>your-path</i>/project-X
+</pre>
+<br>
+
+<a name="sshserver"></a>
+<h3>Share using ssh server</h3>
+Sharing over ssh is similar to sharing it over a filesystem.
+<br>
+<i>Preparing the repository</i><br>
+<pre>
+# On the SSH server we assume var/git as the central repository place and will create a new project-X dir
+$ cd /var/git
+$ mkdir project-X       
+$ cd project-X
+<br>
+# now we initialize this directory
+# but instead of using git init, we use  git --bare init
+# "A short aside about what git means by bare: A default git repository assumes that you will be using it as your working directory
+# , so git stores the actual bare repository files in a .git directory alongside all the project files. Remote repositories don't need copies of the
+ files on the filesystem unlike working copies, all they need are the deltas and binary what-nots of the repository itself. This is what "bare" means to git. Just the repository itself."
+$ git --bare init
+</pre>
+<br>
+<i>Pushing your local repository to the shared repository</i>
+<pre>
+# First go to your local repository
+$ cd $HOME/project-X
+# Then make the link to the shared repository
+$ git remote add origin ssh://user@gitserver/var/git/project-X
+<br>
+# We push to the remote repository
+$ git push origin master
+</pre>
+<br>
+<i>Controlling access </i><br>
+To have access, all users must have an account on the ssh server. So that means user-add for each user. <br>
+Permissions are handled by filesystem permissions. You could create two groups: project-X-read, project-X-write.<br>
+To set these different group permissions you would use the set
+To set these different group permissions you would use the setfacl command on linux or the chmod +a on MacOSX<br>
+You could off course have multiple keys to one account, but this would not allow you to differentiate between different rights<br>
+<br>
+<i>Accessing the repository</i><br>
+<pre>
+# Another user can now clone the repository using:
+$ git clone ssh://user@gitserver/var/git/project-X
+# Change something
+$ ....
+# Commit the changes
+$ git commit -a
+# Push the changes to the central repository
+$ git push
+</pre>
+<br>
+<a name="gitshell"></a>
+<h3>Share using git-shell</h3>
+Similar to the <a href="#sshserver">SSH Repository setup</a>. The only difference is that instead of giving each user a normal shell f.i. '/bin/login', you set '/usr/bin/git-shell' as a more restrictive shell, that only allows the git commands.
+<br>
+Access it in any other way will result in fun message:
+<pre> fatal: What do you think I am? A shell?</pre>
+<br>
+<a name="gitosis"></a>
+<h3>Share using gitosis</h3>
+Gitosis  allows you to have on account on the ssh server and have all commits pass through that account.<br>
+<ul>
+<li><a href="http://scie.nti.st/2007/11/14/hosting-git-repositories-the-easy-and-secure-way">http://scie.nti.st/2007/11/14/hosting-git-repositories-the-easy-and-secure-way</a></li>
+<li><a href="http://blog.ardes.com/2008/5/19/git-hosting-with-leopard">http://blog.ardes.com/2008/5/19/git-hosting-with-leopard</a></li>
+<li><a href="http://eagain.net/gitweb/?p=gitosis.git;a=blob;f=README.rst;hb=master">http://eagain.net/gitweb/?p=gitosis.git;a=blob;f=README.rst;hb=master</a></li>
+</ul>
+<br>
+<i>Installing gitosis</i><br>
+<pre>
+# On Centos,Redhat to install gitosis
+$ sudo yum install gitosis
+<br>
+# This creates /var/lib/gitosis
+# This creates a user gitosis with as default homedir /var/lib/gitosis
+$ grep gitosis /etc/passwd
+gitosis:x:100:101:git repository hosting:/var/lib/gitosis:/bin/sh
+</pre>
+<br>
+<i>Initialize gitosis</i><br>
+To have gitosis initialize itself, it needs to have public key (id_dsa.pub) of a user that will be the first administrator
+<br>
+# To initialize the gitosis account
+$ sudo -H -u gitosis gitosis-init &lt; /tmp/id_dsa.pub
+Initialized empty Git repository in ./
+Reinitialized existing Git repository in ./
+**
+<br>
+
+This results in the following structure created under:
+<pre>
+.
+|-- .gitosis.conf -
+/var/lib/gitosis/repositories/gitosis-admin.git/gitosis.conf
+|-- .ssh
+|   `-- authorized_keys
+|-- gitosis
+|   `-- projects.list
+`-- repositories
+    `-- gitosis-admin.git
+        |-- HEAD
+        |-- branches
+        |-- config
+        |-- description
+        |-- gitosis-export
+        |   `-- keydir
+        |       `-- myself@my-Portable.local.pub
+        |-- gitosis.conf
+        |-- hooks
+        |   |-- applypatch-msg
+        |   |-- commit-msg
+        |   |-- post-commit
+        |   |-- post-receive
+        |   |-- post-update
+        |   |-- pre-applypatch
+        |   |-- pre-commit
+        |   |-- pre-rebase
+        |   |-- prepare-commit-msg
+        |   `-- update
+        |-- index
+        |-- info
+        |   `-- exclude
+        |-- objects
+        |   |-- info
+        |   `-- pack
+        |       |-- pack-82e64648d14e24258fa7c569100c6805edfc314c.idx
+        |       `-- pack-82e64648d14e24258fa7c569100c6805edfc314c.pack
+        `-- refs
+            |-- heads
+            |   `-- master
+            `-- tags
+15 directories, 23 files
+</pre>
+<br>
+Apart from this directory structures, gitosis-init also add the key to the authorized_keys of the gitosis user. <br>
+It does not allow interactive login, and restricts the commands to the gitosis-server command.<br>
+<pre>
+$ sudo -H -u gitosis cat $HOME/.ssh/authorized_keys
+### autogenerated by gitosis, DO NOT EDIT
+command="gitosis-serve myself@my-Portable.local",no-port-forwarding ,no-X11-forwarding,no-agent-forwarding,no-pty ssh-dss AAAAB3NzaC1kc3MAAACBAMAgxc ....
+</pre>
+<br>
+To make gitosis handle updates correctly we have to make the post-update executable
+<pre>
+sudo chmod 755 /var/lib/gitosis/repositories/gitosis-admin.git/hooks/post-update
+</pre>
+<br>
+<i>Controlling Access</i><br>
+Before you can push your local repository to gitosis, you have to setup the correct permissions
+<pre>
+# Checkout the gitosis-admin repository (using the public key you used to gitosis-init
+$ mkdir gitosis
+$ git clone ssh://gitosis@gitosis-server:gitosis-admin.git
+# And two groups to the gitosis-conf
+   [group project-X-read]
+   members = usera, userb
+   readable = project-X
+<br>
+   [group project-X-write]
+   members = userc, userd
+   writable = project-X
+<br>
+# Copy the public keys of usera,userb, userc, userd into the  keydir, with the correct names
+        |-- gitosis-export
+        |   `-- keydir
+        |       `-- myself@my-Portable.local.pub
+        |           usersa.pub
+        |           usersb.pub
+        |           usersc.pub
+        |           usersd.pub
+        |-- gitosis.conf
+# Add the keys
+$ git add gitosis-export/keydir/*.pub
+$ git commit -a -m 'Added users'
+# push them back to the repository
+$ git push
+</pre>
+<i>Pushing your local repo to to the gitosis server</i>
+<pre>
+$ cd project-X
+$ git remote add origin gitosis@gitosis-server:project-X.git
+$ git push origin master:refs/heads/master
+</pre>
+This will create a directory project-X  under /var/lib/gitosis/repositories/<br>
+<br>
+<i>Accessing the repository</i>
+Nothing special here. If your key was added to the gitosis-admin repository, then you can acces it with.
+<pre>
+$ git clone gitosis@gitosis-server:project-X.git
+</pre>
+<br>
+
+<a name="apachehttp"></a>
+<h3>Share over apache http</h3>
+<i>Preparing the repository</i>
+<pre>
+# On the web server we assume var/git as the central repository place and will create a new project-X dir
+$ cd /var/git
+$ mkdir project-X
+$ cd project-X
+<br>
+# now we initialize this directory
+# but instead of using git init, we use  git --bare init
+# "A short aside about what git means by bare: A default git repository assumes that you will be using it as your working directory
+# , so git stores the actual bare repository files in a .git directory alongside all the project files. Remote repositories don't need copies of the
+ files on the filesystem unlike working copies, all they need are the deltas and binary what-nots of the repository itself. This is what "bare" means to git. Just the repository itself."
+$ git --bare init
+</pre>
+Now that we created the project directory we need to give apache access to it:
+<ul>
+	<li>Be sure to set the correct permissions on the /var/git directory so that it can be read by the webuser. chown -R apache:apache /var/git/project-X</li>
+	<li>If you have selinux enabled: chcon -R -t httpd_sys_content_t /var/git/project-X </li>
+	<li>Enable the post-update hook: chmod +x /var/git/project-X/hooks/post-update
+</li></ul>
+<br>
+When you did not set the post commithook:
+<pre>
+$ git clone http://git.yourdomain.com/project-X
+Initialized empty Git repository in /Users/mydir/project-X/.git/
+fatal: http://git.yourdomain.com/project-X.git/info/refs not found: did you run git update-server-info on the server?
+</pre>
+Then you can need to run it manually the first time
+<pre>
+$ cd /var/git/project-X
+$ sudo -u apache git update-server-info
+</pre>
+<br>
+<i>Preparing apache</i><br>
+This document assumes you have a basic apache setup. And you have virtual name server working. Most of it is standard acces to the directory.<br>
+To allow write access, we need to have Webdav enabled. 
+<br>
+<a href="http://www.kernel.org/pub/software/scm/git/docs/howto/setup-git-server-over-http.txt"> http://www.kernel.org/pub/software/scm/git/docs/howto/setup-git-server-over-http.txt</a>
+<br>
+<pre>
+&lt;VirtualHost some-ip:80&gt;
+	Servername git.mydomain.com
+	DocumentRoot /var/git
+	&lt;Directory "/var/git"&gt;
+	   <b>DAV On</b>
+	   Options +Indexes +FollowSymLinks 
+		AllowOverride None
+		Allow from all
+		Order allow,deny
+	&lt;/Directory&gt;
+&lt;/VirtualHost&gt;
+</pre>
+This will add a virtual server that has access to the /var/git directory using simple browsing.<br>
+In case you are experiencing trouble:
+<ul>
+	<li>Remove the restrictions from welcome.conf: in this default file, it disables the index option. Error: ... </li>
+	<li>Note the + before the options, to allow the merge of permissions</li>
+</ul>
+<i>Controlling access</i><br>
+We control access to your repository using apache groupfiles and password files
+<pre>
+&lt;VirtualHost YOUR-IP:80&gt;
+	ServerName git.yourdomain.com
+	DocumentRoot /var/git
+	&lt;Directory /var/git/&gt;
+		DAV On
+		Options ExecCGI FollowSymLinks Indexes
+		# Deny everyything here
+		<b>Deny from all
+		AuthType Basic
+		AuthName "git repository"
+		AuthUserFile /var/git/htpasswd.git
+		AuthGroupFile /var/git/htgroup.git</b>
+	&lt;/Directory&gt;
+<br>
+	<b>&lt;Directory /var/git/project-X&gt;
+		Allow from all
+		Order allow,deny
+		&lt;Limit GET&gt;
+			Require group project-X-read
+		&lt;/Limit&gt;
+		&lt;Limit GET PUT POST DELETE PROPPATCH MKCOL COPY MOVE LOCK UNLOCK&gt;
+			Require group project-X-write
+		&lt;/Limit&gt;
+		&lt;/Directory&gt;</b>
+&lt;/VirtualHost&gt;
+<br>
+</pre>
+<br>
+<i>Accessing the repository</i><br>
+Git uses curl to access http repositories. Because our repository is now protected we need to create an entry in our $HOME/.netrc file
+<ul>
+	<li><a href="http://maymay.net/blog/2008/08/08/how-to-use-http-basic-authentication-with-git/">http://maymay.net/blog/2008/08/08/how-to-use-http-basic-authentication-with-git/</a>
+</li></ul>
+<pre>
+$ cat $HOME/.netrc
+machine git.yourdomain.com
+login reader
+password reader
+</pre>
+Now you should be able to clone project-X
+<pre>
+$ git clone http://git.mydomain.com/project-X
+</pre>
+<i>Possible Errors</i><br>
+<pre>
+Trying update
+error: Cannot access URL http://git.yourdomain.com/project-X/, return code 22
+error: failed to push some refs to 'http://git.yourdomain.com/project-X'
+</pre>
+If there's something wrong with the permissions. Maybe you don't have webdav enabled, the user is in the wrong group, or filepermissions are not set correctly. Check your apache error_log
+<br>
+<br>
+<pre>
+$ git clone http://git.yourdomain.com/project-X
+$ git push
+fatal: git-push is not available for http/https repository when not compiled with USE_CURL_MULTIerror: failed to push some refs to 'http://git.yourdomain.com/project-X'
+</pre>
+Either you compile your git client with the correct curl options. Or you can alternatively mount the remote repository as webdav share and access it via file:// references. See <a href="http://wiki.dreamhost.com/Talk:Git">http://wiki.dreamhost.com/Talk:Git</a>
+<pre>
+The following happens if your curl library  was not compiled with the correct options to post to 
+<a href="http://kerneltrap.org/mailarchive/git/2008/1/13/564431">http://kerneltrap.org/mailarchive/git/2008/1/13/564431</a>
+After a bit of research it seems that CURL compilation into GIT was not entirely successful for the Git on Mac OS X. As I was already mounting the git repository via WebDAV you an push and pull to your locally mounted repository by replacing the http URL with the path to your mounted WebDAV (/Volumes//). This worked pretty well for me and works well with Dreamhost with very little configuration.
+</pre>
+<br>
+<br>
+<pre>
+$ git push
+Fetching remote heads...
+   refs/
+   refs/tags/
+   refs/heads/
+   No refs in common and none specified; doing nothing.
+</pre>
+<br>
+This happens when you cloned an empty repository:
+<ul>
+	<li><a href="http://markmail.org/message/siua5lmfcyqivk4k#query:No%20refs%20in%20common%20and%20none%20specified%3B%20doing%20nothing.+page:1+mid:qmjg3elsuxnxjxrc+state:results">http://markmail.org/message/siua5lmfcyqivk4k#query:No%20refs%20in%20common%20and%20none%20specified%3B%20doing%20nothing.+page:1+mid:qmjg3elsuxnxjxrc+state:results</a>
+</li></ul>
+Because you cloned an empty repository , you need to specify the origin and master , after this first push, you can use git push as usual
+<pre>
+$ git push origin master
+</pre>
+<br>
+<a name="apachehttpgitweb"></a>
+<h3>Sharing repository using apache and gitweb</h3>
+By default, the apache does not provide a friendly view of the repository. To allow a better web interface, you can use git-web. This is a python script.<br>
+Before you take this option, be sure to setup the simple apache http first. This allows you to better check where the problem lies. 
+<br>
+<ul>
+	<li><a href="http://fedora.co.in/content/how-setup-gitweb-fedoracentos">http://fedora.co.in/content/how-setup-gitweb-fedoracentos</a></li>
+	<li><a href="http://2008.planet-soc.com/?q=node/5770">http://2008.planet-soc.com/?q=node/5770</a></li>
+	<li><a href="http://markmcb.com/2008/09/19/installing-gitweb-on-fedora-linux-and-apache/">http://markmcb.com/2008/09/19/installing-gitweb-on-fedora-linux-and-apache</a>
+	<li><a href="http://www.howtoforge.com/how-to-install-a-public-git-repository-on-a-debian-server">http://www.howtoforge.com/how-to-install-a-public-git-repository-on-a-debian-server</a></li>
+</ul>
+<i>Installing gitweb</i><br>
+<pre>
+# Easy gitweb installation on Centos,Redhat, which installs itself in /var/www/git by default
+$ yum install gitweb
+# You have to manually create a /etc/gitweb.conf file
+   $GIT= "/usr/bin/git";
+   $projectroot = "/var/git/";
+</pre>
+<br>
+Gitweb provides a nice interface but if you would have it take control of your web rendering, git would be confused. <br>
+To solve this we allow different ways to access the same repository:
+<ul>
+	<li>Using http://git.yourdomain.com/project-X.git : using AliasMatch we can map this to the traditional index rendering</li>
+	<li>With http://git.yourdomain.com/project-X : this will show the gitweb interface</li>
+</ul>
+<pre>
+&lt;VirtualHost YOUR-IP:80&gt;
+	<b>SetEnv GITWEB_CONFIG /etc/gitweb.conf</b>
+	ServerName git.yourdomain.com
+	<b>DocumentRoot /var/www/git</b>
+	<b>AliasMatch ^(/.*?)(\.git)(/.*)? /var/git$1$3</b>
+	&lt;Directory /var/git/&gt;
+		DAV On
+		Options ExecCGI FollowSymLinks Indexes
+		# Deny everyything here
+		Deny from all
+		AuthType Basic
+		AuthName "git repository"
+		AuthUserFile /var/git/htpasswd.git
+		AuthGroupFile /var/git/htgroup.git
+	&lt;/Directory&gt;
+<br>
+	&lt;Directory /var/git/project-X&gt;
+		Allow from all
+		Order allow,deny
+		&lt;Limit GET&gt;
+			Require group project-X-read
+		&lt;/Limit&gt;
+		&lt;Limit GET PUT POST DELETE PROPPATCH MKCOL COPY MOVE LOCK UNLOCK&gt;
+			Require group project-X-write
+		&lt;/Limit&gt;
+		&lt;/Directory&gt;
+<br>
+	<b>
+	&lt;Directory /var/www/git&gt;
+		Options ExecCGI FollowSymLinks Indexes
+		Allow from all
+		Order allow,deny
+		AddHandler cgi-script cgi
+		DirectoryIndex gitweb.cgi
+		RewriteEngine on
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteRule ^.* /gitweb.cgi/$0 [L,PT]
+	&lt;/Directory&gt;
+	</b>
+&lt;/VirtualHost&gt;
+</pre>
+<br>
+<i>Controlling Access</i><br>
+Similar to the <a href="#apachehttp">Apache http Repository</a>
+<br>
+<i>Publish your local repository</i><br>
+Similar to the <a href="#apachehttp">Apache http Repository</a> but now you need to use the .git extension
+<pre>
+$ git clone http://git.yourdomain.com/project-X.git
+</pre>
+<hr />
+<i>A very common error</i> 
+<pre>
+$ git push
+No refs in common and none specified; doing nothing.
+Perhaps you should specify a branch such as 'master'.
+fatal: The remote end hung up unexpectedly
+error: failed to push some refs to 'file:///share/projects/project-X'
+</pre>
+If you have gone through the steps of git remote add origin ...., you might think that git would be smart enough to now that a git push needs to go to your origin.<br>
+The first time after adding this, you can't use the default git push, but you have to specify the full path 
+<pre>
+	$ git push origin master
+</pre>
+Another way to solve this is to add the following lines to your .git/config file
+<pre>
+$ vi .git/config
+        [branch "master"]
+        remote = origin
+        merge = refs/heads/master
+</pre>
+Or stil another way is to specify the option while you add the remote <a href="http://swedishcampground.com/adding-a-remote-to-existing-git-repo">http://swedishcampground.com/adding-a-remote-to-existing-git-repo</a> 
+<pre>        
+$ git remote add --track master origin file:///share/projects/project-X
+</pre>

@@ -1,0 +1,16 @@
+---
+filter: textile
+---
+<h2>Education:</h2>
+* 1993 – 1995
+   Gediplomeerde in de Aanvullende Studie Informatica
+   Ontwerp en implementatie van een op WWW gebaseerde model-uitwisseling omgeving
+   Universiteit Gent, Gent
+
+* 1989 – 1993
+   Industriëel ingenieur in Electronica optie computerwetenschappen 
+   Katholieke Industriële Hogeschool De Nayer, Sint-Katelijne-Waver 
+
+* 1982 –1988
+   Middelbaar Onderwijs in Latijn-Wiskunde
+   Sint-Jan-Berchmanscollege, Antwerpen

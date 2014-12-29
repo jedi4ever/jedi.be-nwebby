@@ -1,0 +1,42 @@
+--- 
+title: Puppetcamp 2010 Europe - a Wonderful Gathering
+created_at: 2010-05-19 17:32:03.058407 +02:00
+tags: 
+- puppet
+- infrastructure as code
+- puppetcamp
+- puppetlabs
+- zebrastraat
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<table><tr><td><img src='http://jedi.be/blog/wp-content/uploads/2010/05/puppetcamp-europe-2010.png' alt="Puppetcamp Europe 2010"></td><td>
+<p>I have been following 'Puppet' from <a href="http://puppetlabs.com">Puppetlabs</a> for several years now. I love the idea of 'Infrastructure as Code'. Some people say: <i>All the cool things happen in the US</i>. </p>
+<p>But now the original developer and current CEO Luke Kanies and a lot of Puppet adepts are joining together for the next <strong>Puppetcamp in Europe, Belgium , Ghent on 27 and 28 of May 2010</strong> </p>
+<p>
+While handling the registrations for the event, I got an insight on the experience level of the <a href="http://puppetcamp.org/europe-2010-ghent/participants/">attendees</a>, and I must say, <i>I'm really impressed!</i>. Some people manage over a 1000 nodes in their companies and their code-fu level are extra-ordinary. I'm sure the event is going to rock as hell.
+</p>
+
+</td></tr></table>
+
+<table><tr><td>
+The event is split over two days and there will be six speakers:
+<ul>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker1">Portable infrastructure with Puppet – Luke Kanies</a>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker2">Embedded Puppet – Alban Peignier</a>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker3">Deploying Data Centers with Puppet – A user’s perspective – Rafael Brito</a>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker4">Puppet modules and module standards – Alessandro Franceschi</a>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker5">Auditing Change Management Policies with Puppet and Splunk – Jeff McCune</a>
+<li><a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/#speaker6">Puppet in complex Real-Time Environments – Rick van der Zwet</a>
+</ul>
+
+Check the complete schedule at the <a href="http://puppetcamp.org/europe-2010-ghent/schedule-and-speakers/">puppetcamp event website</a>.<br>
+
+And in the afternoon there will be an <a href="http://puppetcamp.org/europe-2010-ghent/openspace/">Open Space</a>. This will create a great opportunity to talk directly to all these awesome <i><a href="http://puppetcamp.org/europe-2010-ghent/participants/">puppeteers</a></i>.</td><td>
+<img src='http://jedi.be/blog/wp-content/uploads/2010/05/puppetlabs-logo.jpg' alt="Puppet Labs logo"></td></tr></table>
+
+If you want to part of it, you better [hurry up and register](http://puppetcamp.org/europe-2010-ghent/registration/). Only some places are left and time is running out.
+
+

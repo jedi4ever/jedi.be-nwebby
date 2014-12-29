@@ -1,0 +1,16 @@
+---
+layout: event
+extension: html
+title: Build Engineer Bootcamp - Trainer
+filter:    
+- erb
+- markdown
+---
+### About Paul Julius:
+
+<table><tr><td><a href="http://www.pauljulius.com/"><img src='<%= @page.url+"/../PaulJulius.jpg" %>'></a></td><td>
+<p>He is a technologist, focused on automation and continual improvement of software processes. As such, he has become an Agile practitioner. He is one of the co-founders of the open source project called CruiseControl, a continuous integration framework.</p></td></tr></table>
+
+<p>He also co-chairs a series of international conferences on Continuous Integration and Testing, named <a href="http://citconf.com">CITCON</a>. Every year he hosts a conference in a city in each of Europe, Asia-Pacific and North America. The conference is free to attendees and espouses the mission statement put forth by the <a href="http://www.openinformationfoundation.org/">Open Information Foundation</a>, founded by <a href="http://blog.jeffreyfredrick.com/">Jeffrey Fredrick</a> and him.</p>
+
+<p>He has been working in the software industry for more than ten years. For more detail, <a href="http://www.pauljulius.com/bio.php">check out Paul´s Biography</p></a>

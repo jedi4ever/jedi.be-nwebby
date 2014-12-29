@@ -1,0 +1,46 @@
+---
+period: "2007"
+customer: Credoc / Federation of Notaries (Agilar)
+role: Technical Coordinator / Technical Consultant
+title: Prepare the environment for a disaster recovery plan
+job: true
+---
+<div>
+	<div class="span-22 first last append-bottom">
+		<div class="span-4 first"><img src="/customers/logo/credoc.jpeg" class="left"></div>
+		<div class="span-18 last">
+* Credoc technically runs the portal and mail environment used by every notary in Belgium. (+/- 8000). As Trust is very important they have high security standards to implement. After an Audit which they successfully past, the next step was to improve the reliability of the solution even more by implementing an Disaster Recovery Solution.
+* While Credoc technically passed the Audit, the most urgent was not a technical one but an organizational: Operations successfully ran the environment but too many new projects pushed things into production. Given the understaffing, this resulted in more operational errors and incidents increased and less time was available for the Disaster Recovery Plan.
+ 
+* Using Scrum both the operational Systems group was aligned with the operational Application group. On a higher level the projects became aware that the operational group was a 'shared' resources and therefore a bottleneck in the organization. Priorities were put in a Program Plan. A new ticketing system was introduced to better overview ongoing efforts.
+
+* On the technical level , the architecture was designed based upon the multisite concept and blades systems of HP. 
+* For better and faster deployment of projects, different environments were set up and the whole process was documented and further automated, using continuous integration.
+</div>
+	</div>
+	<div class="span-9 first append-2 border ">
+*Technology:*
+e-id, F5 loadbalancer, loadrunner, tomcat, MS-SQL, bamboo, confluence, blades, vmware, scrum, ITIL, webtrends, jboss, windows</div>
+	<div class="span-11 last">
+*Tasks:*
+_Service Manager_
+
+* Coordinate the interaction between Projects and Operations. 
+* within Operations, coordinate the Systems and Applications cells. Setup a program and priority list based on Business Value
+* integration with ticketing system
+
+_Tester_
+* verify operational fitness of applications
+* enduser simulation
+* test failover mechanisms
+
+_Sysadmin_
+
+* Manage the firewall, mail, loadbalancer, unix infrastructure
+
+_Architect_
+* Design the future DRP architecture 
+* Streamline the deployment process and creation of new application environments.
+
+</div>
+</div>

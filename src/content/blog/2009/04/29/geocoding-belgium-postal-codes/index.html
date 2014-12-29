@@ -1,0 +1,59 @@
+---
+title: "Geocoding Belgium Postal Codes"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=717
+created_at: 2009-04-29 12:52:36.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - geocode
+   - postcode
+   - mysql
+   - post
+   - postalcodes
+   - googlemaps
+---
+<p>For our <a href="http://www.hupskadee.be">hupskadee application</a> we wanted to have geosearch; people would enter their postal code and it would retrieve all babysits organizations within a range of X km. These are the steps we took, because we couldn't find a similar list on the internet . (At least not free of charge)
+</p>
+<h3>Step1: Download Belgium Postal Codes</h3>
+<p>
+On the site of the <a href="http://www.post.be">Post</a> there is an <a href="http://www.post.be/site/nl/postal_codes.html">official list of postal codes and names</a> available. You can download it in HTML, XLS and PDF.
+</p>
+<h3>Step 2: Convert to CSV file</h3>
+<p>If you download it in XLS, it is easy using an Excel, Numbers or Openoffice to convert it into a CSV file.
+</p>
+<h3>Step 3: Use google geocoder script</h3>
+<p>
+<a href="http://code.google.com/apis/maps/documentation/services.html#Geocoding">Google has nice service called the geocoder</a> that allows you to calculate the longitude and latitude of an address or a partial address. To use this you have to sign up for a googleMapKey
+</p><p>
+http://maps.google.com/maps/geo?q=&lt;your query&gt;&amp;output=csv&amp;key=#{googleMapKey}"
+</p><p>
+We made our query like this: q=#{naam}+#{postcode}+Belgie where naam and postcode are URLEncoded.
+</p><p>
+In order to make it work with our data of De Post, we had to substitute the abbreviated names to their full name. F.i. Antw. -&gt; Antwerpen, Nam. -&gt; Namen.
+<pre>curl "http://maps.google.com/maps/geo?q=<strong>Berlare+9290+Belgie</strong>&amp;output=csv&amp;key=$MY_KEY"</pre>results in
+<pre>200,5,51.0388449,3.9745067</pre>
+<ul>
+	<li>HTTP Status Code:</li>
+	<li>Exactitude:  5(City Level), 4(Street Level)</li>
+	<li>Longitude</li>
+	<li>Latitude</li>
+</ul>
+So now we can loop over our CSV file, and retrieve the results. While there is no real limitation in the number of requests, there is a kind of throttling going on, so that you can not fire requests to fast. We used a sleep of 200ms and everything worked fine. You can download our results:  <a href="http://www.jedi.be/blog/wp-content/uploads/2009/04/geocodes.csv">Belgian Cities  Geocoded in CSV</a>.
+</p>
+<h3>Step 4: Using the geocode data</h3>
+<p>
+Now that we have all the data, how can we integrate in our application? I stumbled upon a presentation on how to use <a href="http://www.scribd.com/doc/2569355/Geo-Distance-Search-with-MySQL">geocode with Mysql</a>. It describes multiple queries you can use to calculate the distance between different records in our database.
+<pre>@orig_lat=coordinaten.latitude
+@orig_lon=coordinaten.longitude
+@dist=10
+geocodes=Geocode.find_by_sql [ "SELECT *, 3956 * 2 * ASIN(SQRT(POWER(SIN((? - abs(dest.latitude))
+ * PI()/180 / 2), 2) + COS(? * PI()/180) * COS(abs(dest.latitude) * PI()/180) *
+ POWER(SIN((? - dest.longitude)* PI()/180 / 2), 2)))
+AS distance FROM geocodes dest having distance &lt; ? ORDER BY distance limit 10;"
+,@orig_lat, @orig_lat, @orig_lon, @dist]</pre>
+This results in a list of geocodes of nearby postalcodes we can use to query our data.</p>

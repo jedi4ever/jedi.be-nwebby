@@ -1,0 +1,114 @@
+--- 
+title:      Storytelling in IT - Conversation matters
+created_at: 2010-09-21 14:12:46.500972 +02:00
+tags: 
+- storytelling
+- userstories
+- innovationgames
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+<table>
+<tr>
+<td>
+<center><img src='{{ page.url }}/witch-snow-white.png'><br>
+(<small><a href="http://tinyurl.com/2fydxm9">http://tinyurl.com/2fydxm9</a></small>)
+</a></center>
+</td>
+<td><p>
+<a href="http://en.wiktionary.org/wiki/great_minds_think_alike">Great minds think alike, and fools seldom differ."</a> implies that consensus is often the result of a coincidence or luck. If you look at the success rate of presentations, you might actually think that this is shear luck. So why is it you recall the exact words of a movie or a bedtime story book and not a single word from your last meeting? </p><p>
+
+Well, as Ben Kenobi tells us: <a href="http://en.wikiquote.org/wiki/Star_Wars_Episode_IV:_A_New_Hope">"In my experience, there is no such thing as luck."</a> . There is a method to this madness. Outside IT, people have been practicing the art of storytelling for centuries with good results to convey their message. This post explores the possible links and usage of the noble art in IT.
+</p>
+</td>
+</tr>
+</table>
+
+### User Stories: developing the story, creating your scenes
+Instead of writing long specifications, Agile developers describe the functionality they develop as User Stories.
+
+They are usually expressed as: 
+"As a _role_, I want _goal/desire_ so that _benefit_"
+
+<center><img src='{{ page.url }}/user_story_card4.jpg'></center>
+Source [http://karinedrumond.files.wordpress.com/2009/02/user_story_card4.jpg](http://karinedrumond.files.wordpress.com/2009/02/user_story_card4.jpg)
+
+The benefit over traditional Use Cases and other requirements methods, is the **conversation**: this is used during the requirements discussion with the customer. And because it is in the language the business understands, it works better then dry technical documents. But the highest benefit is that it keeps the conversation going. 
+
+* [Introduction to User Stories by Scott W. Ambler](http://www.agilemodeling.com/artifacts/userStory.htm)
+* [User Stories Applied by Mike Cohn](http://www.mountaingoatsoftware.com/books/2-user-stories-applied-for-agile-software-development)
+* [Agile Story Telling](http://bethestory.com/2010/01/08/agile-storytelling)
+* [Agile Story Development](http://www.majordojo.com/2006/11/agile-story-development.php)
+
+### Personas: defining your characters and giving them a context
+While writing these user stories, finding a good understanding of the _roles_ or actors is crucial. Graphical and User experience designers use the concept of Personas: A persona, first introduced by **Alan Cooper**, defines an archetypical user of a system, an example of the kind of person who would interact with it.  The idea is that if you want to design effective software, then it needs to be designed for a specific person.  Personas represent fictitious people which are based on your knowledge of real users.
+
+<center><img src='{{ page.url }}/personas-overview.png></center>
+Source 
+[http://wiki.fluidproject.org/download/attachments/3904542/Kivio-personas-overview.png](http://wiki.fluidproject.org/download/attachments/3904542/Kivio-personas-overview.png)
+
+* [Personas explained](http://www.agilemodeling.com/artifacts/personas.htm)
+* [StoryTelling](http://www.smashingmagazine.com/2010/01/29/better-user-experience-using-storytelling-part-one/)
+* [Agile 2010 in rich context of user experiences](http://www.slideshare.net/StorytellingUX/0-using-storytelling-to-explore-the-rich-context-of-user-experience-agile-2010)
+
+### Story Mapping: make the stories consistent
+Now that you have all your smaller stories and your personas, the next step is to make them consistent. A technique used for that is called **User Story mapping** introduced by Jeff Patton. It expresses the overall story, the global picture that you want to convey. 
+
+Another great way is thinking in metaphors: it is something we are used to, it simplifies the model of our thinking and reduces things to the core. They often appeal to our collective memory.
+
+"The user story map provides a useful tool for the entire team to understand the big picture – to see the entire breadth of the system and its diverse set of users and uses."
+
+* [Great presentation by Jeff Patton on User Story Mapping](http://www.agileproductdesign.com/downloads/patton_user_story_mapping.ppt)
+* [The new story backlog is a map](http://www.agileproductdesign.com/blog/the_new_backlog.html)
+* [User Story Mapping](http://www.agileproductdesign.com/presentations/user_story_mapping/index.html)
+* [Story Development approaches](http://astoriedcareer.com/2010/01/storydevelopment-approaches-in.html)
+* [Metaphor Storytelling and Agreement in Software development](http://colinsteele.org/2009/12/metaphor-storytelling-and-agreement-in-software-development/)
+
+### Storytelling in Business or IT in general
+On the [Wikipedia page about Storytelling](http://en.wikipedia.org/wiki/Storytelling) there is at the bottom a description on using storytelling in a Business context: _"For businesses, communicating by using fiction storytelling techniques can be a more compelling and effective route than using only dry facts."_
+
+Within IT, we are used to dealing with facts , but not everybody within the IT industry is used to them. We have non-IT savvy managers, users , business owners. Did it ever occur that you were in a meeting where someone was proud that they just gave you the mere facts, but you couldn't remember it afterwards? This is also described in the book [Death by Meeting](http://www.amazon.com/Death-Meeting-Leadership-Fable-About-Business/dp/0787968056) . 
+
+There is nothing special about IT, we can apply storytelling to sell a new idea to our boss, our clients, our users, our colleagues. Or make use of it to promote our products/services. This can be either at the individual level or at the corporate level: you a person selling your services, or you as part of the organization selling your services.
+
+[Once Upon a Time](http://www.mpiweb.org/Magazine/Archive/US/February2010/OnceUponATime) points out the characteristics of a good story: 
+
+* _Simple and Specific_: to general and your audience will fall a sleep, keep it simple and to the point
+* _Connection and Resonance_ : make it ring a bell with your audience, connect with their interests
+* _Plot and Context_: don't give it away all at once, and place things within the right context
+
+[Zag Gemignani](http://www.juiceanalytics.com/writing/the-trap-of-classic-storytelling/) explains that a good format for your business storytelling might be:
+ 
+* _Climax_: Conclusion
+* _Context_: Background to ensure everyone understands the situation
+* _Dramatic unfolding_: a) analysis framework; b) supporting evidence
+* _Climax_: Conclusion, again
+
+Examples: 
+
+* [Patterns and Story Telling](http://allankelly.blogspot.com/2005/08/patterns-and-story-telling.html) explains the relationship between storytelling and patterns
+* [Storytelling in Projects: transforming project plans in stories (pdf)](http://www.metodica.dk/pers/Story033.pdf)
+
+### Caveat: the dangers
+Storytelling is a great way for making a message stick, but also involves some dangers. Stories can intentionally or not, give the impressions that certain decisions, assumptions have been made. Or it can make things more vague. More information can be found at: 
+
+* [Storytelling kills](http://www.agilejournal.com/blogs/blogs/plan-and-deliver-mainmenu-66/237-storytelling-kills)
+* [The trap of classic Storytelling](http://www.juiceanalytics.com/writing/the-trap-of-classic-storytelling/)
+
+### Storytelling in general:
+We all know a good story when we hear it. It's about a clear message, a good plot, good characters. But what makes it good? 
+I'm by no means an expert, but I found the following links good explanations on general storytelling:
+
+* [Outstanding Presentations](http://www.slideshare.net/cperrone/outsanding-presentations-4351640)
+* [Influence through StoryTelling](http://www.slideshare.net/joyce_hostyn/influence-through-storytelling)
+* [StoryTelling 101](http://www.slideshare.net/ethos3/storytelling-101)
+* [Look Inside Speak Human](http://www.speakhuman.com/ch10_Storytelling)
+* [Book: Storytelling in Organizations: Why Storytelling Is Transforming 21st Century Organizations and Management](http://www.amazon.co.uk/exec/obidos/ASIN/0750678208/qid%3D1123873062/026-9820775-6279602)
+* [Story Telling Techniques](http://www.tvagile.com/2009/08/27/storytelling-techniques/)
+
+### Storywriting
+Writing a good story, isn't always easy. You might find some inspiration in [books about screenwriting](http://www.raindance.co.uk/site/raindance-film-festival-screenwriting-books), such as ['Raindance Writers Lab: Write + Sell the Hot Screenplay'](http://www.amazon.co.uk/dp/0240520793/ref=nosim?tag=wwwraindacouk-21), which also has a workshop.
+
+Another workshop I've heard good things about is the ['Beyond Structure workshop'](http://www.raindance.co.uk/site/index.php?id=17,906,0,0,1,0) by David Freeman. It specially goes into detail to develop your own characters.

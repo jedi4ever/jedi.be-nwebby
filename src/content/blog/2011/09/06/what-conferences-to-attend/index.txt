@@ -1,0 +1,33 @@
+---
+title: Fall and Winter Conference Season 2011
+created_at: 2011-09-06 15:03:04.148241 +02:00
+tags:
+- devopsdays
+- gotocon
+- devoxx
+- citcon
+- cloudcamp
+- jclouds
+- citconf
+- xpdays
+- arrcamp
+blog_post: true
+filter:
+- erb
+- markdown
+---
+Oh well , now that all my presentations from previous conferences are online, it's time to plan the fall and winter season of conferences. Let me see ....
+
+Conferences I'm speaking at or likely to attend are:
+
+- [Arrrrcamp, Ghent, Belgium](http://arrrrcamp.be/): <i>October 7</i> - The only Belgian Ruby, Rails and Radiant Conf
+- [Gotocon Aarhus, Denmark](http://gotocon.com/aarhus-2011) : <i>October 10-12</i> -  I'll be presenting a session on [Devops fools, Tools and other smart things](http://gotocon.com/aarhus-2011/speaker/Patrick+Debois)
+- [Devopsdays Goteborg, Sweden](devopsdays.org/events/2011-goteborg/) : <i>October 14,15</i> - The yearly Europe devops event is happening in Goteborg this time. It's going to be really exciting this time , as the theme is inclusive. Exploring the boundaries of devops.
+- [Velocity Conference Europe,Berlin](http://velocityconf.com/velocityeu) : <i>November 8-9</i> . The well known conference on large scale operations, comes this year to Europe. I'm happy to be one of committee member. I can tell you, it's gonna be a blast!
+- [Citconf , London](http://citconf.com/): <i>November 11-12</i> - All you ever wanted to know about Continuous Integration. Period.
+- [Devoxx , Belgium](http://devoxx.com) : <i>November 14-18</i> - Basically the walhalla for java developers in Europe
+- [Cloudcamp Belgium](http://www.cloudcamp.org/ghent): <i>November 21</i> - I'm looking forward to this year's event, as there will likely more practioners and less marketing folks.
+- [Training Jclouds](http://jedi.be/events/jclouds-training-2011/) : <i>November 21,22</i> - Adrian Cole of [Jclouds](http://jclouds.org) fame is giving a course on Jclouds in Ghent/Belgium. That's going to be really fun.
+- [Xpdays, Benelux](http://xpdays.be/) : <i>December 1-2</i> -  a premier Agile/XP event in Belgium. I don't think it has the equivalent somewhere else. This is so well done and so co-operatively organized.
+
+And yes, I do work from time to time. Just that these conferences are a great way to capture and share new ideas. All worth it!

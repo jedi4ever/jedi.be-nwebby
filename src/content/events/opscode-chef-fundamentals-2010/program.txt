@@ -1,0 +1,77 @@
+---
+layout: event
+extension: html
+filter:    
+- erb
+- markdown
+title: Opscode Chef Fundamentals Training - Program
+tags: 
+- opscode
+- chef
+- infrastructure as code
+- configuration management
+- devops
+- course
+- training
+dirty: true
+---
+<p>Topics covered include:</p>
+
+<h3>Day 1</h3>
+
+<h4>Introductions</h4>
+
+<h4>Overview</h4>
+
+<ul>
+<li>Configuration Management</li>
+<li>System Integration</li>
+<li>Sample Infrastructure</li>
+<li>Platform introduction</li>
+<li>Overview</li>
+<li>Getting started</li>
+<li>Lab 1. Initial setup</li>
+</ul>
+
+
+<h4>Architecture</h4>
+
+<ul>
+<li>Chef Server</li>
+<li>Chef Client Nodes</li>
+<li>Operating Modes</li>
+<li>Platform Features</li>
+<li>Clients and Authentication</li>
+<li>Chef::Speak</li>
+<li>Chef Run Anatomy</li>
+<li>Lab 2. Working example</li>
+</ul>
+
+
+<h3>Day 2</h3>
+
+<h4>Cookbooks</h4>
+
+<ul>
+<li>Recipes</li>
+<li>Attributes</li>
+<li>Assets (Files/Templates)</li>
+<li>Supporting Code (LWRP, Libraries)</li>
+<li>API Interaction</li>
+<li>Troubleshooting</li>
+<li>Lab 3. Write cookbook</li>
+</ul>
+
+
+<h3>Day 3</h3>
+
+<h4>Orchestration</h4>
+
+<ul>
+<li>Cloudy cookbooks</li>
+<li>Repository workflow</li>
+<li>Lab 3. Write cloudy cookbook</li>
+</ul>
+
+
+<p>Students should bring WiFi enabled laptops. The labs will be run on Amazon's EC2.</p>

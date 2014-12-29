@@ -1,0 +1,31 @@
+---
+title: "Unable to install new / update Firefox Plugins - Fixed"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/2008/10/23/unable-to-install-new-update-firefox-plugins-fixed/
+created_at: 2008-10-23 09:11:03.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Uncategorized
+tags:
+   - firefox
+---
+After upgrading from Firefox 2.x to Firefox I found myself unable to install new plugins. It would keep on telling me that it would install the plugin at the next restart of Firefox.
+<br>
+<span>Error:</span>
+When I opened the Error Console it would say:
+<pre>[Exception... "Component returned failure code: 0x80520012 (NS_ERROR_FILE_NOT_FOUND) 
+nsILocalFile.persistentDescriptor" nsresult: "0x80520012 (NS_ERROR_FILE_NOT_FOUND)" 
+location: "JS frame file:///Applications/Firefox/Firefox.app/Contents/MacOS/components/nsExtensionManager.js
+getAbsoluteDescriptor :: line 438" data: no]</pre>
+<span>Solution:
+</span>
+<ul>
+	<li>close firefox</li>
+	<li>goto your profile on $HOME/Library/Application Support/Firefox/Profiles/&lt;your profile-id&gt;</li>
+	<li>rm extension.ini ; rm extension.rdf ; rm extension.cache</li>
+	<li>restart firefox</li>
+</ul>
+See also the mozilla knowledge base: <a href="http://kb.mozillazine.org/Unable_to_install_themes_or_extensions_%28Firefox%29#Corrupt_extension_files">http://kb.mozillazine.org/Unable_to_install_themes_or_extensions_(Firefox)#Corrupt_extension_files</a>

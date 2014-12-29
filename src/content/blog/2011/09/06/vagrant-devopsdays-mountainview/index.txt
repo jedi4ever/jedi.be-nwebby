@@ -1,0 +1,36 @@
+---
+title: Why Vagrant is cool - Presentation at Devopsdays MountainView 2011
+created_at: 2011-09-06 10:15:04.148241 +02:00
+tags:
+- vagrant
+- devops
+blog_post: true
+filter:
+- erb
+- markdown
+related:
+- desc: Vagrant Testing
+  url: /blog/2011/03/29/vagrant-testing-testing-one-two/
+- desc: Vagrant as a Team
+  url: /blog/2011/03/28/using-vagrant-as-a-team/
+---
+I make it no secret. I simply love [vagrant](http://vagrantup.com). Why? 
+
+- I think I mainly love it for it's simplicity , only a few keystrokes and you're up and running
+- the fact that sharing becomes so easy across team members (even to sales)
+- and we can all reuse our favorite tools (chef/puppet/shell) and editors
+- all from simple textfiles , version controlled
+
+One of the ideas I got back from discussing it with [Lee Thompson](http://dev2ops.org/blog/2010/1/30/please-welcome-dev2opss-newest-blogger-lee-thompson.html) was thaat it would be nice to have the same repeatability for a development/desktop environment. Is every developer's laptop a special snowflake? Or can we manage it the same as a rebuildable server. I think this fits nicely with [Joshua Timberman managing his desktop with Chef](http://jtimberman.posterous.com/update-to-managing-my-workstations).
+
+The second idea, is that it would make sense to build vagrant support in IDE's such as eclipse. This will hopefully become easier when it supports ruby plugins.
+
+I was proud to do a presentation on vagrant at [devopsdays Mountain View 2011](http://devopsdays.org/events/2011-mountainview/) and the nice folks from LinkedIn made an incredible nice video on it.
+
+Enjoy the presentation :
+
+<div style="width:425px" id="__ss_8340999"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011" title="Vagrant devopsdays Mountain View 2011" target="_blank">Vagrant devopsdays Mountain View 2011</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/8340999" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>
+
+And the video:
+
+<iframe src="http://player.vimeo.com/video/25891810?byline=0&amp;portrait=0" width="400" height="225" frameborder="0"></iframe><p><a href="http://vimeo.com/25891810">DevOps Mountain View 2011: Why Vagrant is Cool by Patrick Debois</a> from <a href="http://vimeo.com/dev2ops">dev2ops.org</a> on <a href="http://vimeo.com">Vimeo</a>.</p>

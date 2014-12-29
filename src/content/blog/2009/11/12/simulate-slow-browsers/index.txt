@@ -1,0 +1,41 @@
+--- 
+title:      Simulate slow browsers on MacOSX using ipfw
+created_at: 2009-11-12 09:20:09.483354 +01:00
+tags: 
+- simulate
+- slow
+- browsers
+- ipfw
+- macosx
+- pipe
+- traffic shaping
+blog_post: true
+filter: 
+- erb
+- markdown
+---
+As a developer when you are working on your local machine, it's easy to forget that there are still a lot of people out there without sufficient broadband access. 
+
+Especially when executing long browser transactions like file uploads or running lenghty reports, timeout can have an impact on the way our code reacts to endusers. 
+
+This is also true when browsing web pages with a lot of images, javascript and css. On our laptops with lots of cpu power and memory it might take a few milliseconds to render the page, but if you are targeting a broad non-technical audience , you really need to test how the page loading experience works for them.
+
+Usually this involves asking the network guys to setup a slow link to see this. Thanks to <http://www.macosxhints.com/article.php?story=20080119112509736> I found an easy way to simulate this on my local Mac machine.
+
+Enter the use of ipfw, the firewall system provided by Apple. A less know feature is that i can also shape traffic. The following example is a simulation of enduser with a bandwith of 15KByte/s.
+
+#### Step 1: create a network pipe 1 of 15KByte/S
+<pre>sudo ipfw pipe 1 config bw 15KByte/s</pre>
+
+#### Step 2: attach the pipe to the src-port 80 (web traffic)
+<pre>sudo ipfw add 1 pipe 1 src-port 80</pre>
+
+#### Step 3: test your website via your browser
+That should to the trick. Still there a few caveats, this does not work for localhost as this traffic does not pass through the ip filter.
+The other thing is that this will slow down all web traffic, so you might to specify destination in the pipe add command.
+
+#### Step 4: remove the pipe again
+<pre>sudo ipfw delete 1</pre>
+
+A more advanced explanation can be found on 
+<http://www.afp548.com/article.php?story=20060214081244545>

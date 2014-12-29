@@ -1,0 +1,333 @@
+---
+title: "Cobbler on Centos with Vmware"
+author: Patrick Debois
+guid: http://www.jedi.be/blog/?p=646
+created_at: 2009-03-19 18:37:29.0 +00:00
+blog_post: true
+filter:
+  - erb
+  - basepath
+categories:
+   - Cloud and Virtualization
+   - Agile: Development, Testing and Infrastructure
+tags:
+   - vmware
+   - cobbler
+   - centos
+   - dhcp
+   - pxe
+   - dns
+   - koan
+---
+<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/logo.png"><img title="logo" class="alignleft size-full wp-image-674" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/logo.png" height="84" alt="" width="201" /></a>
+<br>
+<strong><span class="searchword0">Cobbler</span> is an install server; batteries are included</strong>
+<br>
+<span class="searchword0">Cobbler</span> is a Linux installation server that allows for rapid setup of network installation environments.
+<br>
+With a simple series of commands, network installs can be configured for PXE, reinstallations, media-based net-installs, and virtualized installs (supporting Xen, qemu, KVM, and VMware Server). <span class="searchword0">Cobbler</span> uses a helper program called 'koan' (which interacts with <span class="searchword0">Cobbler</span>) for reinstallation and virtualization support.
+<br>
+This post describes how we use cobbler to setup an automated provisioning of systems for our test lab.
+<br>
+Cobbler's documentation is very extensive, and you can read more at <a href="https://fedorahosted.org/cobbler/wiki/">https://fedorahosted.org/cobbler/wiki/</a>
+<br>
+Our lab setup:
+<ul>
+	<li>cobbler running on the box that hosts the virtual machines (this could a virtual machine also)
+<ul>
+	<li>host ip = 192.168.0.1</li>
+</ul>
+</li>
+	<li>vmware network (NAT = vmnet8) , 192.168.0.0/24</li>
+	<li>gateway configure in vmware = 192.168.0.2 (vmnet8.conf)</li>
+</ul>
+<strong>Step 1: Installation (using RPM's)
+</strong>
+<br>
+For more detail see: <a href="https://fedorahosted.org/cobbler/wiki/DownloadInstructions">https://fedorahosted.org/cobbler/wiki/DownloadInstructions</a>
+<br>
+There is a clear relation of cobbler with Fedora, therefore using Centos as a distribution is a good fit. Centos is not the only distribution it works on , but it seems to be simplest way to set things up.
+<br>
+The easiest way to have cobbler installed is to add the <em>EPEL repository</em>. More detail on this at <a href="http://rgritsulyak.blogspot.com/2008/09/adding-epel-repository-for-centos-5.html">http://rgritsulyak.blogspot.com/2008/09/adding-epel-repository-for-centos-5.html</a>.
+<br>
+Be sure to set the correct architecture for the repository i386 or x86_64
+<pre>cat &lt;&lt;EOF &gt;&gt; /etc/yum.repos.d/EPEL.repo
+ [epel]
+ name=Epel from fedora
+ baseurl=http://download.fedora.redhat.com/pub/epel/5/x86_64/
+ gpgcheck=0
+ EOF</pre>
+Now that we have the repository setup, we can easily install cobbler and it's companion services (dhcpd, bind, tftp, http)
+<pre># yum install redhat-rpm-config
+# yum install dhcpd bind tftp-server httpd
+# yum install cobbler</pre>
+Installed: cobbler.noarch 0:1.4.1-1.el5
+Dependency Installed: apr.x86_64 0:1.2.7-11 apr-util.x86_64 0:1.2.7-7.el5 createrepo.noarch 0:0.4.11-3.el5 httpd.x86_64 0:2.2.3-11.el5_2.centos.4 mkisofs.x86_64 9:2.01-10 mod_python.x86_64 0:3.2.8-3.1 postgresql-libs.x86_64 0:8.1.11-1.el5_1.1 python-cheetah.x86_64 0:2.0.1-1.el5 python-devel.x86_64 0:2.4.3-21.el5 tftp-server.x86_64 0:0.42-3.1.el5.centos xinetd.x86_64 2:2.3.14-10.el5
+Complete!
+<br>
+Directories that are important are:
+<ul>
+	<li>/var/www/cobbler: where is will host the files it will serve to it's clients by http</li>
+	<li> /var/lib/cobbler</li>
+	<li>/usr/lib/python2.4./site-packages/cobbler</li>
+	<li>/usr/share/cobbler</li>
+	<li>/usr/share/doc/cobbler-1.4.1/</li>
+	<li>/etc/cobbler/</li>
+	<li>/usr/bin/  for the cobbler</li>
+	<li>/etc/init.d/cobblerd</li>
+</ul>
+<strong>Step 2: First check and fixes of your environment</strong>
+<br>
+Cobbler provides a nice script that checks if your environment is correctly configured for using cobbler
+<br>
+[root@myserver ~]# <em>cobbler check</em>
+<pre>The following potential problems were detected:
+#0: The '<em>server</em>' field in /etc/cobbler/settings must be set to something other than localhost, or kickstarting features will not work.  This should be a resolvable hostname or IP for the boot server as reachable by all machines that will use it.</pre>
+We will set the server IP to the IP address of the vmnet8 interface = 192.168.0.1
+<pre>#1: For PXE to be functional, the 'next_server' field in /etc/cobbler/settings must be set to something other than 127.0.0.1, and should match the IP of the boot server on the PXE network.</pre>
+In our case this is the same IP address as the cobbler server = vmnet8 interface = 192.168.0.1
+<pre>#2: Must enable selinux boolean to enable Apache and web services components, run: <em>setsebool -P httpd_can_network_connect true</em></pre>
+Nice to see that it has good instructions for selinux
+<pre>#3: you need to set some SELinux content rules to ensure cobbler works correctly in your SELinux environment, run the following: <em>/usr/sbin/semanage fcontext -a -t public_content_t "/var/lib/tftpboot/.*" &amp;&amp; /usr/sbin/semanage fcontext -a -t public_content_t "/var/www/cobbler/images/.*"</em></pre>
+Detailed command to enable http server to reed content from /var/www/cobbler and have tfpboot find its files
+<pre>#4: service cobblerd is not running</pre>
+Obviously this isn't running because we did not start it yet
+<pre>#5: change 'disable' to 'no' in /etc/xinetd.d/tftp</pre>
+By default tftp is disabled as it not a secure protocol and is know for it's security bugs. This disable to no will have it start. But we can further secure this by having it listen only to the vmnet8 interface by changing the /etc/xinetd.d/tftp
+<br>
+only_from            = 127.0.0.1/32 192.168.0.0/24
+bind                    = 192.168.0.1
+<br>
+[root@myserver]# netstat -anp |grep 69
+udp        0      0 192.168.0.1:69              0.0.0.0:*                               6299/xinetd
+<pre>#6: service httpd is not running</pre>
+Obviously this isn't running because we did not start it yet
+<pre>#7: since iptables may be running, ensure 69 (dhcp), 80(http), 25150(cobbler api), and 25151(cobbler api R/W) are unblocked</pre>
+<em>iptables</em> -I RH-Firewall-1-INPUT  -i vmnet8  -m udp -p udp --dport 69 -j ACCEPT
+<br>
+<em>iptables</em> -I RH-Firewall-1-INPUT  -i vmnet8 -m tcp -p tcp --dport 80 -j ACCEPT
+<br>
+<em>iptables</em> -I RH-Firewall-1-INPUT  -i vmnet8  -m tcp -p tcp --dport 53 -j ACCEPT
+<br>
+<em>iptables</em> -I RH-Firewall-1-INPUT  -i vmnet8  -m tcp -p tcp --dport 25150 -j ACCEPT
+<br>
+<em>iptables</em> -I RH-Firewall-1-INPUT  -i vmnet8  -m tcp -p udp --dport 25151 -j ACCEPT
+<br>
+Don't forget to save these rules so that the next time they are still available
+<pre>#8: reposync is not installed, need for cobbler reposync, install/upgrade yum-utils?</pre>
+Easy to solve with:  yum install yum-utils
+<pre>#9: yumdownloader is not installed, needed for cobbler repo add with --rpm-list parameter, install/upgrade yum-utils?</pre>
+Is solved by doing #8
+<pre>#10: fencing tools were not found, and are required to use the (optional) power management features. install cman to use them</pre>
+If you need these : yum install cman
+<br>
+<strong>Step 3: Configuring the webinterface</strong>
+<br>
+Again good documentation can be found at <a href="https://fedorahosted.org/cobbler/wiki/CobblerWebInterface">https://fedorahosted.org/cobbler/wiki/CobblerWebInterface</a>
+<br>
+By default the webinterface denies all access, this can be changed by changing the setting in /etc/cobbler/modules.conf
+<br>
+[authentication]
+#module = authn_denyall
+module = authn_configfile
+<br>
+[authorization]
+module = authz_allowall
+<br>
+The default password can be changed
+<pre class="wiki"># htdigest /etc/cobbler/users.digest "cobbler" $username</pre>
+<pre class="wiki">/sbin/service cobblerd restart
+/sbin/service httpd restart</pre>
+Now let's make apache and cobbler start after reboot!
+<pre># chkconfig httpd on ; chkconfig cobbler on</pre>
+When cobbler was installed it installed to config files in your apache /etc/httpd/conf.d:
+<pre>[root@myserver conf.d]# ls /etc/httpd/conf.d/cobbler*
+/etc/httpd/conf.d/cobbler.conf  /etc/httpd/conf.d/cobbler_svc.conf</pre>
+If you want to have cobbler only active on the virtual (internal) interface, you need to put the whole config in a virtual host to listen on the internal address only 192.168.0.1
+<ul>
+	<li>in your /etc/httpd/conf/httpd.conf:
+<ul>
+	<li>
+<pre>NameVirtualHost 192.168.0.1:80</pre>
+</li>
+</ul>
+</li>
+	<li>open the file /etc/httpd/conf.d/cobbler.conf and wrap it with
+<ul>
+	<li>
+<pre>&lt;VirtualHost 192.168.0.1:80&gt;</pre>
+</li>
+	<li>
+<pre>Servername cobbler</pre>
+</li>
+	<li>
+<pre>...</pre>
+</li>
+	<li>
+<pre>&lt;/VirtualHost&gt;</pre>
+</li>
+</ul>
+</li>
+	<li>put cobbler in your /etc/hosts to be resolved to 192.168.0.1</li>
+</ul>
+Ok, let's start for the first time
+<pre># /etc/init.d/httpd start &amp; /etc/init.d/bind start &amp; /etc/init.d/xinetd.d start</pre>
+Now you can access it with
+<pre># lynx http://cobbler/cobbler/web</pre>
+<strong>Step 4: Configuring DHCP to place nice with cobbler
+</strong>
+<br>
+Cobbler can manage your dhcp, so that when you define a system in cobbler, it automatically manages your dhcpd.conf
+<br>
+By default vmware on the vmnet8 has also a dhcpd running vmnet-dhcpd. So before having it work, we have to disable the internal dhcp of vmware on the vmnet8 interface.
+<br>
+<em>Note: this is a hack, and when you have to do a vmware-config.pl , chances are that the change is gone!</em>
+<br>
+More details can be found here <a href="http://mijnhome.be/blog/blog1.php/2008/11/06/vmware-server-2-disable-dhcp-on-vnet">http://mijnhome.be/blog/blog1.php/2008/11/06/vmware-server-2-disable-dhcp-on-vnet
+</a>
+<br>
+Don't forget to top vmware first (/etc/init.d/vmware sto)!!!!!! I know this means bringing down all virtual machines first. But otherwise it will require to re-run vmware-config.pl !!!!
+<pre># vi /etc/vmware/locations
+find and replace all occurences of VMNET8 DHCP = no</pre>
+Another option might be to edit /usr/lib/vmware/net-services.sh, but I haven't explored this further.
+<br>
+So now that the vmware dhcpd is out of the way, let's configure the dhcpd we installed to listen on our vmnet8 interface:
+<br>
+Edit /etc/sysconfig/dhcpd
+<pre># Command line options here
+DHCPDARGS=vmnet8</pre>
+Next you need to enable dhcpd support in cobbler. Edit the /etc/cobbler/cobbler.conf
+<pre>manage_dns: 1
+[dhcp]
+module = manage_isc</pre>
+<pre>manage_dhcp: 1</pre>
+And finally edit the /etc/cobbler/dhcp.template to reflect the skeleton you need.
+<pre>subnet 192.168.0.0 netmask 255.255.255.0 {
+ option routers             192.168.0.2;
+ option domain-name-servers 10.247.29.17;
+ option subnet-mask         255.255.255.0;
+ range dynamic-bootp        192.168.0.100 192.168.0.254;
+ filename                   "/pxelinux.0";
+ default-lease-time         21600;
+ max-lease-time             43200;
+ next-server                $next_server;
+ }</pre>
+More details <a href="https://fedorahosted.org/cobbler/wiki/ManageDhcp">https://fedorahosted.org/cobbler/wiki/ManageDhcp</a>
+<br>
+Note: the router is 192.168.0.2 and not 192.168.0.1 , this is the default behaviour in vmware for a NAT interface , check /etc/vmare/vmnet8/nat/nat.conf
+<pre># Linux NAT configuration file
+[host]
+# NAT gateway address
+ip = 192.168.0.2
+netmask = 255.255.255.0
+# or ip = 192.168.0.2/24</pre>
+<strong> Step 5: Configuring DNS to play nice with cobbler</strong>
+<br>
+Similar to the DHCP we need to prepare some things for the DNS too.
+<br>
+First we need to active the DNS support in cobbler (i mean that cobbler can manage your DNS)
+<br>
+edit /etc/cobbler/cobbler.conf
+<pre>[dns]
+module = manage_bind
+manage_dns: 1</pre>
+Then we specify the domainname and ip ranges we want cobbler to manage (also in /etc/cobbler/cobbler.conf)
+<pre>manage_forward_zones: [ mydomaintest.com ]
+ manage_reverse_zones: [ 192.168.0 ]</pre>
+Because cobbler overwrites the bind config everytime we do a cobbler sync, we need to edit the template file to reflect our settings
+<br>
+/etc/cobbler/named.template
+<pre>options {
+ listen-on port 53 {  192.168.0.1;  };
+ directory       "/var/named";
+ dump-file       "/var/named/data/cache_dump.db";
+ statistics-file "/var/named/data/named_stats.txt";
+ memstatistics-file "/var/named/data/named_mem_stats.txt";
+ allow-query     { localhost; };
+ recursion yes;
+ forwarders { &lt;your dns server here&gt;; };
+ };</pre>
+More details on <a href="https://fedorahosted.org/cobbler/wiki/ManageDns   ">https://fedorahosted.org/cobbler/wiki/ManageDns </a>
+<br>
+<strong>Step 6: Using cobbler</strong>
+<br>
+This is the part you have been waiting for I guess ;-) Cobbler has the following: where you start from a distribution, repositories, profiles and systems (and images)
+<br>
+<em>Add a distribution</em>
+<br>
+The easiest way is to download the latest ISO DVD and mount it locally:
+<pre># mount -o loop /data/mount/iso/CentOS-5.2-x86_64-bin-DVD.iso /mnt
+# cobbler import /mnt --arch=x86_64 --name=centos5.2-x86_64
+# cobbler list
+distro centos5.2-x86_64
+profile centos5.2-x86_64
+profile rescue-centos5.2-x86_64
+distro centos5.2-xen-x86_64
+profile centos5.2-xen-x86_64</pre>
+You can see that the import actually imported both xen, the regular distro and the rescue .
+<br>
+<em>Add a repository/repositories</em>
+<br>
+Next we add two additional repositories: the first to get the updates and the second one to get the EPEL repository included. In case versions overlap, we define priorities.
+<pre># cobbler repo add --name=centos5.2-x86_64-updates --priority=70 --mirror=http://ftp.belnet.be/packages/centos/5.2/updates/x86_64
+# cobbler repo add --name=EPEL-x86_64 --priority=40 --mirror=http://fr2.rpmfind.net/linux/epel/5/x86_64/</pre>
+Now we can ask cobbler to download the repositories
+<pre># cobbler reposync
+# cobbler reposync --name=EPEL-x86_64 (if you wanted only one to sync)</pre>
+NOTE 1: we experienced   too many open files, when doing an import of another repository - https://bugzilla.redhat.com/show_bug.cgi?id=468282
+<pre>_do_grab IOError: [Errno 24] Too many open files:</pre>
+<pre>cobbler reposync failed
+ulimit -n 8192</pre>
+NOTE 2: if your download hangs, and you have interrupted download, chances are that you have a corruption. Remove the latest rpm that got downloaded in f.i. in /var/www/cobbler/repo_mirror/EPEL-x86_64
+<pre>[root@server cobbler]# cobbler list --what=repos
+repo EPEL-x86_64
+repo centos5.2-x86_64-updates</pre>
+<em>Add a profile</em>
+<br>
+Next we setup a profile based on a combination of the distro and the repositories
+<pre># cobbler profile add --distro=centos5.2-x86_64 --name=centos5.2-x86_64-uptodate --repos="EPEL-x86_64 centos5.2-x86_64-updates"</pre>
+NOTE 3: when specifying multiple repositories, install can sometimes hang in checking dependencies during the system install. Be sure to give your virtual machine enough memory to parse the list of of packages. Otherwise it will hang erractically during "checking dependencies". 384 MB is not a lot for a virtual machine for parsing multiple repo lists ...
+<br>
+<em>Preparing a kickstart file</em>
+<br>
+Kickstart is a redhat way of describing an automated installation of a machine. A sample can be found at /var/lib/cobbler/kickstart/sample.ks
+<br>
+More detail can be found at:
+<ul>
+	<li><a href="http://www.singularity.be/2008/07/kickstart-cobbler-server-on-fedora-9.html">http://www.singularity.be/2008/07/kickstart-cobbler-server-on-fedora-9.html</a></li>
+	<li><a href="http://www.redhat.com/docs/manuals/enterprise/RHEL-5-manual/Installation_Guide-en-US/ch-redhat-config-kickstart.html">http://www.redhat.com/docs/manuals/enterprise/RHEL-5-manual/Installation_Guide-en-US/ch-redhat-config-kickstart.html</a></li>
+</ul>
+There is also a tool called system-config-kickstart (requires X)
+<br>
+In a kickstart you can change ntpservers, timezone, keyboard layout
+<br>
+<em>Add a system</em>
+<br>
+We fill in the ip (we want it fixed), the mac address to respond to this profile and other configuration options
+<pre># cobbler system add --name pxe-test --ip=192.168.0.10 --mac=00:0C:29:2B:50:5C --profile=centos5.2-x86_update --kickstart=/var/lib/cobbler/kickstart/sample.ks --static=1
+# cobbler system edit --name=pxe-test  --dns-name=pxe-test.mydomaintest.com --hostname=pxe-test.mydomaintest.com
+# cobbler system edit --name=pxe-test  --gateway=192.168.0.2 --subnet=255.255.255.0</pre>
+After adding the system run
+<pre># cobbler sync</pre>
+And it will automagically update dhcp, dns, http cobbler
+<br>
+So your actual kickstart with all the variables filled in , you can check it with
+<pre># lynx http://192.168.0.1/cblr/svc/op/ks/system/pxe-test</pre>
+<strong>Step 7: PXE booting
+</strong>
+<br>
+Now you are ready to start your virtual machine to do a boot. Hope everything works out now!
+<br>
+<strong>Further topics:
+</strong>
+<ul>
+	<li><a href="https://fedorahosted.org/cobbler/wiki/PowerManagement">Cobbler can control your machine and virtual machine power</a> via wakeuponlan or other ILO mechanisms. So you might want to look into that.</li>
+	<li>After the automated install you will want to have puppet and func take further configurations<a href="wiki">. Cobbler integrates nicely with puppet concept of external nodes</a></li>
+	<li><a href="http://reductivelabs.com/trac/puppet/wiki/BootstrappingWithPuppet">Bootstrapping puppet with cobbler is a breeze</a></li>
+	<li><a href="https://fedorahosted.org/cobbler/wiki/BuildIso">Creating iso's</a> is another approach if your machine isn't pxe enabled</li>
+	<li>A subpart of cobbler is Koan, <a href="https://fedorahosted.org/cobbler/wiki/KoanDoesVmware">which allows you to create virtual machines directly </a>, but i did not manage to get it working with vmware-cmd</li>
+	<li><a href="https://fedorahosted.org/cobbler/wiki/SupportForOtherDistros">Other distro besides centos or redhat are also possible</a></li>
+	<li><a href="https://fedorahosted.org/pipermail/cobbler/2008-July/000163.html">Windows deployment might be possible in the future</a></li>
+	<li><a href="http://number9.hellooperator.net/articles/2009/03/16/pxe-virtual-network-with-virtualbox-and-cobbler">Cobbler playing nice with virtualbox</a></li>
+	<li><a href="https://fedorahosted.org/spacewalk/">Spacewalk is the next step?</a></li>
+</ul>

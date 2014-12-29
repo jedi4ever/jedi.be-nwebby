@@ -1,0 +1,24 @@
+---
+layout: event
+extension: html
+filter:
+- erb
+- markdown
+title: Jclouds Training - Payment
+dirty: true
+---
+<p>Training registration is for 1,5 day of training and includes the training material, coffee, thee, soft drinks, water and lunches .</p>
+
+<p>Traveling and lodging expenses are not included.</p>
+
+<p>The registration fee for attending the training on <strong>21 and 22 of November</strong>:</p>
+
+<ul>
+<li>Early Bird: € 90 (excl. Taxes/VAT) - Valid Until 1 November 2011</li>
+<li>Regular Fee: € 120 (excl. Taxes/VAT)</li>
+</ul>
+
+<h4>Payment via Paypal/Visa</h4>
+[See our registration page](registration.html)
+
+<p><em>Your registration is only valid if payment has been received.</em></p>

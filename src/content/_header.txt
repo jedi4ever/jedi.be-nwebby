@@ -10,7 +10,7 @@
     <h4>Independent IT-consultant</h4>
     <h3 class="quiet">Bridging the gap between <strong>projects</strong> and <strong>operations</strong></h3>
     <h3 class="quiet">by using <strong>Agile</strong> techniques both in <strong>development</strong>,<strong>project management</strong> and <strong>system administration</strong>.</h3>
-  <p class="quiet" align="right">availability: September 2014</p>
+  <p class="quiet" align="right">availability: January 2017</p>
  </div>
 <hr>
 </div>

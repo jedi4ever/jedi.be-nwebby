@@ -21,7 +21,7 @@ title: Opscode Chef Fundamentals Training - Payment
 
 <h4>Option 1: Bank payment (preferred)</h4>
 
-<p>Jedi BVBA,
+<p>Jedi BV,
 Quote 29,
 9290 Berlare, Belgium</p>
 

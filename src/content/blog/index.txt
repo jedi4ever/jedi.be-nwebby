@@ -2,10 +2,44 @@
 title: Blog Entries      
 created_at: 2009-09-14 17:11:09.082858 +02:00
 ---
+<style>
+
+  /* Remove bullets */
+  ul {
+    list-style-type: none;
+  }
+
+  /* Hide by default ,enabled again by javascript */
+  .blog_year {
+    display:none;
+    width: 100px;
+  }
+
+</style>
+
+
 <ul>
 {{#blogposts}}
   {{#.}}
-    <li><a href="{{metadata.url}}">{{{ metadata.title }}}</a></li>
+  <li>
+         <div class="blog_year">{{metadata.year}}</div>
+  </li>
+  <li>
+        <div>- <a href="{{metadata.url}}">{{{ metadata.title }}}</a></div>
+  </li>
   {{/.}}
 {{/blogposts}}
 </ul>
+
+<script>
+  var entries = document.getElementsByClassName("blog_year");
+  var last_year = 0;
+  for(var i = 0; i < entries.length; i++) {
+    var entry = entries[i];
+    var entry_year = entry.innerText;
+    if (entry_year != last_year) {
+      entry.style="display: inline-block; margin-top: 20px; font-size: large;"; 
+    }
+    last_year = entry_year;
+  }
+</script>

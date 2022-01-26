@@ -12,7 +12,9 @@
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/dark.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
-<script>hljs.highlightAll();</script>
+<script>
+// hljs.highlightAll();
+</script>
 
 <style>
 /* default, light mode styling */
@@ -64,6 +66,10 @@ body {
 footer {
     padding: 3em;
     margin-top: auto;
+}
+
+footer a {
+  color: gray;
 }
 
 </style>

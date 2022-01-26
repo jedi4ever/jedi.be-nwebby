@@ -4,32 +4,22 @@ extension: html
 {{ >/htmlheader }}
 {{ >/header }}
 
-  	<div">
-		{{ >/corporate-menu }}
-    </div>
+<div>
+	   <div><h2>{{ page.title }} </h2> </div>
 	
- <div>
-	   <div>
-	     <h1><strong>J</strong>ust <strong>E</strong>nough <strong>D</strong>eveloped <strong>I</strong>nfrastructure</h1>
-	   <h2>{{ page.title }} </h2>
-	   </div>
-	
-	   <div>
-	      {{ >content }}
-	   </div>
+	   <div> {{ >content }}   </div>
 
-    {{#page.blog_post}}
+    {{ #page.blog_post}}
 	   <div>
 		{{ >/discuss_comments }}
 	   </div>
-    {{/page.blog_post}}
+    {{ /page.blog_post}}
 
  </div>
 
 
 <div>
 	  {{ >/related }}
-
 </div>
 
 {{ >/htmlfooter }}

@@ -1,4 +1,11 @@
 
 
+
+</article>
+<footer>
+<center><small><a href="https://github.com/sindresorhus/github-markdown-css/">Theme: uses Github Markdown CSS</a></small></center>
+</footer>
+
+
 </body>
 </html>

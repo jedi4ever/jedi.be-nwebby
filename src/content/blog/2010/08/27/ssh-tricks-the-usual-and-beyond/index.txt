@@ -41,13 +41,17 @@ related:
 - desc: OpenSSH New Feature - Netcat mode
   url: http://blog.rootshell.be/2010/03/08/openssh-new-feature-netcat-mode/
 ---
-<table><tr><td>
-<img src='{{ page.url }}/ssh-bank.jpg'></td><td>SSH is an amazing beast. I nearly use it everyday and I'm amazed every time I learn something new. The following is a list of my tricks in the bag. It starts with the usual tricks that you find all over the place, but I hope there will be some new tricks for you too. <br><br>
+<table>
+<tr>
+<td>
+<img src='ssh-bank.jpg'></td>
+<td>SSH is an amazing beast. I nearly use it everyday and I'm amazed every time I learn something new. The following is a list of my tricks in the bag. It starts with the usual tricks that you find all over the place, but I hope there will be some new tricks for you too. <br><br>
 What's your best trick? Share it in the comments with the world. Nobody can know enough of ssh!
-</td></tr></table>
+</td>
+</tr></table>
 
-<hr>
-## The basics:
+## The basics
+
 ### **Password-less login:**
 
 This is usually the first thing start doing when want automation with ssh
@@ -79,6 +83,7 @@ $ ssh user@remotehost
 ```
 
 ### **Install your keys on a remote server:**
+
 ```shell
 $ ssh-copy-id -i ~/.ssh/id_dsa.pub user@remotehost
 #Alternative 
@@ -97,6 +102,7 @@ $
 
 
 ### **Pseudo Terminal** : 
+
 some commands like sudo require a pseudo terminal to be activated
 
 ```shell
@@ -104,12 +110,14 @@ $ ssh -t patrick@remotehost sudo cat /etc/passwd
 ```
 
 ### **Avoid lastlog:**
+
 Log in without appearing in lastlog/w and who output.
 ```shell
 $ ssh -T user@hostname.com
 ```
 
 ### **Piping**
+
 Example of using piping to backup over the network
 ```shell
 $ ufsdump 0uf - /dev/md/rdsk/d33 | ssh r280n "dd obs=32k ibs=32k of=/dev/rmt/0n"
@@ -207,6 +215,7 @@ sslh lets one accept both HTTPS and SSH connections on the same port. It makes i
 [http://www.rutschle.net/tech/sslh.shtml](http://www.rutschle.net/tech/sslh.shtml)
 
 <hr>
+
 ## Speed
 ### **Compression**
 If you are working on a slow link, compression (-C) and using a simple cipher (-c blowfish) saves you speed
@@ -219,14 +228,17 @@ Another great way to speed up ssh is to re-use the same connection when you conn
 ```shell
 $ mkdir –p ~/.ssh/connections
 $ chmod 700 ~/.ssh/connections
+```
 
 Add this to your ~/.ssh/config file:
+```
 Host *
 ControlMaster auto
 ControlPath ~/.ssh/connections/%r_%h_%p
 ```
 
 <hr>
+
 ## Managing keys
 ### **Ignore Hostkeys:**
 When you're re-installing a machine over and over again, you often want to get rid of the hostfile key verification. This is what you need: 
@@ -236,7 +248,7 @@ $ ssh user@host -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null
 
 ### **Check if hostkey exists:**
 ```shell
-k$ ssh-keygen -F 192.168.2.152
+$ ssh-keygen -F 192.168.2.152
 # Host 192.168.2.152 found: line 31 type RSA
 192.168.2.152 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwHH15HpeJo21wyqpe2iFM8/0CtoYnE9DDXfCewws7iMhM+vgp7pjnaC83IgAt7G/x/VDHcbnyuI4odrGSEAE5wm7LNuT6uSfQMbXCayE+uoOIrAVhf41ZnAFQrs/+Mutk5LFEjPPNhuriq5ltBT4UwMlYQMa5z/SzmxV0ZAGXks5GMDz0o89yUwRarRfsGudASEtzUxgnxnOo5STBMZOdQ0GNEVdfJDgfJDAOi34T1FidpCqAtm8akYuB+Qsj3/hDQmIT+GsKYaGNZvz8ZNnPBAc9kWlS6VqXXNreyEeu7AmHDWXjMP3NW1tsibmZ8zeOSZdmEVEiuaYCIvERDq3MQ==
 ```
@@ -306,7 +318,7 @@ Host key fingerprint is 9f:a0:03:c1:63:8b:b8:c6:d6:83:cb:22:33:cb:83:cc
 +-----------------+
 ```
 
-<hr>
+
 ## Security hacks
 ### **Local Password sniffing:**
 If you have process that connects to your ssh and you want to see the password it's using, then strace is your friend.
@@ -331,9 +343,9 @@ And to go totally security. Launch your own ssh honeypot and capture all the rem
 - [http://code.google.com/p/kippo/](http://code.google.com/p/kippo/)
 - [http://www.securitytube.net/SSH-Password-Capture-using-Kippo-video.aspx](http://www.securitytube.net/SSH-Password-Capture-using-Kippo-video.aspx)
 
-<hr>
+
 ## Need more?
 [Top 50 SSH Helper tools - OMG!](http://www.mynitor.com/2010/08/16/top-50-ssh-helper-tools-omg/)
 
-<hr>
+
 ## Share yours! I'm definitely interested

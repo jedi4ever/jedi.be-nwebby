@@ -3,18 +3,23 @@ extension: html
 ---
 {{ >/htmlheader }}
 {{ >/header }}
- <div class="span-15 colborder ">
-	   <div class="span-15 first last">
-	     <h1 class="alt quiet"><strong>J</strong>ust <strong>E</strong>nough <strong>D</strong>eveloped <strong>I</strong>nfrastructure</h1>
+
+  	<div">
+		{{ >/corporate-menu }}
+    </div>
+	
+ <div>
+	   <div>
+	     <h1><strong>J</strong>ust <strong>E</strong>nough <strong>D</strong>eveloped <strong>I</strong>nfrastructure</h1>
 	   <h2>{{ page.title }} </h2>
 	   </div>
 	
-	   <div class="span-15  first last ">
+	   <div>
 	      {{ >content }}
 	   </div>
 
     {{#page.blog_post}}
-	   <div class="span-15 first last">
+	   <div>
 		{{ >/discuss_comments }}
 	   </div>
     {{/page.blog_post}}
@@ -22,11 +27,9 @@ extension: html
  </div>
 
 
-<div class="span-7 last">
+<div>
 	  {{ >/related }}
-  	<div class="span-7 last box ">
-		{{ >/corporate-menu }}
-    </div>
+
 </div>
 
 {{ >/htmlfooter }}

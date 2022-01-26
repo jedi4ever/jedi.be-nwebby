@@ -53,7 +53,7 @@ pkgutil --pkgs=com.vmware.*
 
 # Next set the license number
 VMFUSION_SERIALNR="<please enter yours :)>"
-VMFUSION_COMPANY="Jedi BVBA"
+VMFUSION_COMPANY="Jedi BV"
 VMFUSION_NAME="Patrick Debois"
 VMFUSION_VERSION="3.0"
 

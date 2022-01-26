@@ -1,4 +1,3 @@
    <div>
 		{{> /corporate-menu }}
    </div>
-   <hr>

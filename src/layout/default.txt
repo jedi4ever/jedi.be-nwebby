@@ -10,7 +10,7 @@ extension: html
 	   <div> {{ >content }}   </div>
 
     {{ #page.blog_post}}
-	   <div>
+	   <div style="padding: 3em;  margin-top: auto;">
 		{{ >/discuss_comments }}
 	   </div>
     {{ /page.blog_post}}

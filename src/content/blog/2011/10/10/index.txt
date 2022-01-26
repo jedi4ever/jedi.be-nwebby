@@ -6,9 +6,6 @@ tags:
 - gotocon
 - tools
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 In this phrase I try to tackle the phrase "Devops is not about the tools, it's about culture". In this presentation I gave at [gotocon](http://gotocon.com) I try to explain the importance of tools within devops:
 

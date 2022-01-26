@@ -11,9 +11,6 @@ tags:
 - automation
 - programming
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 This blogpost gives an overview of the options you have on Mac OSX to interact with a Vmware Esx, Vsphere server. I feel that Vmware threats Mac OSX users as a second thought, which is kind of strange. The options that we will explore are:  
 
@@ -23,7 +20,7 @@ This blogpost gives an overview of the options you have on Mac OSX to interact w
 
 <a name="gui"></a>
 ### GUI Options
-Suppose you have [installed a new Vmware Vsphere/Esx server](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/), the screen will greet you with a URL that you can use to connect to the server. That URL will redirect you to a webpage that gives you two client options: 
+Suppose you have [installed a new Vmware Vsphere/Esx server](https://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/), the screen will greet you with a URL that you can use to connect to the server. That URL will redirect you to a webpage that gives you two client options: 
 
 **Install the Vpshere Client:**
 as there is only a windows .exe , this option can't be used on a Mac OSX system. I found two ways to get around the problem but it requires you to have a windows machine running: 
@@ -69,7 +66,7 @@ Vmware provides several commandline tools on the server platform, through the fo
 If you can't ssh into the server, your options are more limited on Mac OSX: 
 
 - Vmware Fusion provides the vmrun command in "/Library/Application\ Support/VMware\ Fusion/vmrun" . This allows you to interact with Vsphere ESX server too. 
-- Libvirt with ESX : See my [previous post on the state of libvirt 0.8.6 with esx integration](http://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) 
+- Libvirt with ESX : See my [previous post on the state of libvirt 0.8.6 with esx integration](https://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) 
 - Vmware CLI - Bertrand Paquet (OCTO): is the start for a commandline interface based on Java API.  [https://github.com/bpaquet/vmware-cli](https://github.com/bpaquet/vmware-cli)
 - orbit-vm : - [https://code.google.com/p/orbit-vm/](https://code.google.com/p/orbit-vm/)
 

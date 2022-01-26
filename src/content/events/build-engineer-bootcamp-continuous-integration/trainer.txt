@@ -2,9 +2,6 @@
 layout: event
 extension: html
 title: Build Engineer Bootcamp - Trainer
-filter:    
-- erb
-- markdown
 ---
 ### About Paul Julius:
 

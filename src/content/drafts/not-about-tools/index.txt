@@ -2,9 +2,6 @@
 title: It's not about the tools
 tags:
 - devops
-filter:
-- erb
-- markdown
 ---
 ### Levels of Interaction
 <http://mikeg.typepad.com/perceptions/2010/10/collaboration-its-not-about-the-tools.html>

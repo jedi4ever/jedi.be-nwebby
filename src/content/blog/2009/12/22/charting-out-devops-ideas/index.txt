@@ -5,9 +5,6 @@ tags:
 - devops
 - agile sysadmin 
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 Thanks to the [devopsdays conference](http://www.devopsdays.org), the idea of **devops** seems to live on. While talking with other people about it, I realize that it is difficult to frame it within the current IT landscape. At lot of the ideas are coming from different kinds of emerging **technologies** (T) and **process management** (P) approaches. 
 
@@ -32,7 +29,7 @@ So where can you look for devops ideas ? As you can see on the map , these inter
 - (L) **New system architectures**: this were cloud computing and agile infrastructure comes in, better and innovative ways to automate the provisioning and deployment
 - (M) **Operations team going upstream in the process instead of more passive role**: Experiments with kanban in operations to interact during the project phase and even before the project phase (sales, Service Leve Management)
 
-<img src='http://www.jedi.be/blog/wp-content/uploads/2009/12/charting-devops.png' alt="devops ideas overview">
+<img src='https://www.jedi.be/blog/wp-content/uploads/2009/12/charting-devops.png' alt="devops ideas overview">
 
 
 You can probably find a lot more or think that some have nothing to do with devops as such. I really like to hear your thoughts on this list. The focus of this post is not by the 100% exactness or completeness. Think of it as work in process waiting for your feedback ;-) 

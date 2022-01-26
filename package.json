@@ -24,7 +24,7 @@
     "grunt-contrib-connect": "^0.7.0",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-hashres": "^0.4.1",
-    "nwebby": "^1.0.0"
+    "nwebby": "^2.0.0"
   },
   "dependencies": {
     "async": "^0.4.0",

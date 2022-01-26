@@ -7,16 +7,13 @@ tags:
 - devops_borat
 - humor
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <table><tr><td>
 <p><img src='{{ page.url }}/devops-borat-question.jpg'></td><td> During the recent <a href="http://www.devopsdays.org/2010-europe">devopsdays in Hamburg</a>, several people came to me asking if I had any idea who <a href="http://twitter.com/DEVOPS_BORAT">DEVOPS_BORAT</a>  is. There were some wild conspiracies but it where more wild guesses.</p>
 <p>
 </p>
 <p>
-For those who don't know him: he tweets from Kazakhstan his view on the <a href="http://www.jedi.be/blog/2010/02/12/what-is-this-devops-thing-anyway/">devops</a> world. And does it with load of humor. You should really <a href="http://twitter.com/DEVOPS_BORAT">follow him on twitter</a>!</p>
+For those who don't know him: he tweets from Kazakhstan his view on the <a href="https://www.jedi.be/blog/2010/02/12/what-is-this-devops-thing-anyway/">devops</a> world. And does it with load of humor. You should really <a href="http://twitter.com/DEVOPS_BORAT">follow him on twitter</a>!</p>
 <p>
 </p>
 

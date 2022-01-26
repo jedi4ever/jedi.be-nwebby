@@ -9,9 +9,6 @@ tags:
 - cfengine
 - smartfrog
 blog_post: true
-filter: 
-- erb
-- markdown
 related:
 - desc: Recipes for Automated Installation of OS and beyond
   url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
@@ -26,7 +23,7 @@ related:
 - desc: Coding an Infrastructure Test First
   url: /blog/2009/11/18/coding-an-infrastructure-test-first/
 ---
-<img src='/blog/wp-content/uploads/2009/11/recipes-for-os-installation-automation.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) and [network provisioning](http://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/). So now we can actually get started with automating the installation of the Operating System itself. This not surprisingly is were most sysadmins spent most of their time. 
+<img src='/blog/wp-content/uploads/2009/11/recipes-for-os-installation-automation.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](https://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](https://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) and [network provisioning](https://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/). So now we can actually get started with automating the installation of the Operating System itself. This not surprisingly is were most sysadmins spent most of their time. 
 
 The good news is that we are slowly going a way from the custom scripting toward a reusable and shareable language. Very similar to programming design patterns. Over the years the methods have evolved towards configuration management, which is obviously a good thing.
 

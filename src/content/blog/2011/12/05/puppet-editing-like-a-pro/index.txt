@@ -7,9 +7,6 @@ tags:
 - textmate
 - productivity
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 I've spent some time recently on setting up my environment to work more productively on writing puppet manifests.
 This blogpost highlights some of the findings to get me more productive on editing puppet files and modules.

@@ -7,9 +7,6 @@ tags:
 - automation
 - custom cdrom
 blog_post: true
-filter: 
-- erb
-- markdown
 related: 
 - desc: Vmware Fusion Scripted Installation
   url: /blog/2010/12/09/vmware-fusion-scripted-installation/

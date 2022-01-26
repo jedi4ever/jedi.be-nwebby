@@ -6,9 +6,6 @@ tags:
 - cloudcamp
 - cloud
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Over the years I've moved from Production to Test to Development and back to Production. 
 

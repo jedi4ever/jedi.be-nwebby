@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Opscode Chef Fundamentals Training - Payment
 dirty: true
 ---

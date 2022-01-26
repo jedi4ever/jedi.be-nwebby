@@ -5,9 +5,6 @@ tags:
 - confluence
 - markdown
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Recently in Confluence 4.0 the Wiki Markup Editor was removed for [various engineering reasons](http://blogs.atlassian.com/2011/11/why-we-removed-wiki-markup-editor-in-confluence-4/). I like to type my text in wiki style, and most of all using Markdown.
 

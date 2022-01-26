@@ -6,9 +6,6 @@ tags:
 - velocityconf
 - devops
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Whenever you hear a new theory or idea (like devops), people ask for proof before they engage. This is only natural I guess. This was the reason why I wanted to explore ways to measure devops success. Or rephrased: "Measuring the devops gap" .  The result of my findings were presented at VelocityConf in June.  While I initially planned to present with [Israel Gat](http://theagileexecutive.com/) due to circumstances he switched at the last responsible moment with [Andrew Shafer](http://stochasticresonance.wordpress.com/).
 

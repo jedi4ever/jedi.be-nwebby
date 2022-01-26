@@ -7,9 +7,6 @@ tags:
 - monitoring
 - devops
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 In the beginning of this year I was lucky to be asked by [John Allspaw](http://www.kitchensoap.com/) <i>former Chief Engineer at Flickr</i> and Jesse Robins <i>CEO at Opscode</i> to write a chapter on Monitoring for the upcoming book on Web Operations. When he told me the names working on the book, I felt really excited and humble among these great names of industry. I want to thank all the people helping me review my chapter. It was a great learning experience and now I know how bad my English is as a non-native speaker.
 

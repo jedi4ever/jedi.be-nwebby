@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Build Engineer Bootcamp - Europe 2010
 period: "2/11/2010 - 3/11/2010"
 short: "Build Engineer Bootcamp - Europe 2010: A two day intensive training course designed to get build engineers off to a good start by the leading continuous integration expert - Paul Julius"

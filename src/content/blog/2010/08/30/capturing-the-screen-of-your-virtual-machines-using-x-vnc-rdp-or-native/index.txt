@@ -14,9 +14,6 @@ tags:
 - xen
 - kvm 
 blog_post: true
-filter: 
-- erb
-- markdown
 related: 
 - desc: Sending Keystrokes to Your Virtual Machines using X or Vnc or Rdp or Native ways
   url: /blog/2010/08/29/sending-keystrokes-to-your-virtual-machines-using-X-vnc-rdp-or-native/

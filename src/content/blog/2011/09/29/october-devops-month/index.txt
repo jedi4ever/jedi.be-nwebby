@@ -6,9 +6,6 @@ tags:
 - devopsdays
 - campdevops
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Devopsdays Goteborg
   url: http://devopsdays.org/events/2011-goteborg/

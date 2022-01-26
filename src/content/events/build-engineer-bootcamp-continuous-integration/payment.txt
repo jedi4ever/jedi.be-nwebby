@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Build Engineer Bootcamp - Payment
 ---
 Training registration is for two days and includes the training material, coffee, thee, soft drinks, water and 2 lunches . 

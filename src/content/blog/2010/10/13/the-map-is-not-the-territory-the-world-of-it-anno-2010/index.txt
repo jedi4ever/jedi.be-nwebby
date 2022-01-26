@@ -7,9 +7,6 @@ tags:
 - lean
 - infrastructure as code
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 When I visit IT companies, I get to go in different departments. I see a lot of people really trying hard to do their best, but they base their actions on their local view of the company.
 

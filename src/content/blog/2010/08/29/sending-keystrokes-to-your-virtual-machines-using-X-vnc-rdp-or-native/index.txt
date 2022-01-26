@@ -11,9 +11,6 @@ tags:
 - xen
 - kvm 
 blog_post: true
-filter: 
-- erb
-- markdown
 related: 
 - desc: Capturing The screen of your virtual machine using X or VNC or RDP or Native
   url: /blog/2010/08/30/capturing-the-screen-of-your-virtual-machines-using-x-vnc-rdp-or-native/

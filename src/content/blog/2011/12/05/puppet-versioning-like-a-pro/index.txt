@@ -10,9 +10,6 @@ blog_post: true
 related:
 - desc: Puppet Editing like a pro
   url: /blog/2011/12/05/puppet-editing-like-a-pro/
-filter:
-- erb
-- markdown
 ---
 **A big thanks to [Atlassian](http://www.atlassian.com) for allowing me to post this series!!**
 

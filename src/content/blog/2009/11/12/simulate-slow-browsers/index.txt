@@ -10,9 +10,6 @@ tags:
 - pipe
 - traffic shaping
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 As a developer when you are working on your local machine, it's easy to forget that there are still a lot of people out there without sufficient broadband access. 
 

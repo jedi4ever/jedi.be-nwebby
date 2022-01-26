@@ -9,9 +9,6 @@ tags:
 - opscode
 - training
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <img src='{{ page.url }}/fosdem-banner.png'>
 <table><tr><td></td><td>
@@ -26,7 +23,7 @@ This means that both [Puppetlabs](http://puppetlabs.com) and [Chef Opscode](http
 So this is how I advise you to plan your trip to Belgium:
 
 - _30 January, 1 and 2 February_: [Stephen Nelson-Smith](http://twitter/lordcope)  is organizing an Opscode Chef Fundamentals course in London, United Kingdom - venue to be confirmed. Not yet Belgium, but close enough :)
-- _3 and 4 February_: [Opscode Chef Advanced training course in Ghent, Belgium](http://www.jedi.be/events/opscode-chef-advanced-2011/)
+- _3 and 4 February_: [Opscode Chef Advanced training course in Ghent, Belgium](https://www.jedi.be/events/opscode-chef-advanced-2011/)
 - _5 and 6 February_: [Fosdem 2011](http://fosdem.org/2011) the *free* and opensource software developers' european meeting
 - _7 February_: site seeing in Belgium, trying out all the beers, chocolates and get some rest...
 - _8 till 10 February_: [Puppet Training organized by Open Future](http://www.open-future.be/european-puppet-training)

@@ -22,13 +22,10 @@ related:
   url: /blog/2009/11/12/collection-of-test-driven-infrastructure-links/
 - desc: Coding an Infrastructure Test First
   url: /blog/2009/11/18/coding-an-infrastructure-test-first/
-filter:
-- erb
-- markdown
 ---
 <img src='/blog/wp-content/uploads/2009/11/coding-infrastructure-test-first.jpg' class='left'>
-Now that we outlined the *programming languages* for automating [shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) ,[network provisioning](http://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/)
-and [os installation and beyond](http://www.jedi.be/blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/), I bet you as a devops are eager start writing your *infrastructure code*. 
+Now that we outlined the *programming languages* for automating [shell scripting](https://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/), [virtual machine creation](https://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/) ,[network provisioning](https://www.jedi.be/blog/2009/11/17/automation-of-network-provisioning-of-machines/)
+and [os installation and beyond](https://www.jedi.be/blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/), I bet you as a devops are eager start writing your *infrastructure code*. 
 
 After some time chances are that you will end up with lots and lots of scripts executing in sequence. And then when you change something in a script the whole sequence will fail and you'll have a hard time looking for what caused the problem. A better approach for writing your code is to practice 
 [Test Driven Development](http://en.wikipedia.org/wiki/Test-driven_development). 
@@ -90,7 +87,7 @@ This is usually done by defining a kickstart/jumpstart template. It would contai
 - Running NMAP to see if no other services are activated
 - run nessus to check vulnerabilities
 
-Up until now these tests are simple checks , and probably most people will do similar things in their monitoring. I've talked about [testing being more then monitoring](http://www.jedi.be/blog/2009/11/16/test-driven-automation-and-administration/). Aside from these simple checks you can complementing your monitoring to run scenarios. Also destructive tests like failing a disk or bringing down an interface are probably not the best thing to do in production monitoring ;-)
+Up until now these tests are simple checks , and probably most people will do similar things in their monitoring. I've talked about [testing being more then monitoring](https://www.jedi.be/blog/2009/11/16/test-driven-automation-and-administration/). Aside from these simple checks you can complementing your monitoring to run scenarios. Also destructive tests like failing a disk or bringing down an interface are probably not the best thing to do in production monitoring ;-)
 
 - test if IP Bonding by executing a failover
 - Verify that syslog works by sending a log request
@@ -120,7 +117,7 @@ Also you can add scenario testing here :
 ### Testing Frameworks
 Programming languages have developed a lot of frameworks over time to help in writing tests. When coding your infrastructure in these languages check what's available. Still there is no test library that is specific to systems testing. The closest are test frameworks for HTTP testing.
 
-Currently this is an emerging field. There are already [a lot of examples in the wild](http://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/). As we adopt more the idea of testable infrastructure, these frameworks will emerge. The most notable is [cucumber-nagios](http://holmwood.id.au/~lindsay/2009/02/23/web-app-integration-testing-for-sysadmins-with-cucumber-nagios/) written by [Lindsay Holmwood](http://twitter.com/auxesis). It brings http testing closer to monitoring and into the sysadmin world. Now you can reuse your tests written in cucumber in your monitoring environment.
+Currently this is an emerging field. There are already [a lot of examples in the wild](https://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/). As we adopt more the idea of testable infrastructure, these frameworks will emerge. The most notable is [cucumber-nagios](http://holmwood.id.au/~lindsay/2009/02/23/web-app-integration-testing-for-sysadmins-with-cucumber-nagios/) written by [Lindsay Holmwood](http://twitter.com/auxesis). It brings http testing closer to monitoring and into the sysadmin world. Now you can reuse your tests written in cucumber in your monitoring environment.
 
 After a discussion at [devopsdays 09](http://www.devopsdays.org/ghent09/programme) Lindsay is starting on a similar thing that allows to integrated ssh scripting in this framework, or what he calls [Behavior driven infrastructure through cucumber](http://holmwood.id.au/~lindsay/2009/11/09/behaviour-driven-infrastructure-through-cucumber/)
  And recently he announced on the [agile system administration mailing list](http://groups.google.com/group/agile-system-administration) that he's joining forces with Adam Jacob of [Opscode](http://www.opscode.com/). So definitely more to come!

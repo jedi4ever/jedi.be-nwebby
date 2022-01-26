@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:
-- erb
-- markdown
 title: Jclouds Training - 2011
 period: "21/11/2011 - 22/11/2011"
 short: "Jclouds Training is a <b>1,5-day comprehensive class</b> covering the basic architecture of Jclouds and all of the underlying components. This class will include lecture, labs and some comprehensive case studies."

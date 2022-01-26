@@ -12,9 +12,6 @@ tags:
 - xpdays
 - arrcamp
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Oh well , now that all my presentations from previous conferences are online, it's time to plan the fall and winter season of conferences. Let me see ....
 

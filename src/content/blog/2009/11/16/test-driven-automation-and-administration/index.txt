@@ -10,9 +10,6 @@ tags:
 - test driven infrastructure
 - devops
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 ### Definition 
 <img src='/blog/wp-content/uploads/2009/11/test-driven-administration.jpg' class='right'>

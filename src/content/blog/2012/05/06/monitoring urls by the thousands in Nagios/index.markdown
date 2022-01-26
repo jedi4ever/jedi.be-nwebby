@@ -6,9 +6,6 @@ tags:
 - monitoringsucks
 - nagios
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 ### 10K websites x 5 URL's to monitor
 For our [Atlassian Hosted Platform](https://my.atlassian.com/ondemand/signup), we have about 10K websites we need to monitor. Those sites are monitored from a remote location to measure responsetime and availability. Each server would have about 5 sub URLs on average to check, resulting in 50K URL checks.

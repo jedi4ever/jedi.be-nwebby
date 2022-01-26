@@ -6,9 +6,6 @@ tags:
 - devopsdays
 - devops
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 At the first [devopsdays in Ghent 2009](http://devopsdays.org/events/2009-ghent/) we were extremely lucky to have [Lindsay Holmwood](http://holmwood.id.au/~lindsay/) present. 
 

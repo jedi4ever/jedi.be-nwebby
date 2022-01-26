@@ -6,9 +6,6 @@ tags:
 - lean
 - enterprise silos
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <a href="http://blog.global-integration.com/wp-content/uploads/2008/12/life-in-a-matrix-9-breaking-the-silos.jpg"><img src="http://blog.global-integration.com/wp-content/uploads/2008/12/life-in-a-matrix-9-breaking-the-silos.jpg"></a><br>
 

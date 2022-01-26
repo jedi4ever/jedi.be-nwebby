@@ -6,9 +6,6 @@ tags:
 - devopsdays
 - austin
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 I had a blast at [Devopsdays Austin 2013](http://devopsdays.org/events/2013-austin) . Here's my keynote on the 'future of devops'.
 

@@ -12,9 +12,6 @@ tags:
 - veewee
 - devops
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 In 2008 at Agile Toronto, I did a session on Agile Infrastructure. This is where I met [Andrew Shafer](http://stochasticresonance.wordpress.com/) (working at Reductive Labs). There wasn't that much attention for it back then, we were still figuring out the impact and ideas. Now 3 years later, I was keen on doing a follow-up at the big Agile2011 conference in Utah. 
 

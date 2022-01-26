@@ -6,9 +6,6 @@ tags:
 - devopsdays
 - paris
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Ever wondered what Devops would look like when it would be invented by Coca Cola?
 

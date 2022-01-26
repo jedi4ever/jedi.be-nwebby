@@ -7,9 +7,6 @@ tags:
 - vmware esx
 - vpshere
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 [Libvirt](http://www.libvirt.org) is a great abstraction library for working in a unified way with different virtualization platforms. It provides a way to interact with Xen, Qemu, KVM, LXC, Openvz, Usermode Linux, Virtualbox and ... you guessed it Vmware ESX. 
 

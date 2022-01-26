@@ -7,9 +7,6 @@ tags:
 - executable
 - external jars
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 
 [Maven](http://maven.apache.org/), the final frontier... This is one of these beasts that can really give you some fun time: some would say, it's merely a build tool. But sometimes the complexity and syntax and dependencies makes me think this is like a profession apart.

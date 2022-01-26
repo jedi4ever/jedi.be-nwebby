@@ -6,9 +6,6 @@ tags:
 - gotocon
 - devops
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 In May 2011 I was asked to do a presentation at [GotoCon CopenHagen](http://gotocon.com/cph-2011/).
 Unfortunately due to illness I had to cancel at the last moment.

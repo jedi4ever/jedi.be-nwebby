@@ -7,27 +7,10 @@
    <title>{{ page.title }}</title>
    <meta name="author" content="{{ page.author }}">
 
-    <meta name="keyword" content="{{#page.keywords}}{{ . }},{{/page.keywords}}{{#page.tags}}{{ . }},{{/page.tags}}">
+   <meta name="keyword" content="{{#page.keywords}}{{ . }},{{/page.keywords}}{{#page.tags}}{{ . }},{{/page.tags}}">
 
 	<link rel="alternate" type="application/rss+xml" title="JEDI: Just Enough Developed Infrastructure RSS Feed" href="http://feeds.feedburner.com/jedi/IZwx" >
 	<link rel="alternate" type="application/atom+xml" title="JEDI: Just Enough Developed Infrastructure Atom Feed" href="http://feeds.feedburner.com/jedi/IZwx" >
-
-	<script type="text/javascript" src="https://www.google.com/jsapi"></script>                                                       
-    <script type="text/javascript">
-		google.load('jquery', '1.3.2');
-	</script>
-
-   <!---This is a combined jAmpersand, jqwindont , jPullquote -->
-  <script type="text/javascript" src="/js/jedi.js"></script>
-
-   <!--- Blueprint CSS Framework Screen + Fancytype-Screen + jedi.css -->
-   <link rel="stylesheet" href="/css/jedi.min.css" type="text/css" media="screen, projection">
-   <link rel="stylesheet" href="/css/blueprint/print.css" type="text/css" media="print">
-   <!--[if IE]>
-      <link rel="stylesheet" href="/css/blueprint/ie.css" type="text/css" media="screen, projection">
-   <![endif]-->
-   <link rel="stylesheet" href="/css/coderay.css" type="text/css">
-   <link rel="stylesheet" href="/css/ultraviolet/active4d.css" type="text/css">
 
 </head>
 <body>

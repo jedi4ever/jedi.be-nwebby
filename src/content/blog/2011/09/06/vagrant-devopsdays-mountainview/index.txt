@@ -5,9 +5,6 @@ tags:
 - vagrant
 - devops
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Vagrant Testing
   url: /blog/2011/03/29/vagrant-testing-testing-one-two/

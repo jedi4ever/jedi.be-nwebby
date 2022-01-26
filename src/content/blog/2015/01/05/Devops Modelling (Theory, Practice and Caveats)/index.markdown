@@ -10,9 +10,6 @@ tags:
 - people process tools
 - layers
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Here's the abstract of a talk I gave at Yow Conference 2013.
 

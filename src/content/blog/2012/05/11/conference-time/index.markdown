@@ -12,9 +12,6 @@ tags:
 - webperfdays
 - velocity
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 It's the time of year that all conferences are gearing up. Here's a list of conferences I'm speaking or wish I was attending.
 

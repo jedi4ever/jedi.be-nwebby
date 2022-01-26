@@ -12,9 +12,6 @@ tags:
 - piwik
 - webtraffic
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Monitoring Wonderland Survey - Metrics - API - Gateways
   url: /blog/2012/01/03/monitoring-wonderland-metrics-api-gateways/

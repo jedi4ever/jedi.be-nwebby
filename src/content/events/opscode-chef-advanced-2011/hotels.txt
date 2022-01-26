@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Opscode Chef Advanced Training - Hotels
 tags: 
 - opscode

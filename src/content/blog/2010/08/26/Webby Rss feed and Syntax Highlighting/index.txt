@@ -8,10 +8,6 @@ tags:
 - coderay
 - wordpress
 blog_post: true
-filter: 
-- erb
-- markdown
-- basepath
 related:
 - desc: Webby Homepage
   url: http://webby.rubyforge.org/ 
@@ -32,7 +28,7 @@ I've been running it now for more then a year and have been happy ever since. Th
 
 - **Highlighting with [Coderay](http://coderay.rubychan.de/)** : webby includes a way to highlight parts of the code. This works very well, but I found myself missing a way to include a file instead of pasting the code directly into the blogpost. This has many advantages: I can edit the file separate and the correct syntax  highlighting in my favorite text editor still works. And the escaping works better for ruby code as there can not be a problem with escaping special characters. After a while I switched to [Ultraviolet](http://ultraviolet.rubyforge.org/) because it has way more syntaxes supported. The downside is that it requires the onigurama library . This isn't really a problem on Mac using Macports. 
 
-<% codify ({ :lang => "shell"}) do %>
+```shell
 patricks-iMac:jedi-webby patrick$ sudo port install oniguruma4
 patricks-iMac:jedi-webby patrick$ gem install ultraviolet -- -I/opt/local/lib
 Building native extensions.  This could take a while...
@@ -49,22 +45,24 @@ oregexp.c:2:23: error: oniguruma.h: No such file or directory
 
 #Solution
 patricks-iMac:jedi-webby patrick$ gem install ultraviolet -- --with-opt-dir=/opt/local
-<% end %>
+```
 
 This is all for now.
 
 *Codify helper (with Ultraviolet): put inside your webby-root/lib*
-<% codify({:file => "codify_helper-uv.rb"}) do %>
-<% end %>
+
+```ruby name="@codify_helper-uv.rb"
+```
 
 *Codify helper (with Coderay): put inside your webby-root/lib*
-<% codify({:file => "codify_helper.rb"}) do %>
-<% end %>
+```ruby name="@codify_helper.rb"
+```
 
 *Rss feed file*
-<% codify({:file => "rss-feed.txt", :lang => "ruby"}) do %>
-<% end %>
+```ruby name="@rss-feed.txt"
+```
 
 *Wordpress to webby conversion script*
-<% codify({:file => "wp2webby.rb", :lang => "ruby"}) do %>
-<% end %>
+
+```ruby name="@wp2webby.rb"
+```

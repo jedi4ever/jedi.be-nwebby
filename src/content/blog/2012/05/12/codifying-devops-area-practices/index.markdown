@@ -9,9 +9,6 @@ tags:
 - people process tools
 - layers
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 While working on the [Devops Cookbook](http://itrevolution.com/books/the-devops-cookbook/) with my fellow authors [Gene Kim](http://twitter.com/realgenekim),[John Willis](http://twitter.com/botchagalupe),[Mike Orzen](http://twitter.com/mikeorzenleanit) we are gathering a lot of "devops" practices. For some time we struggled with structuring them in the book. I figured we were missing a mental model to relate the practices/stories to.
 

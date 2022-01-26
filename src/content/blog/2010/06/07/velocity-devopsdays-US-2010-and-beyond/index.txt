@@ -6,16 +6,13 @@ tags:
 - devopsdays
 - velocityconf
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 This year on 22-24 of June I attended [Velocity 2010](http://en.oreilly.com/velocity2010), a conference about Web Performance and Operations. And I must say, it was a *blast*. The talks were quite interesting, and I learned a lot of new products to check out. Most of the talks will be put online so you can enjoy them for yourselves. But what I liked most of it, was the networking and talking with like minded, interested people. Some people were clearly there for business and when you told them you do some consultancy for unknown or smaller companies and they didn't see the dollars immediately, I could see them shift, haha. Luckily there were a lot of other people too, willing to share there ideas. At velocity, the format of only talks/presentations makes that hard so I had to catch up in the hallways. Catching up with people you only from twitter and suddenly you get to talk to them face to face, makes you understand that twitter is so limited bandwidth for sharing ideas.
 
 In a lot of talks there were hints to devops thinking, something I off course appreciated very much. Even the job board was full of people looking for 'devopsy' people. Funny to see how the term took off and everybody now has an opinion on what it is. This was pretty much like Andrew described in his post of [Devops the Elephant in the room](http://www.devopsdays.org/2010/05/16/the-panel-experiment-and-ignite-devops/) . At [devopsdays US](http://devopsdays.org/) itself it became even more explicit: everyone was going on about devops means X , no according to me devops means Y. 
 
 <br>
-<center><a href="http://www.jedi.be/blog/wp-content/uploads/2010/07/devops-jobs-full.jpg"><img src="http://www.jedi.be/blog/wp-content/uploads/2010/07/devops-jobs.jpg"></a></center>
+<center><a href="https://www.jedi.be/blog/wp-content/uploads/2010/07/devops-jobs-full.jpg"><img src="https://www.jedi.be/blog/wp-content/uploads/2010/07/devops-jobs.jpg"></a></center>
 <br>
 To me, it seemed like the first get together of the 'Anonymous alcoholics': the first step is to recognize that you have problems. And that was the exact purpose we had in mind for this edition: that people started sharing their experiences with each-other. The panel experiment turned out perfect and got a lot of discussion going (including some heated ones). There were no final conclusions but there were a lot of thoughts flowing around. And that's where we should be aiming next: turning all these stories in a kind of what worked and why. And then we can start helping other people! The term devops is not yet one year old, so we still have some time AND work to do.
 

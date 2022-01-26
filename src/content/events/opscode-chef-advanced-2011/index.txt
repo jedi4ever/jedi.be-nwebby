@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Opscode Chef Advanced Training - 2011
 period: "3/02/2011 - 4/02/2011"
 short: "Chef Advanced is a two-day class designed for advanced Chef developers. This class will focus mainly on the Chef APIs. We will also cover how to create Chef providers to be used with non-supported interfaces. This class will include lecture and labs only."

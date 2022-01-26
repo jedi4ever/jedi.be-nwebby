@@ -5,9 +5,6 @@ tags:
 - vmware fusion
 - vmware
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 This probably falls in the category of useless automation for a lot of people. In my never ending search for automation , I wondered how far vmware fusion could be automated.
 

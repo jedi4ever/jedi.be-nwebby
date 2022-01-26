@@ -2,9 +2,6 @@
 layout: event
 extension: html
 title: Jclouds Training - Trainer
-filter:
-- erb
-- markdown
 ---
 ### About Adrian Cole:
 

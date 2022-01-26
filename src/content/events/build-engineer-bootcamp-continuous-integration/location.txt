@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter: 
-- erb
-- markdown
 title: Build Engineer Bootcamp - Location
 dirty: true
 ---

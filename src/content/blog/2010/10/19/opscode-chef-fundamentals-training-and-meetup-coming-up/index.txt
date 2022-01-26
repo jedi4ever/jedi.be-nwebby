@@ -8,9 +8,6 @@ tags:
 - training
 - infrastructure as code
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <table><tr><td><img src='{{ page.url }}/karma_police.jpg'><br><a href="http://twobarkingdogs.wordpress.com/2010/08/17/yard-sale-karma-and-the-painting-nabber/">Image Courtesy to TwoBarkingDogs</a>
 </td><td>

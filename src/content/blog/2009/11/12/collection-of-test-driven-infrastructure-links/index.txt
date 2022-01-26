@@ -11,9 +11,6 @@ tags:
 - tdd
 - cucumber-nagios 
 blog_post: true
-filter: 
-- erb
-- markdown
 related:
 - desc: Recipes for Automated Installation of OS and beyond
   url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/

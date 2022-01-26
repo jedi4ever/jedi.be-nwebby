@@ -1,12 +1,9 @@
 ---
 title: "SSH access to your Vmware machines behind NAT"
 author: Patrick Debois
-guid: http://www.jedi.be/blog/?p=688
+guid: https://www.jedi.be/blog/?p=688
 created_at: 2009-04-07 10:19:01.0 +00:00
 blog_post: true
-filter:
-  - erb
-  - basepath
 categories:
    - Uncategorized
 tags:
@@ -22,7 +19,7 @@ tags:
    - putty
    - nat.conf
 ---
-In our virtual test lab, we have only one official internal IP and we use NAT for our virtual Machines. As described in <a href="http://www.jedi.be/blog/2009/03/03/using-apache-as-a-reverse-proxy-to-access-tomcat-in-virtual-machines/">"using apache as a reverse proxy to access tomcat in virtual-machines"</a> , it is easy to setup an http proxy to have access to the web services on the virtual machines as well. But developers need more then http access, they want to ssh into their virtual machine.
+In our virtual test lab, we have only one official internal IP and we use NAT for our virtual Machines. As described in <a href="https://www.jedi.be/blog/2009/03/03/using-apache-as-a-reverse-proxy-to-access-tomcat-in-virtual-machines/">"using apache as a reverse proxy to access tomcat in virtual-machines"</a> , it is easy to setup an http proxy to have access to the web services on the virtual machines as well. But developers need more then http access, they want to ssh into their virtual machine.
 <br>
 Vmware standard solution is to map the ssh ports behind the NAT to ports on the Vmware Server machine using the NAT.conf in /etc/vmware/vmnet8/nat/nat.conf . While this works, for each machine you need to remap this nat file and also have to restart vmware to reread this file. Here we propose another solution using apache as proxy for SSH access.
 <br>

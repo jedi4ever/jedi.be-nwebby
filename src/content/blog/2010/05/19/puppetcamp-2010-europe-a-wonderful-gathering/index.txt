@@ -8,9 +8,6 @@ tags:
 - puppetlabs
 - zebrastraat
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <table><tr><td><img src='http://jedi.be/blog/wp-content/uploads/2010/05/puppetcamp-europe-2010.png' alt="Puppetcamp Europe 2010"></td><td>
 <p>I have been following 'Puppet' from <a href="http://puppetlabs.com">Puppetlabs</a> for several years now. I love the idea of 'Infrastructure as Code'. Some people say: <i>All the cool things happen in the US</i>. </p>

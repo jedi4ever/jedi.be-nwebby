@@ -7,9 +7,6 @@ tags:
 - sysadmin
 - devops
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <img src='/blog/wp-content/uploads/2009/11/server-smells.jpg' class='left'>
 

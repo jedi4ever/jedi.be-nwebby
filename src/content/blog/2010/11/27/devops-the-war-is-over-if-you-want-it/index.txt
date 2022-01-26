@@ -8,9 +8,6 @@ tags:
 - xpdays
 - scrumnl
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 
 

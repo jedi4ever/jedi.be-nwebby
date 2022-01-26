@@ -10,9 +10,6 @@ tags:
 - webrat
 - mechanize
 blog_post: true
-filter: 
-- erb
-- markdown
 related:
 - desc: Shrinkwrap Vagrant boxes
   url: /blog/2011/03/31/installable-vagrant-boxes/

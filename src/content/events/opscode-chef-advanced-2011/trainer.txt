@@ -2,9 +2,6 @@
 layout: event
 extension: html
 title: Opscode Chef Advanced - Trainer
-filter:    
-- erb
-- markdown
 ---
 ### About Joshua Timberman:
 

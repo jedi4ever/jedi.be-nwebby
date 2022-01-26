@@ -7,9 +7,6 @@ tags:
 - API
 blog_post: true
 extension: html
-filter: 
-- erb
-- markdown
 ---
 <a href="http://nexus.sonatype.org"><img src='{{ page.url }}/nexus.png'></a> A lot of java developers make use of Maven to control dependency hell of external libraries. This pull out the libraries from internet repositories. From a configuration management point of view you want to control access to these external repositories. <a href="http://nexus.sonatype.org">Sonatype Nexus</a> is a tool that allows you to control this by: 
 

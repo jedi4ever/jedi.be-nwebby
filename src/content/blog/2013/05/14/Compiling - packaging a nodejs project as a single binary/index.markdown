@@ -9,9 +9,6 @@ tags:
 - package
 - single
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Let's face it, if you write software it's often hard to distribute it: you have the runtime , the modules you depend on and your software itself. Sure you can package that all but packages ofter require you to have root-privileges to install.
 

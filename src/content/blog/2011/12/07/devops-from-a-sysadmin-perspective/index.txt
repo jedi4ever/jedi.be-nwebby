@@ -6,9 +6,6 @@ tags:
 - devops
 - lisa
 - sysadmin
-filter:
-- erb
-- markdown
 ---
 <br>
 This year [LISA (Large Installation System Administration) 2011 Conference](http://www.usenix.org/events/lisa11/index.html) has a theme on "devops". 
@@ -73,14 +70,14 @@ Links index:
 10. [John Allspaw, 10 deploys per day - dev and ops cooperation at flickr][9]
 11. [Jesse Robbins, Operations is a competitive advantage][10]
 
-[0]: http://www.jedi.be/blog/2011/09/06/devopsdays-melbourne-keynote/ "Patrick Debois's Devopsdays Melbourne Keynote"
+[0]: https://www.jedi.be/blog/2011/09/06/devopsdays-melbourne-keynote/ "Patrick Debois's Devopsdays Melbourne Keynote"
 [1]: http://www.opscode.com/blog/2010/07/16/what-devops-means-to-me/ "John Willis, What devops means to me"
 [2]: http://dev2ops.org/blog/2010/2/22/what-is-devops.html "Damon Edwards,  what is devops"
 [3]: http://theagileexecutive.com/2010/07/06/boundary-objects-in-devops/ "Israel Gat, boundary objects in devops"
 [4]: http://agilemanifesto.org/ "Agile Manifesto"
 [5]: http://blog.cutter.com/2011/09/11/originality-and-operations/ "Ernest Mueller, Originality and Operations"
 [6]: http://en.wikipedia.org/wiki/The_Cuckoo's_Egg_(book) "Cliff Stoll, The Cuckoos Egg"
-[7]: http://www.jedi.be/blog/2011/09/06/velocityconf-devops-metrics/ "Patrick Debois, Israel Gat, Andrew Shaefer Velocity Conference 2011 Devops Metrics"
+[7]: https://www.jedi.be/blog/2011/09/06/velocityconf-devops-metrics/ "Patrick Debois, Israel Gat, Andrew Shaefer Velocity Conference 2011 Devops Metrics"
 [8]: http://highscalability.com/amazon-architecture "Amazon Architecture"
 [9]: http://www.slideshare.net/jallspaw/10-deploys-per-day-dev-and-ops-cooperation-at-flickr "John Allspaw, 10 deploys per day - dev and ops cooperation at flickr"
 [10]: http://radar.oreilly.com/2007/10/operations-is-a-competitive-ad.html "Jesse Robbins, Operations is a competitive advantage"

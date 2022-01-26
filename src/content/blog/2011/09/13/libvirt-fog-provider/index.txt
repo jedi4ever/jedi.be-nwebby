@@ -5,9 +5,6 @@ tags:
 - fog
 - libvirt
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Libvirt and Vmware Esx
   url: /blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/

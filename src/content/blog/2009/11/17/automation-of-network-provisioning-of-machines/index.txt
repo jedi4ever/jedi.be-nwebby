@@ -8,9 +8,6 @@ tags:
 - tftp
 - dns
 blog_post: true
-filter: 
-- erb
-- markdown
 related:
 - desc: Recipes for Automated Installation of OS and beyond
   url: /blog/2009/11/18/recipes-for-automated-installation-of-OS-and-beyond/
@@ -25,7 +22,7 @@ related:
 - desc: Coding an Infrastructure Test First
   url: /blog/2009/11/18/coding-an-infrastructure-test-first/
 ---
-<img src='/blog/wp-content/uploads/2009/11/network-provisioning.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](http://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/) and [virtual machine creation](http://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/). The next step is to prepare the network for the virtual machine to make it boot with the right network settings. In a lot of companies this is often a manual process but we want to automate it.
+<img src='/blog/wp-content/uploads/2009/11/network-provisioning.jpg' class='left'> Up until now, I've described the options to [automate shell scripting](https://www.jedi.be/blog/2009/11/17/shell-scripting-dsl-in-ruby/) and [virtual machine creation](https://www.jedi.be/blog/2009/11/17/controlling-virtual-machines-with-an-API/). The next step is to prepare the network for the virtual machine to make it boot with the right network settings. In a lot of companies this is often a manual process but we want to automate it.
 
 In order to boot a linux machine, one relies on: 
 

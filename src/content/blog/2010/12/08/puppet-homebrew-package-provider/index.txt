@@ -7,9 +7,6 @@ tags:
 - macosx
 - package
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 I've become a big fan of [homebrew](https://github.com/mxcl/homebrew) package system on Macosx. I moved away from [macports](http://www.macports.org) because it allows me to easily change the way packages are compiled: sometimes I need experimental versions of software or versions that are not in macports yet. Instead of compiling them in a separate place, I can now create my own formulas and still use the repository in case I need it: this is made possible because it's all based on git and allows you to merge your changes even if upstream packages get updated.
 

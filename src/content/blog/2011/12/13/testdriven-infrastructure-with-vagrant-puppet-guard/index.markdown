@@ -8,9 +8,6 @@ tags:
 - vagrant
 - guard
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Puppet editing like a pro
   url: /blog/2011/12/05/puppet-editing-like-a-pro
@@ -36,7 +33,7 @@ The workflow usually looks like this:
 - run a `vagrant provision` to see if this works
 - and if you are happy with it, commit it to your favorite version control repository
 
-Specifically for puppet, thanks to the great work by [Nikolay Sturm](http://twitter.com/nistude) and [Tim Sharpe](http://twitter.com/rodjek), we can now also complement this with tests written in [rspec-puppet](https://github.com/rodjek/rspec-puppet) and [cucumber-puppet](https://github.com/nistude/cucumber-puppet). You can find more info at [Puppet unit testing like a pro](http://www.jedi.be/blog/2011/12/05/puppet-unit-testing-like-a-pro/).
+Specifically for puppet, thanks to the great work by [Nikolay Sturm](http://twitter.com/nistude) and [Tim Sharpe](http://twitter.com/rodjek), we can now also complement this with tests written in [rspec-puppet](https://github.com/rodjek/rspec-puppet) and [cucumber-puppet](https://github.com/nistude/cucumber-puppet). You can find more info at [Puppet unit testing like a pro](https://www.jedi.be/blog/2011/12/05/puppet-unit-testing-like-a-pro/).
 
 So we got code, and we got tests, what else are we missing? **Automation** of this process: it's funny if you think of it that we automate the hell out of server installations, but haven't automated the previous described process.
 

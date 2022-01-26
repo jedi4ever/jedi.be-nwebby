@@ -7,9 +7,6 @@ tags:
 - resume
 - curriculum
 blog_post: true
-filter: 
-- erb
-- markdown
 --- 
 As a freelancer I spent quite some time updating and sending my CV to different parties. Most recruiting companies ask me for a MS Word version of my CV without any markup. I understand why, they put on their own logo and copy and paste the relevant parts for the company they propose me to. To me this feels rather awkward. In these web oriented times, I would expect enterprises to check candidate backgrounds online. And a flat, unformatted list of job experience, is not what they expect online.  Sites like [Linkedin](http://www.linkedin.com) and [VisualCV](http://www.visualcv.com) try to make a difference here, but they are still text based, very similar to the dull paper documents.
 

@@ -1,12 +1,9 @@
 ---
 title: "Transparent Proxy with Squid using Vmware Advanced NAT technique"
 author: Patrick Debois
-guid: http://www.jedi.be/blog/?p=595
+guid: https://www.jedi.be/blog/?p=595
 created_at: 2009-03-03 17:00:20.0 +00:00
 blog_post: true
-filter:
-  - erb
-  - basepath
 categories:
    - Uncategorized
 tags:
@@ -32,7 +29,7 @@ The first options is difficult to manage and you need to have a good knowledge o
 <br>
 The most traditional approach for implementing option 2 is by setting up a squid box somewhere in the network and have a system where all the traffic passes redirect traffic to that box. While this is certainly a recommended setup, it does requires an additional box to do the job. In this solution the squid will be running on the box hosting all the vmware machines.
 <br>
-<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png"><img title="vmware-advanced-nat-with-squid" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png" height="778" alt="" width="1071" /></a>
+<a href="https://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png"><img title="vmware-advanced-nat-with-squid" src="https://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png" height="778" alt="" width="1071" /></a>
 <br>
 But first things first, lets install squid (we used 2.5Stable 12). More info at <a href="http://www.wains.be/index.php/2006/12/18/transparent-squid/">http://www.wains.be/index.php/2006/12/18/transparent-squid/
 </a>
@@ -111,5 +108,5 @@ Now check that when your hosts go the internet, their accesses are logged in the
 <br>
 P.S. While the whole excercise was done to cache f.i. yum and other packages during installation, I found that most of the repositories don't play nicely with the http-headers thereby causing MISSES in the cache.
 <br>
-<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png">
+<a href="https://www.jedi.be/blog/wp-content/uploads/2009/03/vmware-advanced-nat-with-squid.png">
 </a>

@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Jclouds Training - Registration
 tags: 
 - jcloud

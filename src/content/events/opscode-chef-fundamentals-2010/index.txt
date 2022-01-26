@@ -1,9 +1,6 @@
 ---
 layout: event
 extension: html
-filter:    
-- erb
-- markdown
 title: Opscode Chef Fundamentals Training - 2010
 period: "8/11/2010 - 10/11/2010"
 short: "Chef Fundamentals is a <b>3-day comprehensive class</b> covering the basic architecture of Chef and all of the underlying components. We will be covering installation basics of Chef Client and Chef Solo. Other topics will include: creating Chef repositories, creating cookbooks and advanced use of the command line utility, Knife. This class will include lecture, labs and some comprehensive case studies."

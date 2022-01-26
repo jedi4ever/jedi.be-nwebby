@@ -14,9 +14,6 @@ tags:
 - veewee
 blog_post: true
 extension: html
-filter:
-- erb
-- markdown
 ---
 I've been tracking __infrastructure as code__ for a few years now. Over the years it has gotten closer to __real code__. 
 

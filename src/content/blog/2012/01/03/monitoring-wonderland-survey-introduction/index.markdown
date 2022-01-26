@@ -6,9 +6,6 @@ tags:
 - monitoringsucks
 - nagios
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 ### Introduction
 While Automation is great to get you going and doing things faster and reproducible, Monitoring/Metrics are probably more valuable for learning and getting feedback from what's really going on. Matthias Meyer describes it as the [virtues of monitoring](http://www.paperplanes.de/2011/1/5/the_virtues_of_monitoring.html). Nothing new, if you have been listening to [John Allspaw](http://www.kitchensoap.com/) on [Metrics Driven Engineering (pdf)](http://assets.en.oreilly.com/1/event/65/Metrics-driven%20Engineering%20at%20Etsy%20Presentation.pdf), essentially putting the science back in IT as [Adam Fletcher](https://twitter.com/adamfblahblah) noted at the Boston devopsdays openspace session on [What does a sysadmin look like in 10 years](http://www.thesimplelogic.com/2011/03/22/what-does-a-sysadmin-look-like-in-10-years/) 

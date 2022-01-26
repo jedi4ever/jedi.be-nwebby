@@ -8,13 +8,10 @@ tags:
 - mcollective
 - vijava
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 On a recent project we explored how to further integrate [puppet](http://puppetlabs.com) and [Vsphere](http://www.vmware.com/products/vsphere/overview.html) to get EC2 like provisioning, all command-line based.
 
-We leveraged the (Java Vsphere) [Vijava interface](http://vijava.sourceforge.net/) . For the interested user, I also wrote another [blogpost on Programming options for vmware Vsphere](http://www.jedi.be/blog/2010/12/12/interacting-programming-vmware-vsphere-esx-on-macosx/), and why [libvirt for ESX](http://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) was (not yet) an option
+We leveraged the (Java Vsphere) [Vijava interface](http://vijava.sourceforge.net/) . For the interested user, I also wrote another [blogpost on Programming options for vmware Vsphere](https://www.jedi.be/blog/2010/12/12/interacting-programming-vmware-vsphere-esx-on-macosx/), and why [libvirt for ESX](https://www.jedi.be/blog/2010/12/08/libvirt-0-8-6-and-vmware-esx/) was (not yet) an option
 
 The result of the Proof of Concept code can be found on the [jvspherecontrol project on github](https://github.com/jedi4ever/jvspherecontrol)
 

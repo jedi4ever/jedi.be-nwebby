@@ -11,9 +11,6 @@ tags:
 - ios
 - continuous delivery
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 In the web world we take a few things for granted:
 

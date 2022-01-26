@@ -9,7 +9,7 @@ extension: xml
 ---
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
-		<atom:link href="http://www.jedi.be/blog/feed/" rel="self" type="application/rss+xml" />
+		<atom:link href="https://www.jedi.be/blog/feed/" rel="self" type="application/rss+xml" />
 		<title>{{ page.title}}/title>
 		<description>{{ page.description }}</description>
 		<link>http://{{ page.site}}/blog</link>

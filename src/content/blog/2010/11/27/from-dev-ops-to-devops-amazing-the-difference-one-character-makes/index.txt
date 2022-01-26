@@ -7,9 +7,6 @@ tags:
 - tdose
 - culture
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 
 <table>

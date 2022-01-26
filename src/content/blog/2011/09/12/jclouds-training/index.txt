@@ -6,9 +6,6 @@ tags:
 - cloud
 - cloudcamp
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 I'm proud to announce the following training:
 

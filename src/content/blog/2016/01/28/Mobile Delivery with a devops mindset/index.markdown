@@ -11,9 +11,6 @@ tags:
 - ios
 - continuous delivery
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 I've joined [Small Town Heroes](http://smalltownheroes.be) a while ago. 
 

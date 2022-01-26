@@ -17,9 +17,6 @@ related:
 - desc: Monitoring Wonderland Survey - Introduction
   url: /blog/2012/01/03/monitoring-wonderland-survey-introduction/
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 *Update 4/01/2012: added ways to add metrics via logs, java pickle graphite feeder*
 

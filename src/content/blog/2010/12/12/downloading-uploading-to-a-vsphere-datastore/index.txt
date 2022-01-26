@@ -7,11 +7,8 @@ tags:
 - vmfs
 - curl
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
-In previous blogposts [I've setup a fresh Vmware ESX Server](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) and [Created an ISO file for an Ubuntu Automated Install](http://www.jedi.be/blog/2010/12/10/creating-custom-ubuntu-autoinstall-cdroms-with-puppet/) . 
+In previous blogposts [I've setup a fresh Vmware ESX Server](https://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) and [Created an ISO file for an Ubuntu Automated Install](https://www.jedi.be/blog/2010/12/10/creating-custom-ubuntu-autoinstall-cdroms-with-puppet/) . 
 
 To be able to boot a new Virtual Machine from this isofile, we first need to make it available in a Datastore on the server:
 

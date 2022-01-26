@@ -9,11 +9,8 @@ tags:
 - mkisofs
 - kickstart
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
-Now that we [have an brand new ESX Server running](http://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) , it's time to install the first machine. To automate installations you can normally use a PXE server, but that requires you of course to install a PXE server first. To automate the installation of the first machine, we create a custom cdrom. This example (Ubuntu) will show you how you can do that.
+Now that we [have an brand new ESX Server running](https://www.jedi.be/blog/2010/12/09/automated-vmware-esx-installation-even-in-vmware-fusion/) , it's time to install the first machine. To automate installations you can normally use a PXE server, but that requires you of course to install a PXE server first. To automate the installation of the first machine, we create a custom cdrom. This example (Ubuntu) will show you how you can do that.
 
 To create a custom cdrom takes the following steps:
 

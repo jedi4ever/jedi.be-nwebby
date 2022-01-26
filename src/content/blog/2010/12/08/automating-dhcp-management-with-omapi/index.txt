@@ -9,9 +9,6 @@ tags:
 - dhcpctl
 - omshell
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 I was looking for a way to automate the configuration of a dhcp server. I wanted to add, remove and modify hosts by scripting it. During that search I came across [OMAPI - Object Management Application Programming Interface](http://blog.nominet.org.uk/tech/2005/12/21/using-omapi-object-management-application-programming-interface/
 ) as a way to interface with the [ISC dhcpd server](www.isc.org/software/dhcp) . 

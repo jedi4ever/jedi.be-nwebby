@@ -8,11 +8,8 @@ tags:
 - vlan
 - hostonly
 blog_post: true
-filter:
-- erb
-- markdown
 ---
-I've raved about [Vagrant](http://vagrant.up) [many](http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011) [many](http://www.jedi.be/blog/2011/03/28/using-vagrant-as-a-team/) times before.
+I've raved about [Vagrant](http://vagrant.up) [many](http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011) [many](https://www.jedi.be/blog/2011/03/28/using-vagrant-as-a-team/) times before.
 
 Initially it was concieved for single machines running behind a NAT interface. Later support for hostonly-networking was added, opening the possibility to have multiple host talk together over a private network.
 

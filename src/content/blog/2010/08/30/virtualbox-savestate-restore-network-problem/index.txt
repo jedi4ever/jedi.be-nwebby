@@ -7,9 +7,6 @@ tags:
 - savestate
 - restore
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 ### Virtualbox Savestate and restore does not restore the network
 I make extensive use of Virtualbox to test my installations. When I automate the installation , I use the savestate and restore to rollback changes I do to the virtual machine. Recently the network of the virtual machine would not be accessible anymore after the restore. A network ping from both inside or outside the virtualmachine fails. Several tickets have been created for it, and the bug seems to pop up every new update or so [Fixed in 25205](http://www.virtualbox.org/changeset/25205) , [re-introduced in Ticket 5666](http://www.virtualbox.org/ticket/5666), [Ticket 5654](http://www.virtualbox.org/ticket/5654) . 

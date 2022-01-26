@@ -8,9 +8,6 @@ tags:
 - testing
 - lint
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Puppet editing like a pro
   link: http://jedi.be/blog/2011/12/05/puppet-editing-like-a-pro
@@ -21,7 +18,7 @@ related:
 
 In our [previous blogpost on Puppet Versioning](http://jedi.be/blog/2011/12/05/puppet-versioning-like-a-pro/), we described the most basic check to see if a puppet manifest was valid. We used the parseonly function to see if it would compile.
 
-Until know this means we have only have _if the compiler is happy_, not that it performs _the function it needs to do._ In 2009 after the [first devopsdays](http://devopsdays.org/events/ghent09) I wrote a collection of [Test Driven Infrastructure Links](http://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/) . This was obviously inspired by [Lindsay Holmwood's talk on cucumber-nagios](http://auxesis.github.com/cucumber-nagios/).
+Until know this means we have only have _if the compiler is happy_, not that it performs _the function it needs to do._ In 2009 after the [first devopsdays](http://devopsdays.org/events/ghent09) I wrote a collection of [Test Driven Infrastructure Links](https://www.jedi.be/blog/2009/11/12/collection-of-test-driven-infrastructure-links/) . This was obviously inspired by [Lindsay Holmwood's talk on cucumber-nagios](http://auxesis.github.com/cucumber-nagios/).
 
 On the Opscode chef front, [Stephen Nelson-Smith](http://agilesysadmin.net/) wrote a great book [Test-driven Infrastructure with Chef](http://www.cucumber-chef.org/) on how to do this. Also see the [cuken project](https://www.relishapp.com/hedgehog/cuken/docs/about-cuken-s-reusable-steps) where re-usable cucumber steps are grouped.
 

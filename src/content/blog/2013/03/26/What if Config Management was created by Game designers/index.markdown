@@ -12,9 +12,6 @@ tags:
 - game designers
 - gamification
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 Ever wondered what Config Management would look like if it was created by Game Designers?
 

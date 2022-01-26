@@ -8,9 +8,6 @@ tags:
 - complex
 - snowden
 blog_post: true
-filter:
-- erb
-- markdown
 ---
 One of the strong pillars of devops (if not the strongest) is the collaboration/communication. For the talk [about Devops Metrics for Velocity 2011](http://www.slideshare.net/jedi4ever/devops-metrics) I researched how to prove collaboration is a good thing: while discussing devops to people it sometimes comes to believe that it makes sense to collaborate more or that all this collaboration is overkill. I think at time I came across Design Thinking and read [how it evolved from 1 person doing the design to listening to user requirements to participatory design](http://www.tandfonline.com/doi/pdf/10.1080/15710880701875068). In the book [Design Thinking - Understanding Designers Think](http://www.amazon.com/Design-Thinking-Understanding-Designers-Think/dp/1847886361/ref=pd_sim_b_6) Nigel Cross writes that design used to be collaborative thing (like guilds trying to push their craft forward).
 

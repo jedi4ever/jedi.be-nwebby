@@ -1,12 +1,9 @@
 ---
 title: "Automated creation of vmware server virtual machines"
 author: Patrick Debois
-guid: http://www.jedi.be/blog/?p=635
+guid: https://www.jedi.be/blog/?p=635
 created_at: 2009-03-10 14:09:27.0 +00:00
 blog_post: true
-filter:
-  - erb
-  - basepath
 categories:
    - Uncategorized
 tags:
@@ -17,7 +14,7 @@ tags:
    - automation
    - pxe
 ---
-<a href="http://www.jedi.be/blog/wp-content/uploads/2009/03/radartjes.jpg"><img title="radartjes" class="size-medium wp-image-639 alignleft" src="http://www.jedi.be/blog/wp-content/uploads/2009/03/radartjes.jpg" height="94" alt="" width="123" /></a>If you frequently want to rebuild a virtual machine, chances are that you grow tired of  going through the web interface of vmware server: after your first installation , you have to enter the bios to select booting from PXE to have higher priority then HDD boot. But if you do a PXE install then, you have to make sure that you catch the installation reboot because otherwise it will loop doing the installation.
+<a href="https://www.jedi.be/blog/wp-content/uploads/2009/03/radartjes.jpg"><img title="radartjes" class="size-medium wp-image-639 alignleft" src="https://www.jedi.be/blog/wp-content/uploads/2009/03/radartjes.jpg" height="94" alt="" width="123" /></a>If you frequently want to rebuild a virtual machine, chances are that you grow tired of  going through the web interface of vmware server: after your first installation , you have to enter the bios to select booting from PXE to have higher priority then HDD boot. But if you do a PXE install then, you have to make sure that you catch the installation reboot because otherwise it will loop doing the installation.
 <br>
 In the following scenario we will create a vmx and vmdk file usable to start a PXE-boot.
 <br>

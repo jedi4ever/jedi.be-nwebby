@@ -10,9 +10,6 @@ tags:
 - hdid
 - newfs_msdos
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 I wanted to automate the creation of an MS-DOS floppy under MacOSX. The usual way is very similar to Linux. In this script I avoided using sudo to mount the filesystem and took advantage of the hdiutils to run everything under normal user credentials.
 

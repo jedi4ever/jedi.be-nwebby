@@ -6,11 +6,8 @@ tags:
 - java
 - tightvnc
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
-I have been experimenting with [sending VNC keystrokes in different ways before](http://www.jedi.be/blog/2010/08/29/sending-keystrokes-to-your-virtual-machines-using-X-vnc-rdp-or-native/) . To finalize these experiments I decided to create a java library that is able to send keys towards a vnc server. I take advantage of existing logic of the [vnc-tight project](http://www.tightvnc.com). 
+I have been experimenting with [sending VNC keystrokes in different ways before](https://www.jedi.be/blog/2010/08/29/sending-keystrokes-to-your-virtual-machines-using-X-vnc-rdp-or-native/) . To finalize these experiments I decided to create a java library that is able to send keys towards a vnc server. I take advantage of existing logic of the [vnc-tight project](http://www.tightvnc.com). 
 
 The project provides the source for a java based vncviewer, but the problem is that it uses an applet awt-based interface. I wanted it to be used from the commandline without the X requirement. 
 

@@ -7,9 +7,6 @@ tags:
 - puppet
 - cucumber
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 On 25 March the UKUUG organized their '[UKUUG Spring Conference](http://www.ukuug.org/events/spring2010/)'. I must say, it was a long time ago since I went up to a Unix User group conference. It was really fun to see people again so passionate about their subjects, although a lot of the talks had a rather academic edge. Being in Manchester, several of the devops crowd came down and we had a nice chat with them.
 

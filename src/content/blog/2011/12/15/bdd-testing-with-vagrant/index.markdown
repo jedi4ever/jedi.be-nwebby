@@ -7,18 +7,15 @@ tags:
 - testing
 - vagrant
 blog_post: true
-filter:
-- erb
-- markdown
 related:
 - desc: Puppet editing like a pro
   url: /blog/2011/12/05/puppet-editing-like-a-pro
 - desc: Puppet versioning like a pro
   url: /blog/2011/12/05/puppet-versioning-like-a-pro/
 - desc: Puppet unit testing like a pro
-  url: http://www.jedi.be/blog/2011/12/05/puppet-unit-testing-like-a-pro/
+  url: https://www.jedi.be/blog/2011/12/05/puppet-unit-testing-like-a-pro/
 - desc: Vagrant Testing One Two
-  url: http://www.jedi.be/blog/2011/03/29/vagrant-testing-testing-one-two/
+  url: https://www.jedi.be/blog/2011/03/29/vagrant-testing-testing-one-two/
 ---
 **A big thanks to [Atlassian](http://www.atlassian.com) for allowing me to post this series!!**
 
@@ -36,7 +33,7 @@ From what I found, most people would execute these test on the VMs directly. Thi
 
 In some situations, the required gems, libraries might lead to conflicts or introduce dependencies you would rather not have on your production machine. And they would become another point to maintenance in your production machines.
 
-So in a previous blogpost [Vagrant Testing,Testing One Two](http://www.jedi.be/blog/2011/03/29/vagrant-testing-testing-one-two/) , I already described using modified Cucumber-Nagios steps that interact with [Vagrant](http://vagrantup.com) over ssh.
+So in a previous blogpost [Vagrant Testing,Testing One Two](https://www.jedi.be/blog/2011/03/29/vagrant-testing-testing-one-two/) , I already described using modified Cucumber-Nagios steps that interact with [Vagrant](http://vagrantup.com) over ssh.
 
 ## Running tests from outside the VM - Take 2
 But I had a problem with the previous approach. Depending on the situation I would need to run the same tests via different connection methods: vagrant uses ssh, ec2 via fog, openvz via vzctl etc...

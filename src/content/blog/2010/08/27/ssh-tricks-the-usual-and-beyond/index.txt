@@ -5,10 +5,6 @@ tags:
 - ssh
 - automation
 blog_post: true
-filter: 
-- erb
-- markdown
-- basepath
 related:
 - desc: Eleven ssh tricks
   url: http://segfault.in/2010/02/5-ssh-tricks-you-must-know/

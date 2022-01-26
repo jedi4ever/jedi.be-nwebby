@@ -7,9 +7,6 @@ tags:
 - agile sysadmin
 - opsdev
 blog_post: true
-filter: 
-- erb
-- markdown
 ---
 <table><tr><td><img src='/blog/wp-content/uploads/2010/02/butterfly-stages.jpg' alt="emerging butterfly"></td>
 <td> In the last few months, a movement has begun to take shape.  It's a movement of people who think it's time for change in the IT industry - time to stop wasting money, time to start delivering great software, and building systems that scale and last.  This movement is being called Devops.  But what is Devops?  Where did it come from?  And what can it achieve? </td></tr><tr><td colspan=2>
@@ -98,7 +95,7 @@ If this sounds like the kind of thing you already do, or like the kind of thing 
 ### Blogs
 
 The following blogs are written from a Devops perspective, and offer high quality, technically rich content. 
-[The Build Doctor](http://www.build-doctor.com), [Patrick Debois (This One)](http://www.jedi.be/blog),  [Agile Sysadmin](http://agilesysadmin.net),  [RI](http://www.devco.net), [Bitfield](http://bitfieldconsulting.com) ,  [Planet Infra](http://www.zanet.net),  [Unix Daemon](http://blog.unixdaemon.net/)
+[The Build Doctor](http://www.build-doctor.com), [Patrick Debois (This One)](https://www.jedi.be/blog),  [Agile Sysadmin](http://agilesysadmin.net),  [RI](http://www.devco.net), [Bitfield](http://bitfieldconsulting.com) ,  [Planet Infra](http://www.zanet.net),  [Unix Daemon](http://blog.unixdaemon.net/)
 
 ### Mailing lists
 

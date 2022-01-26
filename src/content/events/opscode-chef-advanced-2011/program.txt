@@ -10,7 +10,6 @@ tags:
 - devops
 - course
 - training
-dirty: true
 ---
 Chef Advanced is a two-day class designed for advanced Chef developers. This class will focus mainly on the Chef APIs. We will also cover how to create Chef providers to be used with non-supported interfaces. This class will include lecture and labs only.
 

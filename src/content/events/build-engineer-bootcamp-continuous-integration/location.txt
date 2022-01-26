@@ -2,7 +2,6 @@
 layout: event
 extension: html
 title: Build Engineer Bootcamp - Location
-dirty: true
 ---
 Kindly hosted by [Tomtom](http://tomtom.com) (Former [Teleatlas](http://www.teleatlas.com/))
 

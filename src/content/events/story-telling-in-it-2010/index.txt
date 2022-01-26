@@ -1,10 +1,8 @@
 ---
 layout: event
 extension: html
-filter:    erb
 title: Storytelling in IT - Raf Stevens
 period: "28/10/2010"
-dirty: true
 event: true
 short: "<p>This evening session is about the use of <strong>Storytelling</strong> in IT to communicate facts and to make a message stick.This aligns perfectly with the use of personas in User Interface development and User Stories/Mapping used within  Agile Development.</p>"
 tags: 

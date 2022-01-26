@@ -2,7 +2,6 @@
 layout: event
 extension: html
 title: Opscode Chef Fundamentals Training - Location
-dirty: true
 ---
 
 The training is kindly hosted by <a href="http://www.ibbt.be">IBBT</a>. 

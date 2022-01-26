@@ -12,7 +12,6 @@ tags:
 - training
 - ec2
 - java
-dirty: true
 event: true
 ---
 # Note: This class has been cancelled/postponed, stay tuned for a new date

@@ -12,7 +12,6 @@ tags:
 - devops
 - course
 - training
-dirty: true
 event: true
 ---
 <table><tr><td><a href="http://opscode.com"><img src='<%= @page.url+"/opscode_logo.png" %>'></a></td>

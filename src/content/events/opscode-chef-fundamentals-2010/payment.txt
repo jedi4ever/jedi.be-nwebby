@@ -2,7 +2,6 @@
 layout: event
 extension: html
 title: Opscode Chef Fundamentals Training - Payment
-dirty: true
 ---
 <p>Training registration is for three days and includes the training material, coffee, thee, soft drinks, water and 3 lunches .</p>
 

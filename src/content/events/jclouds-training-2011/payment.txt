@@ -2,7 +2,6 @@
 layout: event
 extension: html
 title: Jclouds Training - Payment
-dirty: true
 ---
 <p>Training registration is for 1,5 day of training and includes the training material, coffee, thee, soft drinks, water and lunches .</p>
 

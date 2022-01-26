@@ -9,7 +9,6 @@ tags:
 - devops
 - course
 - training
-dirty: true
 ---
 <h3>Schedule</h3>
 <table border=1>

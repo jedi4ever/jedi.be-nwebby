@@ -86,7 +86,7 @@ The difference in approach is that underhood, I still use the full commands , so
 
 ### The resulting code might look like this:
 
-<% codify(:lang => "ruby", :line_numbers => "inline") do %>
+```
 require "rubygems"
 require "term/ansicolor"
 include Term::ANSIColor
@@ -334,8 +334,6 @@ def execute_when_tcp_available(ip="localhost", options = { } , &block)
 
   return false
 end
-
-
-<% end %>
+```
 
 

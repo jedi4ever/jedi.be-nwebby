@@ -96,7 +96,7 @@ The default username & password is admin/admin123 . [http://java.dzone.com/artic
 $ curl -X GET -u admin:admin123 http://localhost:8081/nexus/service/local/users
 ```
 
-<% codify(:lang => "text") do %>
+```text
 <users-list>
   <data>
 	....
@@ -112,14 +112,14 @@ $ curl -X GET -u admin:admin123 http://localhost:8081/nexus/service/local/users
     </users-list-item>
   </data>
 </users-list>
-<% end %>
+```
 
 #### Authenticated REST - POST requests
 The next thing I wanted to try is to change the default password of admin. I could have just update the _security.xml_ in the sonatype-work/nexus/conf/ directory. But hey, the REST documentation mentioned it has an API for that (using /users_changepw) . 
 
 My first attempt was to send things in JSON format
 
-<% codify(:lang => "shell") do %>
+```shell
 cat <<EOF |curl -v -d @- -H "Accept: application/json" \
 -H "Content-Type: application/json" -X POST -u admin:admin123 \
 http://localhost:8081/nexus/service/local/users_changepw
@@ -129,28 +129,28 @@ http://localhost:8081/nexus/service/local/users_changepw
   	"newPassword":"newone"
 }
 EOF
-<% end %>
+```
 
 But it kept complaining about Invalid XML format; weird as I was using JSON 
-<% codify(:lang => "shell") do %>
+```shell
 <h3>Invalid XML, unable to parse using XStream</h3>
 <p>You can get technical details
 <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">here</a>.<br>
 Please continue your visit at our <a href="/">home page</a></p>
-<% end %> 
+``` 
 
 From the error, I found that it used [XStream library](http://xstream.codehaus.org/) to marshal the XML requests into Java Object. 
 
 So my next attempt was to use XML instead of JSON:
 
-<% codify(:lang => "shell") do %>
+```shell
 cat <<THEEND |curl -v -d @- -H "Accept: application/xml" \
 -H "Content-Type: application/xml" -X POST -u admin:admin123 \ http://localhost:8081/nexus/service/local/users_changepw
 <userId>admin</userId>
 <oldPassword>admin1234</oldPassword>
 <newPassword>newone</newPassword>
 THEEND
-<% end %>
+```
 
 Still no luck, so the next step was to look in the nexus source code to see what was happening. I found some hints at : 
 
@@ -160,15 +160,15 @@ Still no luck, so the next step was to look in the nexus source code to see what
 
 It seems that xstream uses aliases to map the xml commands: 
 
-<% codify(:lang => "java") do %>
+```java
 xstream.alias( "user-request", UserResourceRequest.class );
 xstream.alias( "user-response", UserResourceResponse.class );
 xstream.alias( "user-forgotpw", UserForgotPasswordRequest.class );
 xstream.alias( "user-changepw", UserChangePasswordRequest.class );
-<%end %>
+```
 
 So the XML has to include the correct tag first + data after it: 
-<% codify(:lang => "xml") do %>
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <user-changepw>
         <data>
@@ -177,9 +177,9 @@ So the XML has to include the correct tag first + data after it:
                 <newPassword>newone</newPassword>
         </data>
 </user-changepw>
-<% end %>
+```
 
-<% codify(:lang => "shell") do %>
+```shell
 $ cat <<EOF |curl -v -d @- -H "Accept: application/xml" \
 -H "Content-Type: application/xml" -X POST -u admin:admin123 \
 http://localhost:8081/nexus/service/local/users_changepw
@@ -191,7 +191,7 @@ http://localhost:8081/nexus/service/local/users_changepw
                 <newPassword>newone</newPassword>
         </data>
 </user-changepw>
-<% end %>
+```
 
 And finally this succeeded.
 

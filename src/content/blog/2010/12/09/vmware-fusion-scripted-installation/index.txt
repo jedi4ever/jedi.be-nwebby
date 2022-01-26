@@ -24,7 +24,7 @@ New machines are created in :
 $HOME/Documents/Virtual Machines.localized
 
 #### Running the installation by commandline
-<% codify(:shell) do %>
+```shell
 # Point to the downloaded version
 VMFUSION_DMG="$HOME/SavedDownloads/VMware-Fusion-3.1.1-282344.dmg"
 # Mount the disk image
@@ -88,10 +88,10 @@ ls $HOME/Documents/Virtual\ Machines.localized
 # Restart network services!?
 sudo sh -c "/Library/Application\ Support/VMware\ Fusion/boot.sh --restart"
 
-<% end %>
+```
 
 ##### Cleaning an existing installation
-<% codify(:shell) do %>
+```shell
 
 #Find the vmware packages installed
 pkgutil --pkgs=com.vmware.fusion.*
@@ -135,7 +135,7 @@ sudo /Library/Application\ Support/VMware\ Fusion/Uninstall\ VMware\ Fusion.app/
 
 # Note that we don't delete virtual machines!
 
-<% end %>
+```
 
 #### References: 
 - vmware ovftool : [http://www.daemonchild.com/install-fusion-31-ovftool](http://www.daemonchild.com/install-fusion-31-ovftool)

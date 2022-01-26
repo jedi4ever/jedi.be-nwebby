@@ -71,7 +71,7 @@ What is xdotool?
 This tool lets you simulate keyboard input and mouse activity, move and resize windows, etc. It does this using X11's XTEST extension and other Xlib functions.
 Additionally, you can search for windows and move, resize, hide, and modify window properties like the title. If your window manager supports it, you can use xdotool to switch desktops, move windows between desktops, and change the number of desktops.
 
-<% codify(:lang => "shell") do %>
+```shell
 $ sudo port install xdotool
 --->  Computing dependencies for xdotool
 --->  Fetching xdotool
@@ -96,17 +96,17 @@ defaults write org.macports.X11 enable_test_extensions -boolean true
 
 This only needs to be done once.
 --->  Cleaning xdotool
-<% end %>
+```
 
 Sending the key 'a' to your X-sessions 
 
-<% codify(:lang => "shell") do %>
+```shell
 $ xdotool key 'a'
-<% end %>
+```
 
 The tool has a lot of ways of interacting with the windows, and for our purposes it has a option to send a *key* and even *mouse* . 
 
-<% codify(:lang => "shell") do %>
+```shell
 $ xdotool
 Usage: xdotool <cmd> <args>
 Available commands:
@@ -147,7 +147,7 @@ Available commands:
   get_desktop_for_window
   get_desktop_viewport
   set_desktop_viewport
-<% end %>
+```
 
 <hr>
 ### Interacting with VNC
@@ -155,14 +155,14 @@ Available commands:
 The easiest way I found to interact with a VNC session is by using the excellent ruby-vnc library [http://code.google.com/p/ruby-vnc/](http://code.google.com/p/ruby-vnc/)
 
 The example on the website gives you a good idea on how it works:
-<% codify(:lang => "ruby") do %>
+```ruby
 # launch xclock on localhost. note that there is an xterm in the top-left
 Net::VNC.open 'localhost:0', :shared => true, :password => 'mypass' do |vnc|
   vnc.pointer_move 10, 10
   vnc.type 'xclock'
   vnc.key_press :return
 end
-<% end %>
+```
 
 #### Using vncviewer and xvfb
 If you are not that confident with ruby, there is another option. Xvfb allows you to create a virtual screen on which you can interact. Together with the vncviewer (X-client) we can use it with xdotool to interact with a vnc session.
@@ -170,25 +170,25 @@ If you are not that confident with ruby, there is another option. Xvfb allows yo
 The first step is to create a vnc password file, as with vncviewer the password can not be supplied on the commandline. 
 
 Create password file name 'mypasswordfile'
-<% codify(:lang => "shell") do %>
+```shell
 $ vncpasswd mypasswordfile
 Password:
 Verify:
-<% end %>
+```
 
 Start Xfvb screen (:1 means another display and 24 is the colordepth)
-<% codify(:lang => "shell") do %>
+```shell
 $ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
 (EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
 (EE) GLX: could not load software renderer
 (EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
 (EE) XKB: No components provided for device Virtual core keyboard
-<% end %>
+```
 
 Now we can start vncviewer (that logs in automatically) within the Virtual Frame buffer
-<% codify(:lang => "shell") do %>
+```shell
 $ DISPLAY=:1 vncviewer -FullColor --Passwordfile mypasswordfile localhost
-<% end %>
+```
 
 Now we are back to using xdotool to interact with the session.
 <hr>
@@ -207,21 +207,21 @@ I used the original source to get it running:
 - Add the jar files to the project (log4j.jar, ..)
 
 The following code will give you an idea on how you can use it
-<% codify({:lang => "java", :file => "SendKeysRdp.java"}) do %>
-<% end %>
+```java file="@SendKeysRdp.java"
+```
 
 #### Using rdesktop and Xvfb
-<% codify(:lang => "shell") do %>
+```shell
 $ sudo port install rdesktop
 $ Xvfb  :1 -screen 0 1024x768x24 -fbdir /var/tmp/
 (EE) AIGLX error: dlopen of /usr/X11/lib/dri/swrast_dri.so failed (dlopen(/usr/X11/lib/dri/swrast_dri.so, 5): image not found)
 (EE) GLX: could not load software renderer
 (EE) XKB: Couldn't open rules file /usr/X11/share/X11/xkb/rules/base
 (EE) XKB: No components provided for device Virtual core keyboard
-<% end %>
-<% codify(:lang => "shell") do %>
+```
+```shell
 $ DISPLAY=:1 rdesktop -u <username> -p <password> -d <domain> remotehost
-<% end %>
+```
 
 #### Directly from C code re-using code from rdesktop
 I found a link to an xrdp overflow tool that seems to use the *rdp_send_scancode* function to send the keystroke.
@@ -238,12 +238,12 @@ Another cool trick I picked up, was the way to launch commands using rdesktop :
 ### Virtualbox option
 Virtualbox provides a way to send keyboard scancodes directly using it's excellent API. The option *keyboardputscancode* allows to specify the hex code of the scancode. You can also send multiple keycodes after each other. In my experience this doesn't work well for a long sequence. It seems the buffer it limited and your best option is to send the different keycodes in multiple calls to the command line.
 
-<% codify(:lang => "shell") do %>
+```shell
 VBoxManage controlvm        <uuid>|<name>
                             pause|resume|reset|poweroff|savestate|
                             acpipowerbutton|acpisleepbutton|
                             keyboardputscancode <hex> [<hex> ...]|
-<% end %>
+```
 
 <hr>
 ### Using a non-headless solution
@@ -276,7 +276,7 @@ For completeness I provide different options I found useful
 ](http://jehiah.cz/projects/ARD-SendUnixCommands.php
 )
 
-<% codify(:lang => "shell") do %>
+```shell
 $ osascript -e 'tell application "System Events" to keystroke "LOGIN_NAME"'; \
 $ osascript -e 'tell application "System Events" to keystroke tab'; \
 $ osascript -e 'tell application "System Events" to delay 0.5'; \
@@ -286,6 +286,6 @@ $ osascript -e 'tell application "System Events" to keystroke return'
 
 Replace LOGIN_NAME and PASSWORD with the proper values
 Run as "root" user
-<% end %>
+```
 
 

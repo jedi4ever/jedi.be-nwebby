@@ -327,41 +327,41 @@ Listing all the servers will result in an array of results
 #### Filtering servers
 Different ways to filter, by :name, by :uuid
 
-<% codify(:lang => "shell") do %>
+```shell
 >> f.servers.all(:name => "fog-demo2")
 >> f.servers.all(:uuid => "a6708012-6dd5-26b3-3474-ffd660397d78")
-<% end %>
+```
 
 Additional filters can be specified for filtering active or defined domains
 
-<% codify(:lang => "shell") do %>
+```shell
 >> f.servers.all(:defined => true)
 >> f.servers.all(:active => true)
-<% end %>
+```
 
 #### Fetching a specific server
 To fetch a specific server you specify the :uuid value
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s1=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
-<% end %>
+```
 
 #### Asking additional info on a server
 The following states for a server will be reported by 
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s1.state
-<% end %>
+```
 
 "nostate","running","blocked","paused","shutting-down","shutoff","crashed"
 
 To get the vnc_port
-<% codify(:lang => "shell") do %>
+```shell
 >> s1.vnc_port
-<% end %>
+```
 
 #### Lifecycle of a server
-<% codify(:lang => "shell") do %>
+```shell
 >> s1.start
 >> s1.pause
 >> s1.resume
@@ -369,36 +369,36 @@ To get the vnc_port
 >> s1.stop # alias for shutdown
 >> s1.halt # Force halt
 >> s1.poweroff # Alias for halt
-<% end %>
+```
 
 #### Destroying a server
-<% codify(:lang => "shell") do %>
+```shell
 >> s1.destroy
-<% end %>
+```
 
 Note: in libvirt speak a destroy equals a forced shutdown. In fog speak a destroy of a server means totally removing it.
 
 If you want to destroy the volume as well
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s1.destroy(:destroy_volumes => true)
-<% end %>
+```
 
 
 #### Creating a new server
 The first option is to create a server based on a template.(kvm only currently)
 
-<% codify(:lang => "shell") do %>
+```shell
 >> f.servers.create(:name => "demo2")
-<% end %>
+```
 
 The above will create a server based upon a [kvm-based template](https://github.com/geemus/fog/blob/master/lib/fog/libvirt/models/compute/templates/server.xml.erb)  with the following defaults:
-<% codify(:lang => "shell") do %>
+```shell
 >> f.servers.create({ :name => "demo2", :persistent => true,
 :cpus => 1, :memory_size => 256*1024 , :os_type => "hvm", 
 :arch => "x64_64", :domain_type => "kvm",
 :network_interface_type => "nat", :network_nat_network => "default"})
-<% end %>
+```
 
 This will also create a volume as described earlier in the volume create section.
 
@@ -420,10 +420,10 @@ For switching from NAT to Bridged use the following options
 - network_bridge_name : "br0"
 
 If you don't find the template satisfactory you can also specify the server by xml
-<% codify(:lang => "shell") do %>
+```shell
 >> xml_data="<xml....>"
 >> s4=f.servers.create(:xml => xml_data)
-<% end %>
+```
 
 
 
@@ -440,43 +440,43 @@ You can only retrieve the mac address of a server, but you have to do the transl
 We solved that problem by installing arpwatch on the libvirt host. Arpwatch listens on the network and logs pairs of mac-addresses and Ip-addresses it sees passing by.
 
 We first install arpwatch (Ubuntu instructions)
-<% codify(:lang => "shell") do %>
+```shell
 $ sudo apt-get -y install arpwatch
 
 # Make it listen to the bridged network
 $ sudo sed -i -e 's/ARGS="-N -p"/ARGS="-N -p -i eth0.4"/' /etc/default/arpwatch
 
 $ sudo service arpwatch restart
-<% end %>
+```
 
 Arpwatch stores it's information in a data file (arpwatch.dat), but this is not written until the daemon is stopped/started.
 
 So we configure rsyslogd to log the arpwatch messages to a separate file.
 
-<% codify(:lang => "shell") do %>
+```shell
 # cat /etc/rsyslog.d/30-arpwatch.conf
 if $programname =='arpwatch' then /var/log/arpwatch.log
 & ~
-<% end %>
+```
 
 This file needs to be readable by all libvirt/fog users that want to retrieve the info from the log file.
 
 #### Ip_address information
 By default the libvirt/fog provider assumes the following ip_command to convert the mac-address into an ip-address.
 
-<% codify(:lang => "shell") do %>
+```shell
 grep $mac /var/log/arpwatch.log|sed -e "s/new station//"|sed -e "s/changed ethernet address//g" |tail -1 |cut -d ":" -f 4-| cut -d " " -f 3'
-<% end %>
+```
 
 To retrieve the ip_addresses of a server you do:
-<% codify(:lang => "shell") do %>
+```shell
 >> s.addresses
-<% end %>
+```
 
 To retrieve the first public ip_addresses of a server:
-<% codify(:lang => "shell") do %>
+```shell
 >> s.ip_address
-<% end %>
+```
 
 In the arp-watch solution it is important that the libvirt host has a way to see the network traffic of the guests passing by.
 
@@ -490,14 +490,14 @@ If you have another way to do the translation of the mac/ip address , you can ov
 #### Waiting for a server to get an Ip-address
 Remember that a fog object needs to get reloaded to get the latest information. When a server boots, it could well be that the machines does not yet have an Ip-address.
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
 >> s.start
 # Wait for machine to be booted
 >> s.wait_for { ready?}
 # Wait for machine to get an ip-address
 >> s.wait_for { !ip_address.nil?}
-<% end %>
+```
 
 #### Using +ssh remote transport
 If you are connection to a libvirt server over +ssh transport, the ip_command is executed over ssh, otherwise it will be a local shell execute of the command.
@@ -505,23 +505,23 @@ If you are connection to a libvirt server over +ssh transport, the ip_command is
 ### SSH into a server
 #### SSH-login
 Now that we have an ip-address we can log into the server (username/password)
-<% codify(:lang => "shell") do %>
+```shell
 >> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
 >> s.username="ubuntu"
 >> s.password="ubuntu"
-<% end %>
+```
 
 or via private key
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
 >> s.username="patrick"
 >> s.private_key_path="/Users/patrick/.ssh/id_dsa"
-<% end %>
+```
 
-<% codify(:lang => "shell") do %>
+```shell
   s.ssh("uptime")
-<% end %>
+```
 
 #### SSH-tunneling in case of +ssh remote transport
 If you are using +ssh as remote transport, the ssh connection will be tunneled over your ssh connection that connects you to the libvirt-host. So you don't need direct access to the guest, only the libvirthost needs an IP-routing.
@@ -529,13 +529,13 @@ If you are using +ssh as remote transport, the ssh connection will be tunneled o
 #### Bootstrap/Add another public key to an account
 To add the id_dsa.pub public ssh key to the authorized_keys of the user ubuntu, you can do the following
 
-<% codify(:lang => "shell") do %>
+```shell
 >> s=f.servers.get("a6708012-6dd5-26b3-3474-ffd660397d78")
 >> s.username="ubuntu"
 >> s.password="ubuntu"
 >> s.public_key_path="/Users/patrick/.ssh/id_dsa.pub"
 >> s.setup
-<% end %>
+```
 
 
 ### Creating template disks/volumes
@@ -544,7 +544,7 @@ In one of the next posts , I'll show how I have extended [veewee](https://github
 ### Using it for virtualizations besides kvm
 This is some code , inspired by [this gist by rubiojr](https://gist.github.com/1153856)
 
-<% codify(:lang => "shell") do %>
+```shell
 require 'rubygems'
 require 'fog'
 
@@ -574,7 +574,7 @@ print_servers c, uri
 uri = 'qemu+tcp://thunder11/system'
 c = Fog::Compute.new( { :provider => 'Libvirt', :libvirt_uri => uri, })
 print_servers c, uri
-<% end %>
+```
 
 
 ### Feedback

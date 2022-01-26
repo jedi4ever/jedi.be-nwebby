@@ -27,7 +27,7 @@ To run the box:
 
 ## Get Jruby and all the gems installed
 
-<% codify(:lang => "ruby") do %>
+```ruby
 $ rvm install jruby
 $ rvm use jruby
 $ mkdir shrinkwrap
@@ -44,12 +44,12 @@ EOF
 
 $ gem install bundler
 $ bundle install
-<% end %>
+```
 
 ## Prepare the vagrantfile 
 We create a simple vagrantfile that downloads a box running ubuntu
 
-<% codify(:lang => "ruby") do %>
+```ruby
 $ mkdir lib
 $ cat <EOF > lib/Vagrantfile
 Vagrant::Config.run do |config|
@@ -63,12 +63,12 @@ Vagrant::Config.run do |config|
   config.vm.forward_port "http", 80,  9000
 end
 EOF
-<% end %>
+```
 
 ## Add Sinatra in the mix
 To give the user a gui to start the vm, we provide a simple URL using [sinatra](http://www.sinatrarb.com)
 
-<% codify(:lang => "ruby") do %>
+```ruby
 $ cat <EOF > lib/shrinkwrap.rb
 #!/usr/bin/env ruby
 require 'rubygems'
@@ -97,7 +97,7 @@ require "lib/shrinkwrap"
 run Shrinkwrap.new
 EOF
 
-<% end %>
+```
 ## Package the Sinatra project with warbler
 [Warbler](https://github.com/jruby/jruby/wiki/Warbler) allows you to package sinatra projects.
 It packages a jruby version inside the warfile so it only needs java installed.
@@ -119,7 +119,7 @@ For windows we need to package the "jruby-openssl","jruby-win32ole" so we create
 
 We embed our previous create war file inside the warbler jar by first extracting it, adding it as embedded.war and packaging it back again.
 
-<% codify(:lang => "ruby") do %>
+```ruby
 $ mkdir config
 $ cat <EOF > config/warble.rb
 Warbler::Config.new do |config|
@@ -134,7 +134,7 @@ $ cp ../shrinkwrap.war embedded.war
 $ jar cvfm ../ubuntu10-04.jar META-INF/MANIFEST.MF .
 $ cd ..
 
-<% end %>
+```
 ## Ready for take off
 now you can start the newly create warfile with 
 <pre>

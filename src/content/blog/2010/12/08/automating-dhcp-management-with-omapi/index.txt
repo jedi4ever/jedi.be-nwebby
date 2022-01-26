@@ -14,7 +14,7 @@ I was looking for a way to automate the configuration of a dhcp server. I wanted
 ) as a way to interface with the [ISC dhcpd server](www.isc.org/software/dhcp) . 
 
 #### Install dhcp3-server + omapi client (Ubuntu):
-<% codify(:shell) do %>
+```shell
 # To install the server package do: 
 $ sudo apt-get install dhcp3-server
 # Now go of and configure the server by changing the files in /etc/dhcp3/ 
@@ -23,18 +23,18 @@ $ sudo apt-get install dhcp3-server
 $ sudo apt-get install dhcp3-common
 $ which omshell
 /usr/bin/omshell
-<% end %>
+```
 
 ##### Configure omapi in /etc/dhcp3/dhcpd.conf
 The first step is to create a key . We can use the dnssec-keygen command for that
-<% codify(:shell) do %>
+```shell
 $ apt-get -y install bind9utils
-<% end %>
+```
 
 If you are executing this on a virtual machine, this never completes. This is because the random generation is not enough, so we need to specify the random generator as explained in [http://www.pubbs.net/201005/bind/54065-dnssec-keygen-is-waiting-endless.html](http://www.pubbs.net/201005/bind/54065-dnssec-keygen-is-waiting-endless.html
 )
 
-<% codify(:shell) do %>
+```shell
 # cd /etc/dhcp3
 # dnssec-keygen -r /dev/urandom  -a HMAC-MD5 -b 512 -n HOST omapi_key
 Komapi_key.+157+02059
@@ -58,19 +58,19 @@ Created: 20101208134727
 Publish: 20101208134727
 Activate: 20101208134727
 
-<% end %>
+```
 
 What we require is the KEY
 
-<% codify(:shell) do %>
+```shell
 # KEY=`cat /etc/dhcp3/Komapi_key*.private|grep ^Key|cut -d ' ' -f2-`
 # echo $KEY
 JaHI1mIAWR3RhiaT0Azau+cc1Bv+iD+L+8QgdPpVJW6vD0BTZHuvEpB2vDP5rj33fScqoFb/HAWCzgwd8Udeag==
-<% end %>
+```
 
 Now we can add the following snippet to the /etc/dhcp3/dchpd.conf
 
-<% codify(:shell) do %>
+```shell
 omapi-port 9991;
         key omapi_key {
         algorithm HMAC-MD5;
@@ -78,12 +78,12 @@ omapi-port 9991;
 };
 omapi-key omapi_key;
 
-<% end %>
+```
 
 #### Creating entries using omshell
 To create a new entry as described in [http://manpages.ubuntu.com/manpages/lucid/man1/omshell.1.html](http://manpages.ubuntu.com/manpages/lucid/man1/omshell.1.html)
 
-<% codify(:shell) do %>
+```shell
 #Creating a new entry in the file
 $ OMMAC="00:0c:29:c5:c0:cc"
 $ OMMIP="192.168.4.150"
@@ -99,7 +99,7 @@ set hardware-address=$OMMAC
 set hardware-type=1
 create
 EOF
-<% end %>
+```
 
 The entries will NOT be written to your /etc/dhcp3/dhcpd.conf, but in _/var/lib/dhcp3/dhcpd.leases_
 
@@ -110,9 +110,9 @@ It was [first announced on the isc.org mailing by talamonso@gmx.net](https://lis
 
 Ramandeepk moved the project to sourceforge [http://omapi-dhcp.sourceforge.net/](http://omapi-dhcp.sourceforge.net/) . I tried to checkout the source but somehow this always ended up being empty.
 
-<% codify(:shell) do %>
+```shell
 $ svn checkout  http://omapi-dhcp.svn.sourceforge.net/svnroot/omapi-dhcp/ omapi-dhcp
-<% end %>
+```
 
 Therefore I created a [omapi-dhcp github project](https://github.com/jedi4ever/omapi-dhcp) with the same content, ready to be hacked away :)
 
@@ -122,7 +122,7 @@ The code comes with [several examples](https://github.com/jedi4ever/omapi-dhcp/b
 
 The example below registers a new host called albert with an IP addresses and the mac address specified:
 
-<% codify(:java) do %>
+```java
 public static void main(final String[] args) {
 Connection c = Default.getC();
 try {
@@ -138,6 +138,6 @@ try {
 }
 	c.close();
 }
-<% end %>
+```
 
 

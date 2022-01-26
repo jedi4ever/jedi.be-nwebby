@@ -86,7 +86,7 @@ Amazon started on an API for DNS/DHCP Options for automating their Private Cloud
 - Automation of DNS for EC2 machines: <http://www.ducea.com/2009/06/01/howto-update-dns-hostnames-automatically-for-your-amazon-ec2-instances/>
 
 ### Example of scripting network provisioning with Cobbler
-<% codify(:lang => 'shell') do %>
+```shell
 domainname="cobblertest.be"
 mac_address="aa:aa:bb:bb:cc:01"
 name="puppetclient"
@@ -114,4 +114,4 @@ cobbler system edit --name=#{name}  --name-servers-search='#{domainname}'
 
 # This finally commits all the changes
 cobbler sync
-<% end %>
+```

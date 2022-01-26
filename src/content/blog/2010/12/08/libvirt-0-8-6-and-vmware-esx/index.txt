@@ -19,24 +19,24 @@ Several OS platforms provide libvirt as a package. The propagation of the new ve
 
 _Macosx_: libvirt used to be [a pain to compile on mac](http://www.mattvsworld.com/blog/2010/01/compiling-libvirt-and-ruby-libvirt-on-mac-os-x/). Thanks to [Mitchell Hashimoto](http://mitchellhashimoto.com/) author of the excellent tool [vagrant](http://vagrantup.com) I used [homebrew](https://github.com/mxcl/homebrew) and provides the latest version 0.8.3 straight off with esx support. 
 
-<% codify(:shell) do %>
+```shell
 $ brew install libvirt
-<% end %>
+```
 
 _Ubuntu_ : I tried Ubuntu 10.10 and it has 0.8.3 when you install the latest package of libvirt, and it doesn't have esx enabled by default:
 *using the rpm*
-<% codify(:shell) do %>
+```shell
 $ sudo apt-get install libvirt-bin
 $ virsh -version
 0.8.3
 $ virsh -c esx://192.168.2.240/?no_verify=1
 error: invalid argument in libvirt was built without the 'esx' driver
 error: failed to connect to the hypervisor
-<% end %>
+```
 
 *compiling from source*
 
-<% codify(:shell) do %>
+```shell
 $ wget http://libvirt.org/sources/libvirt-0.8.6.tar.gz
 $ tar -xzvf libvirt-0.8.6.tar.gz
 $ cd libvirt-0.8.6
@@ -64,14 +64,14 @@ $ sudo make install
 
 # This will make install virsh in in /opt/libvirt/bin/virsh
 
-<% end %>
+```
 
 #### Connecting to an esx server
 It took me a while to find the correct connect string. Because you are not connecting through libvirtd you have to use double slashes esx:// instead of tripple slashes esx:/// to connect. Also because I was using a test,self signed certificate I needed to instruct virsh to ignore my certificate with the ?no_verify=1 option.
 
 You can also connect over ssh , for more options [check the libvirt esx page](http://libvirt.org/drvesx.html). 
 
-<% codify(:shell) do %>
+```shell
 
 $ virsh -c esx:///192.168.2.240
 error: unable to connect to '/usr/local/var/run/libvirt/libvirt-sock', libvirtd may need to be started: No such file or directory
@@ -89,11 +89,11 @@ Enter username for 192.168.2.240 [root]:
 Enter root's password for 192.168.2.240: 
 Welcome to virsh, the virtualization interactive terminal.
 
-<% end %>
+```
 
 #### Looking around on esx server
 *host information*
-<% codify(:shell) do %>
+```shell
 
 virsh # nodeinfo
 CPU model:           Intel Core i7 CPU 860 @ 2.80GHz
@@ -109,11 +109,11 @@ virsh #  iface-list
 error: Failed to list active interfaces
 error: this function is not supported by the connection driver: virConnectNumOfInterfaces
 
-<% end %>
+```
 
 *domain information*
 
-<% codify(:shell) do %>
+```shell
 virsh # list --all
  Id Name                 State
 ----------------------------------
@@ -174,10 +174,10 @@ virsh # dumpxml puppet-server.example.org
 virsh # vncdisplay puppet-server.example.org
 :1
 
-<% end %>
+```
 
 *storage information*
-<% codify(:shell) do %>
+```shell
 virsh # pool-list
 Name                 State      Autostart 
 -----------------------------------------
@@ -220,18 +220,18 @@ virsh # vol-dumpxml "[datastore1] puppet-server.example.org/puppet-server.exampl
     </permissions>
   </target>
 </volume>
-<% end %>
+```
 
 
 #### Creating/Removing a new esx volume 
 This is what a new volume xml file looks like. Note that the capacity and allocation had to be the same: otherwise I would get an error
-<% codify(:shell) do %>
+```shell
 error: internal error Unsupported capacity-to-allocation relation
-<% end %>
+```
 
 So I found no way to create incremental vmdk files.
 
-<% codify(:xml) do %>
+```xml
 <volume>
   <name>test.example.org/test.example.org.vmdk</name>
   <key>6000c29d-0c39-c276-a97a-5af3d9b806c1</key>
@@ -249,15 +249,15 @@ So I found no way to create incremental vmdk files.
     </permissions>
   </target>
 </volume>
-<% end %>
+```
 
-<% codify(:shell) do %>
+```shell
 virsh # vol-create --file disk.xml --pool datastore1
 Vol test.example.org/test.example.org.vmdk created from disk.xml
-<% end %>
+```
 
 Removing the volume didn't work though:
-<% codify(:shell) do %>
+```shell
 virsh # vol-delete "test.example.org/test.example.org.vmdk"
 error: Failed to delete vol [datastore1] test.example.org/test.example.org.vmdk
 error: this function is not supported by the connection driver: virStorageVolDelete
@@ -265,12 +265,12 @@ error: this function is not supported by the connection driver: virStorageVolDel
 virsh # vol-wipe "test.example.org/test.example.org.vmdk"
 error: Failed to wipe vol [datastore1] test.example.org/test.example.org.vmdk
 error: this function is not supported by the connection driver: virStorageVolWipe
-<% end %>
+```
 
 #### Creating/Removing a new esx domain 
 I adapted this xml file from the existing domain. Note that the memory needs to be multiple of 4096.
 
-<% codify(:xml) do %>
+```xml
 <domain type='vmware'>
   <name>test.example.org</name>
   <memory>262144</memory>
@@ -303,25 +303,25 @@ I adapted this xml file from the existing domain. Note that the memory needs to 
     <graphics type='vnc' port='5902' autoport='no' passwd='mypassword'/>
   </devices>
 </domain>
-<% end %> 
+``` 
 
 I first tried to _create_ the new domain: 
 
-<% codify(:shell) do %>
+```shell
 virsh # create test-domain.xml
 error: Failed to create domain from new.xml
 error: this function is not supported by the connection driver: virDomainCreateXML
-<% end %>
+```
 
 I found a blogpost that explains there [is a difference between create and define](http://osdir.com/ml/libvir-list/2010-12/msg00317.html): Create creates a transient domain and starts it
 ESX(i) doesn't have this transient semantic for it's domains,therefore libvirt can't support virDomainCreateXML for it.
 
-<% codify(:shell) do %>
+```shell
 virsh # define test-domain.xml
 Domain test.example.org defined from test-domain.xml
-<% end %>
+```
 
-<% codify(:shell) do %>
+```shell
 virsh # start test.example.org
 Domain test.example.org started
 
@@ -343,21 +343,21 @@ Domain test.example.org destroyed
 virsh # undefine test.example.org
 Domain test.example.org undefined
 
-<% end %>
+```
 
 #### Tips and gotchas
 enable debugging to see what's happening with setting the LIBVIRT_DEBUG flag
-<% codify(:shell) do %>
+```shell
 $ export LIBVIRT_DEBUG=debug 
-<% end %>
+```
 
 or starting virsh in debug mode
 
-<% codify(:shell) do %>
+```shell
 $ virsh -d 5
-<% end %>
+```
 
 On my mac I had to set the TMP_DIR variable to /tmp otherwise I would get an error :
-<% codify(:shell) do %>
+```shell
 error: /var/folders/o2/o205qRiGGyiU67-ImZI4iU+++TI/-Tmp-//virshY3WtwS.xml: temporary filename contains shell meta or other unacceptable characters (is $TMPDIR wrong?)
-<% end %>
+```

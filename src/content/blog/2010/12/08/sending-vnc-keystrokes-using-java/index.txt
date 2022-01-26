@@ -13,7 +13,7 @@ The project provides the source for a java based vncviewer, but the problem is t
 
 #### Presenting the new project jvncsender
 The commandline version 
-<% codify(:shell) do %>
+```shell
 usage: java -jar jvncsender.jar [-list] [-help] -host <hostname> -port <port> -text <text> [-password <password>] [-wait <seconds>]
  -help                  print this message
  -host <hostname>       hostname or ip-address to send it to
@@ -25,10 +25,10 @@ usage: java -jar jvncsender.jar [-list] [-help] -host <hostname> -port <port> -t
 
 text can also take special keys f.i. like "linux ks=ks.cfg<RETURN>"
 use -list options to see all keymappings
-<% end %>
+```
 
 or from within java:
-<% codify(:java) do %>
+```java
 try {
 	VncSender vncSender=new VncSender(vncHost,vncPort,vncPassword); 
 	vncSender.setVncWaitTime(timeInSec);	
@@ -37,13 +37,13 @@ try {
 } catch (Exception ex) {
 	System.out.println(ex.toString());
 }
-<% end %>
+```
 
 I've been using it for automating kickstarts via VNC vmware.
 
 F.i. my text string for kickstarting an ubuntu server without creating a custom cdrom would look like this:
 
-<% codify(:java) do %>
+```java
 vncText=new String[]{ "<ESC><ESC><RETURN>",
 		"/install/vmlinuz noapic" +
 		" hostname=pxeboot domain=jedi2.be netcfg/get_domain=jedi.be interface=eth0 netcfg/get_ipaddress=192.168.2.150 netcfg/get_netmask=255.255.255.0 netcfg/get_gateway=192.168.2.10 " ,
@@ -53,7 +53,7 @@ vncText=new String[]{ "<ESC><ESC><RETURN>",
 		" console-setup/ask_detect=false console-setup/modelcode=pc105 console-setup/layoutcode=us ",
 		" initrd=/install/initrd.gz -- <RETURN>"
 };
-<% end %>
+```
 
 - [The full executable jar-file jvncsender.jar]({{ page.url }}/jvncsender.jar)
 - [The source-code of jvncsender on github](http://github.com/jedi4ever/jvncsender)
@@ -64,18 +64,18 @@ Note: this only works if your keyboard mapping is in us mode, as the keymappings
 - [https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight/trunk](https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight/trunk)
 - [https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight/trunk/java/src/com/tightvnc/vncviewer/VncViewer.java](https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight/trunk/java/src/com/tightvnc/vncviewer/VncViewer.java)
 
-<% codify(:shell) do %>
+```shell
 # to get all vnc code
 $ svn co https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight vnc-tight
 # to get all vnc java code
 $ svn co https://vnc-tight.svn.sourceforge.net/svnroot/vnc-tight/trunk/java vnc-tight-java
-<% end %>
+```
 
 I ended up using the jar file announced [TightVNC: VNC Viewer with SSH Tunneling - April 2010](http://www.tightvnc.com/ssh-java-vnc-viewer.php)
 
 In order to get access to certain functions, I put my classes inside the same package. But because the jar file was signed, I needed to remove the signing:
 
-<% codify(:shell) do %>
+```shell
 $ wget http://www.tightvnc.com/download/tightvnc-1.5.1-jviewer-bin.zip
 $ unzip tightvnc-1.5.1-jviewer-bin.zip
 $ cd tightvnc-1.5.1-jviewer-bin
@@ -86,4 +86,4 @@ $ cd newjar
 $ jar -xvf ../TightVncViewer.jar
 $ rm -rf META-INF
 $ jar -cvf TighTVncViewer-unsigned.jar
-<% end %>
+```

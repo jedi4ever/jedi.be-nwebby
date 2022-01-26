@@ -13,7 +13,7 @@ blog_post: true
 ---
 I wanted to automate the creation of an MS-DOS floppy under MacOSX. The usual way is very similar to Linux. In this script I avoided using sudo to mount the filesystem and took advantage of the hdiutils to run everything under normal user credentials.
 
-<% codify({:lang => :shell }) do  %>
+```shell
 # creating an empty file
 dd if=/dev/zero bs=512 count=2880 of=msdos-floppy.img
 
@@ -38,6 +38,6 @@ cp file $path/
 # unmount the image
 hdiutil detach $device -forceend
 
-<% end %>
+```
 
 

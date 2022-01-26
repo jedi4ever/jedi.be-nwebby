@@ -17,12 +17,12 @@ On a linux machine restart the network stack with  a */etc/init.d/network restar
 
 A more generic work-around is to temporary disable the network link: 
 
-<% codify(:lang => "shell") do %>
+```shell
 $ VBoxManage controlvm <yourvmname> setlinkstate1 off
 $ VBoxManage controlvm <yourvmname> setlinkstate1 on
 $ sleep 2
 
-<% end %>
+```
 
 ### NAT: re-establish port-forwarding after savestate / restore state
 Another quite annoying bug is that virtualbox sometimes looses it's NAT mappings [Ticket 25402](http://www.virtualbox.org/changeset/25402)

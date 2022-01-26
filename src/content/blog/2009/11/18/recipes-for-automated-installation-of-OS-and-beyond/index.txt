@@ -46,7 +46,7 @@ Automating the creation of this has never really been important, I was either us
 So in other to automate the installation of software, sysadmin would encourage developers to create packages for their install, so that the installation could be easily automated.
 
 An example of a Solaris Jumpstart:
-<% codify do %>
+```
 # install_type MUST be first
 install_type      initial_install
 # start with the minimal required number of packages
@@ -71,7 +71,7 @@ system_type standalone
 patch 119281-06 nfs 172.16.64.194:/export/patches
 # specify packages to install
 package SPROcc add nfs 172.16.64.194:/export/packages
-<% end %>
+```
 
 ### System installation frameworks
 Over time frameworks emerged to manage all these packages installation and managing :
@@ -105,7 +105,7 @@ Puppet seems to have most of the market for now, but the Chef guys are catching 
 - [Using cobbler with config management system](https://fedorahosted.org/cobbler/wiki/UsingCobblerWithConfigManagementSystem)
 
 Example puppet recipe for ensuring the permission of a sudoers file
-<% codify do %>
+```
 # /etc/puppet/manifests/classes/sudo.pp
 class sudo {
    file { "/etc/sudoers":
@@ -114,10 +114,10 @@ class sudo {
          mode  => 440,
     }
 }
-<% end %>
+```
 
 Example for mysql node installation
-<% codify do %>
+```
 class mysql-server {
 	 $password = "insert_password_here"
 	 package { "MySQL-client": ensure => installed }
@@ -132,7 +132,7 @@ class mysql-server {
 	   command => "mysqladmin -uroot password $password",
 	 }
 }
-<% end %>
+```
 
 What's fascinating is the new set of tools that starts to emerge here and how it really starts to integrate in real programming languages such as ruby.
 
@@ -161,7 +161,7 @@ Examples of good API's are:
 - [Sun Application Server / Glassfish](https://glassfish.dev.java.net/) with its [asadmin API](http://kenai.com/projects/glassfish-script)
 
 #### Example of asadmin scripting
-<% codify do %>
+```
 # create an cluster
 asadmin create-cluster --user admin --passwordfile adminpassword.txt --host hostname -port 4848 cluster1
 # create instance 1
@@ -170,5 +170,5 @@ asadmin create-instance --user admin --passwordfile adminpassword.txt --host hos
 asadmin create-instance --user admin --passwordfile adminpassword.txt --host hostname -port 4848 --cluster cluster1 --nodeagent nodeagent1 --systemproperties "JMX_SYSTEM_CONNECTOR_PORT=8688:IIOP_LISTENER_PORT=3331:IIOP_SSL_LISTENER_PORT=4441:IIOP_SSL_ MUTUALAUTH_PORT=5551:HTTP_LISTENER_PORT=1111:HTTP_SSL_LISTENER_PORT=2221" instance2
 # start the cluster
 asadmin start-cluster --user admin --passwordfile adminpassword.txt --host hostname --port 4848 cluster1
-<% end %>
+```
 Some tools also provide a 'silent install' feature. It will record the installation into a text file that you can later replay to have the same result. Using some sed/awk scripts you can probably automate some of this.

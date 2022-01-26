@@ -131,7 +131,7 @@ In contract to using cucumber with other frameworks such as rails, we have do so
 </pre>
 
 In env.rb you can put all the necessary requires for libraries you want to include :
-<% codify(:lang => "ruby") do %>
+```ruby
 require 'bundler'
 begin
   Bundler.setup(:default, :development)
@@ -166,12 +166,12 @@ World(Webrat)
 World do
   Webrat::Session.new(Webrat::MechanizeAdapter.new)
 end
-<% end %>
+```
 
 ## Using SSH to run commands
 ### Our first feature using cucumber ssh steps
 Let's write our first feature that checks our apache. Based on the example described on the [cucumber nagios blogpost](http://holmwood.id.au/~lindsay/2009/11/09/behaviour-driven-infrastructure-through-cucumber/)
-<% codify(:lang => "ruby") do %>
+```ruby
 Feature: Executing commands
   In order to test a running system
   As an administrator
@@ -183,7 +183,7 @@ Scenario: Checking if apache is running
      | vagrant  | vagrant | 
     And I run "ps -ef |grep http|grep -v grep" 
     Then I should see "http" in the output
-<% end %>
+```
 
 Now run (assuming you have apache of course)
 <pre>$ cucumber </pre>
@@ -199,7 +199,7 @@ We decided to extend the ssh steps to add a few more rinkles to it.
 
 Note: To avoid conflict with the cucumber-nagios be sure to disable the "cucumber/nagios/steps/ssh_steps" in your 'env.rb'
 
-<% codify(:lang => "ruby") do %>
+```ruby
 Feature: Executing commands
   In order to test a running system
   As an administrator
@@ -216,25 +216,25 @@ Feature: Executing commands
 	And it should have exitcode 0
 	And I should see "apache2" on stdout
 	And there should be no output on stderr
-<% end %>
+```
 
 The step <b>Given I have a vagrant project</b>, loads the vagrant environment
-<% codify(:lang => "ruby") do %>
+```ruby
 Given /^I have a vagrant project in "([^\"]*)"$/ do |path|
   @vagrant_env=Vagrant::Environment.new(:cwd => path)
   @vagrant_env.load!
 end
-<% end %>
+```
 
 And the step <b>When I ssh to vagrantbox</b> calculates the port it need to ssh too
 
-<% codify(:lang => "ruby") do %>
+```ruby
 unless @vagrant_env.multivm?
   port=@vagrant_env.primary_vm.ssh.port
 else
   port=@vagrant_env.vms[boxname.to_sym].ssh.port
 end
-<% end %>
+```
 
 On a side note, you might notice the <b>@apache2</b> these are tags in cucumber that you can use to specify only certain tasks. This will only run the features with tag apache
 <pre>
@@ -242,16 +242,16 @@ $ cucumber -tags @apache
 </pre>
 
 And this is how you the step <b>When I do a vagrant provision</b> is implemented
-<% codify(:lang => "ruby") do %>
+```ruby
 And /^I do a vagrant provision$/ do 
   Vagrant::CLI.start(["provision"], :env => @vagrant_env)
 end
-<% end %>
+```
 
 ## Running component unit tests from within the machine
 You can use the same mechanism to run your components tests inside the machine itself. You can your application tests mounted inside the VM and run the tests from there. We use it complementary to our 'vagrant project' tests. The advantage of the vagrant tests is that it does an actual network connect without working through loopback and allows you to orchestrate the VM you need to login into in a multivm setup.
 
-<% codify(:lang => "ruby") do %>
+```ruby
 Feature: Executing commands
   In order to test a running system
   As an administrator
@@ -265,7 +265,7 @@ Feature: Executing commands
 	| vagrant  | vagrant | 
 	And I run "cd /opt/awesome-frontend; rails_env=test rake" 
 	And it should have exitcode 0
-<% end %>
+```
 
 ## Testing HTTP access to a vagrant box
 Besides running commands on the box, we wanted to be able to check HTTP things. The two main webtesting gems in Ruby/Rails land are either [webrat](https://github.com/brynary/webrat) or the newcomer on the block [Capybara](https://github.com/jnicklas/capybara) . Both implement different 'browser' types to check your content: they have adaptors for real browsers (firefox, chrome, safari) through selenium or alike. We needed only simple http testing no DOM checking. The usual suspect is 'rack/test' but as we don't have a rack application that failed miserably. We found that webrat has another option through [mechanize](http://mechanize.rubyforge.org/mechanize/). The gem comes installed when you install cucumber_nagios. Also the webrat websteps are implemented in http_steps of cucumber_nagios. 
@@ -275,28 +275,28 @@ Update 31/03/2011: if using capybara there are two frameworks that look an alter
 - mechanize adapter : [https://github.com/jeroenvandijk/capybara-mechanize](https://github.com/jeroenvandijk/capybara-mechanize)
 
 A feature would like this
-<% codify(:lang => "ruby") do %>
+```ruby
 Scenario: Surf to apache
 Given I go to "http://localhost:9000" 
 Then I should see "It works"
-<% end %>
+```
 
 Similar to our ssh problem, you see that we have to specify our port to the mapped port of vagrant. And this would also fail for virtual hosts as it would not send the correct 'Host' attribute to the server.
 
 Our enhanced vagrant version adds the <b>Give I go vagrant 'url'</b> syntax
-<% codify(:lang => "ruby") do %>
+```ruby
 @vagrant
 Scenario: Surf to apache via vagrant
 Given I have a vagrant project in "."
 Given I go to vagrant "http://www.sample.com" 
 Then I should see "It works"
-<% end %>
+```
 
-<% codify(:lang => "ruby") do %>
+```ruby
 Given /^I go to vagrant "([^\"]*)"$/ do |url|
     virtual_visit(url)
 end
-<% end %>
+```
 
 The following snippet implements that virtual_visit:
 
@@ -305,7 +305,7 @@ The following snippet implements that virtual_visit:
 - it maps the url port to the port in the guest machine
 - the function is added to the webrat module so it is accessible in your steps
 
-<% codify(:lang => "ruby") do %>
+```ruby
 module Webrat #:nodoc:
     class Session #:nodoc:
 		def virtual_visit(url, data=nil, options = {})
@@ -347,7 +347,7 @@ module Webrat #:nodoc:
 		end
 	end
 end
-<% end %>
+```
 
 Now we can use the standard URL and behind the scenes the URL is translated to the correct http request.
 

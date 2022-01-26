@@ -20,9 +20,9 @@ To be able to boot a new Virtual Machine from this isofile, we first need to mak
 HTTP Access to vSphere Server Files is described in Appendix C of the [programming guide - PDF](http://www.vmware.com/support/developer/vc-sdk/visdk41pubs/vsp41_vsdk_prog_guide.pdf) that you can download from the [VMware vSphere Web Services SDK Documentation](http://www.vmware.com/support/developer/vc-sdk/) .
 
 To access a file store you would use a URL like this
-<% codify(:shell) do %>
+```shell
 http-method http[s]://server/folder[[/path]?dcPath=path[&dsName=name]]
-<% end %>
+```
 where: 
 
 - dsName : name of the datastore, *datastore1* on a standard installation
@@ -42,7 +42,7 @@ I found a [mention of someone with a similar problem](http://communities.vmware.
 #### Debugging the problem:
 I started interfacing directly with curl now. --insecure to overcome the self-signed certificate 
 
-<% codify(:shell) do %>
+```shell
 $ curl -H "Expect:" -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
 * About to connect() to 192.168.2.240 port 443 (#0)
 *   Trying 192.168.2.240... connected
@@ -72,22 +72,22 @@ $ curl -H "Expect:" -v --insecure --upload-file myiso.iso "https:root:password@1
 > Accept: */*
 > Content-Length: 205
 > Expect: 100-continue
-<% end %>
+```
 
 And here it hung. I first thought that it was because it used the Expect: 100-continue, so I tried to disable it.
 
-<% codify(:shell) do %>
+```shell
 curl -H "Expect:" -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
-<% end %>
+```
 
 And also using HTTP/1.0
-<% codify(:shell) do %>
+```shell
 curl -0 -H -v --insecure --upload-file myiso.iso "https:root:password@192.168.2.240/folder/myiso.iso?dcPath=ha-datacenter&dsName=datastore1" 
-<% end %>
+```
 
 To see what was happening on the server side, I looked at /var/log/vmware/hostd.log : 
 
-<% codify(:shell) do %>
+```shell
 [2010-12-11 15:17:35.128 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Search Path = [datastore1] Spec = (vim.host.DatastoreBrowser.SearchSpec) {
  dynamicType = <unset>, 
  query = (vim.host.DatastoreBrowser.Query) [
@@ -116,25 +116,25 @@ To see what was happening on the server side, I looked at /var/log/vmware/hostd.
 [2010-12-11 15:17:35.129 F5CEEB90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Verify
 [2010-12-11 15:17:35.130 F5CEEB90 error 'App'] AdapterServer caught exception: 5e38fb28
 [2010-12-11 15:17:35.130 F5CEEB90 error 'App'] Backtrace:
-<% end %>
+```
 
 After re-reading the [blogpost mentioning the problem](http://communities.vmware.com/thread/290562), someone mentioned that in the [Vsphere 4.1 Vmware CLI documentation](http://www.vmware.com/support/developer/vcli/vcli41/doc/reference/vifs.html) it stated the following: 
 
-<% codify(:shell) do %>
+```shell
 --put | -p <local_path> <remote_path>
 Uploads a file from the machine on which you run the vCLI commands to the ESX/ESXi host. This operation uses HTTP PUT. This command can replace existing host files but cannot create new files.
-<% end %>
+```
 
 By experimenting I found out that the HTTP API can not upload to the root folder of a datastore. Hmm, but the API did not mention anything about creating a directory, only uploading files. When the subdirectory was created, the curl command would work perfectly.
 
-<% codify(:shell) do %>
+```shell
 [2010-12-11 16:32:40.335 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::SearchInt
 [2010-12-11 16:32:40.335 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::GetLocalpathFromDatastorepath
 [2010-12-11 16:32:40.336 F54A5B90 verbose 'DatastoreBrowser'] 4cd2736b-38881d7a-d86d-000c29350f64-datastorebrowser::Verify
 [2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] HTTP Response: Complete (processed 0 bytes)
 [2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] User agent is 'VMware VI Client/4.0.0'
 [2010-12-11 16:32:40.362 F5360B90 verbose 'HttpSvc.HTTPService'] HTTP Response: Client: NeedsContentLength: false UnderstandsChunking: true CanKeepAlive: true (PresetContentLength 0)
-<% end %>
+```
 
 #### Solving the problem:
 Luckily TIMTOWTD (There's more than one way to do it) was on my side!
@@ -154,11 +154,11 @@ To make a directory you would post to
 
 and POST the the form parameters: 
 
-<% codify(:shell) do %>
+```shell
 name=[datastore1] isodir
 datacenter=<datacenter type="Datacenter" xsi:type="ManagedObjectReference">ha-datacenter</datacenter>
 createParentDirectories=true
-<% end %>
+```
 
 **Remove Files**
 Similarly you can use it do delete a file, execute a POST to 
@@ -167,7 +167,7 @@ Similarly you can use it do delete a file, execute a POST to
 
 with the following form params
 
-<% codify(:shell) do %>
+```shell
 name=[datastore1] isodir/myiso.iso
 datacenter=<datacenter type="Datacenter" xsi:type="ManagedObjectReference">ha-datacenter</datacenter>
-<% end %>
+```

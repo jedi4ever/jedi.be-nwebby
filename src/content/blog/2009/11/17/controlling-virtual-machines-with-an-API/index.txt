@@ -71,7 +71,7 @@ Even non virtual machines can be controlled: you can use wakeonlan, ipmitool or 
 - Virtualbox Command Line- Software Developer Kit SDK (Download) - <http://www.virtualbox.org/wiki/Downloads>
 
 #### Example of the Soap Interface 
-<% codify(:lang => "ruby" , :line_nubers => "inline") do %>
+```ruby
 require 'soap/wsdlDriver'
 require 'pp'
 
@@ -94,11 +94,11 @@ diskids.each do |diskid|
   puts diskid+"-"+type.returnval+"-"+size.returnval+location.returnval
 end
 
-<% end %>
+```
 
 #### My commandline based abstraction in Ruby
 
-<% codify(:lang => "ruby", :line_numbers => "inline") do %>
+```ruby
 require "rubygems"
 require "open4"
 require "pp"
@@ -282,6 +282,6 @@ end
 
 
 
-<% end %>
+```
 
 

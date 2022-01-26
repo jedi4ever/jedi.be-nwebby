@@ -31,10 +31,10 @@ as there is only a windows .exe , this option can't be used on a Mac OSX system.
 **Interact via the Web UI:**
 The second way of interacting, is by using the Web UI. The URL to connect to https://<yourserver>/ui . This is disabled by default. [To enable it](http://goingvirtual.wordpress.com/2009/06/18/vsphere-4-web-access-now-disabled/), you need to run the following commands on your ESX server: 
 
-<% codify(:shell) do %>
+```shell
 $ chkconfig –level 345 vmware-webAccess on
 $ /etc/init.d/vmware-webAccess start or service vmware-webAccess start
-<% end %>
+```
 
 You can find more info in the [vmware vpshere Web access PDF Document](http://www.vmware.com/pdf/vsphere4/r40/vsp_40_web_access.pdf)
 
@@ -46,9 +46,9 @@ To get around that problem, I found these options:
 - Enable VNC for Virtual Machine: Vsphere has a build in way to access Virtual Machines via VNC. It's like VNC enabling the BIOS of the virtual machine. For more info see [http://www.geeklab.info/2010/01/use-vnc-to-access-vmware-esx-guests/](http://www.geeklab.info/2010/01/use-vnc-to-access-vmware-esx-guests/)
 
 Beware that you need to allow the VNC service on the server for this
-<% codify(:shell) do %>
+```shell
 $ esxcfg-firewall -e vncServer
-<% end %>
+```
 
 - Using the Vmware View Open Client :this lets you connect from a Linux or Mac OS X desktop to remote Windows desktops managed by VMware View. It is available under the GNU Lesser General Public License version 2.1 (LGPL v 2.1). [http://code.google.com/p/vmware-view-open-client/](http://code.google.com/p/vmware-view-open-client/)
   

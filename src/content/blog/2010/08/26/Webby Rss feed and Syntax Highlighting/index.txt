@@ -51,18 +51,18 @@ This is all for now.
 
 *Codify helper (with Ultraviolet): put inside your webby-root/lib*
 
-```ruby name="@codify_helper-uv.rb"
+```ruby file="@codify_helper-uv.rb"
 ```
 
 *Codify helper (with Coderay): put inside your webby-root/lib*
-```ruby name="@codify_helper.rb"
+```ruby file="@codify_helper.rb"
 ```
 
 *Rss feed file*
-```ruby name="@rss-feed.txt"
+```ruby file="@rss-feed.txt"
 ```
 
 *Wordpress to webby conversion script*
 
-```ruby name="@wp2webby.rb"
+```ruby file="@wp2webby.rb"
 ```

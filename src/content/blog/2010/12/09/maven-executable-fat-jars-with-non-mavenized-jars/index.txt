@@ -25,14 +25,14 @@ I got most information from [Can I add jars to maven 2 build classpath without i
 
 The trick seems to be to create a directory inside your java project that can act as a maven repo that you can refer to based upon the project ${basedir} variable.
 
-<% codify(:shell) do %>
+```shell
 $ cd my-project
 $ mkdir my-repo
 $ mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file -Dfile=/Users/patrick/cooljar.jar -DgroupId=be.jedi -DartifactId=cooljar -Dversion=1.5.1 -Dpackaging=jar -DlocalRepositoryPath=`pwd`/my-repo
-<% end %>
+```
 
 Now you can add this part to your maven pom file: 
-<% codify(:xml) do %>
+```xml
 <dependency>
     <groupId>be.jedi</groupId>
     <artifactId>cooljar</artifactId>
@@ -45,7 +45,7 @@ Now you can add this part to your maven pom file:
     <url>file://${basedir}/my-repo</url>
   </repository>
 </repositories>
-<% end %>
+```
 
 Also have a look at [A maven friendly pattern for storing dependencies in version control](http://brettporter.wordpress.com/2009/06/10/a-maven-friendly-pattern-for-storing-dependencies-in-version-control/) for an alternative.
 
@@ -59,7 +59,7 @@ I struggled with the combination of the two and finally found the answer in this
 
 It seems that depending on the versions of the archiver and Assembly plugin you have to move things around in the maven config file. And if you're on jdk 1.6 you need extra options. The following worked for me:
 
-<% codify(:xml) do %>
+```xml
     <build>
     <plugins>
       <plugin>
@@ -105,5 +105,5 @@ It seems that depending on the versions of the archiver and Assembly plugin you 
       </plugins>
       </build>
 </project>
-<% end %>
+```
 

@@ -40,18 +40,18 @@ The first step is to create a custom cdrom that contains the all our configurati
 
 Let's begin by setting some variables
 
-<% codify (:shell) do %>
+```shell
 ESX_ISOFILE="$HOME/SavedDownloads/esx-DVD-4.1.0-260247.iso"
 ESX_CUSTOM_ISOFILE="/tmp/esx-custom.iso"
 ESX_CUSTOM_ISO_TEMPDIR="/tmp/esx-new-iso"
 ESX_KS_PORT=7125
 ESX_KS_HOST="192.168.2.30"
 ESX_KICKSTART_DIR="/tmp/"
-<% end %>
+```
 
 We unpack the original Cdrom and change the kickstart files on it: 
 
-<% codify (:shell) do %>
+```shell
 # Mount the Original ESX Cdrom
 MOUNT_POINT=$( hdiutil mount $ESX_ISOFILE -nobrowse|tail -1 |cut -d ' ' -f 2-|cut -d '/' -f 2-)
 echo $MOUNT_POINT
@@ -98,7 +98,7 @@ cat $ESX_CUSTOM_ISO_TEMPDIR/isolinux/isolinux.cfg
 mkisofs -l -J -R -r -T -o $ESX_CUSTOM_ISOFILE -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table $ESX_CUSTOM_ISO_TEMPDIR
 
 hdiutil unmount $MOUNT_POINT
-<% end %>
+```
 
 Now that you have created it, you can use this cdrom to boot from and it will try to fetch the kickstart file from [a webserver](#webserver) 
 
@@ -113,7 +113,7 @@ You can find out all options [http://www.vmware.com/pdf/vsphere4/r41/vsp_41_esx_
 Another easy way to get started is that after a manual install, there will be a resulting kickstart file created in /root/ks.cfg
 
 Before we start the creation , let's set some variables we will use in the commands:
-<% codify (:shell) do %>
+```shell
 ESX_PASSWORD="thepassword"
 ESX_IP="192.168.2.240"
 ESX_HOSTNAME="esx4-server.example.org"
@@ -124,18 +124,18 @@ ESX_MASK="255.255.255.0"
 ESX_ADMIN="esxadmin"
 ESX_ADMIN_KEY="ssh-dss AAAAB3NzaC1kc3MAAACBAMAgxcGLk3QynAJdZmkXBh0/2BV78YY+lJJka3SPCXXFI6TEr2BnuIEmY7NwSViXFJSBrYVJgId73a7OHwsN3D9+w0NJe42J+0Z0rK1N1pEgqjf72dDb4ii/3LDQr9GaDv7G0MkSwLdLCN2cIHaEH8N2tS3moAj9Dbtsj298ekGDAAAAFQDI0iL4ETud0eGj1YemawySRMAVgwAAAIEAm1dyooc4thKGMHGtSq6TinAa58vRfN7XGGRzdGdfjMYBzTke996VedCzp1TXPN0YxFCdKhKAYnK7VH1EG9XtOzWT6MIVQ4QJJxlrS6abAqcARdJd0Er20FMxSdQwOdGT6xKK1i/C/3PawV0ZgLrp2cGlHD1tSofdx/ZP9/Z1ADwAAACAeMfHcZVpN2Wi5esr1zQa0c7IeGMC4154HsJ7GkdDK3ebRxugbgl3PKao8kM2/y3bA5ba52Ln+DRyji4x83l7o/OoTWw9xqjTKP05imWxKg977UOI6YossdCrAddr00FS6II7GofBfwdwnGHjT6vYycUskjGLZ5dMQkgZMZtv7TU= me@mymachine"
 ESX_DATASTORE="datastore1"
-<% end %>
+```
 
 The password of the ESX_ADMIN user needs to be encoded in the kickstart file. To generate it we will use the openssl command. 
 
 On a Mac system openssl is part of the base installation, so be aware that when you installed macports or brew that the syntax might differ.
 The string generated should look like $1$TBcBRI4V$6l0q1eaCnmsB8bpEsmko2.
 
-<% codify (:shell) do %>
+```shell
 ESX_ENC_PASSWD=$(/opt/local/bin/openssl passwd -1 $ESX_PASSWORD)
-<% end %>
+```
 
-<% codify (:shell) do %>
+```shell
 cat <<THE_END > $ESX_KICKSTART_DIR/ks.cfg
 accepteula
 # serialnum --esx=XXXXX-XXXXX-XXXXX-XXXXX-XXXXX
@@ -222,7 +222,7 @@ THE_END
 
 # Show the resulting kickstart file
 cat $ESX_KICKSTART_DIR/ks.cfg
-<% end %>
+```
 
 
 
@@ -231,11 +231,11 @@ cat $ESX_KICKSTART_DIR/ks.cfg
 On my mac machine, I only have one physical interface, it turns you can easily create other 'Virtual' Ethernet ports. This allows you to configure these as interfaces inside your Vmware Fusion virtual machine. This way you can simulate different interfaces (vmnic1,vmnic2,...) inside the Vmware Fusion virtual machine ESX instance.
 
 We set the ports we want: (you can add more to the list by adding ESX1,ESX2...)
-<% codify(:shell) do %>
+```shell
 ESX_NETPORTS="ESX1"
-<% end %>
+```
 
-<% codify(:shell) do %>
+```shell
 for port in $ESX_NETPORTS
 do
   sudo networksetup -createnetworkservice "Ethernet $port" "Ethernet"
@@ -249,17 +249,17 @@ sudo networksetup -setmanualwithdhcprouter "Ethernet ESX1" 192.168.4.30
 
 networksetup -listallhardwareports
 networksetup -listallnetworkservices
-<% end %>
+```
 
 To remove the network ports later use: 
-<% codify(:shell) do %>
+```shell
 for port in $ESX_NETPORTS
 do
   echo $port
   sudo networksetup -removenetworkservice "Ethernet $port"
 done 
 
-<% end %>
+```
 
 
 ### Creating a new vm in VMWare fusion suitable for ESX
@@ -267,7 +267,7 @@ To bad Vmware Fusion doesn't have a way to create a machine by scripting it, it 
 To overcome that problem , I first manually created an ESX machine and used that .vmx file as a template.
 
 Again setting some variables:
-<% codify (:shell) do %>
+```shell
 ESX_VM_NAME="esx4-server"
 ESX_VM_ISOFILE=ESX_CUSTOM_ISOFILE
 ESX_VM_MACADDRESS="00:0c:29:f3:aa:63"
@@ -283,18 +283,18 @@ ESX_VM_DISKTYPE="1"
 #    5                   : compressed disk optimized for streaming
 #    6                   : thin provisioned virtual disk - ESX 3.x and above
 ESX_VM_CPUS="4"
-<% end %>
+```
 
 Then we create the VM directory and a new disk for the new vm 
-<% codify (:shell) do %>
+```shell
 mkdir -p "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm"
 cd $HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm
 /Library/Application\ Support/VMware\ Fusion/vmware-vdiskmanager -c -s $ESX_VM_DISKSIZE -a lsilogic -t $ESX_VM_DISKTYPE $ESX_VM_NAME.vmdk
-<% end %>
+```
 
 Now that we have the disk, we can continue with the machine .vmx file
 
-<% codify (:shell) do %>
+```shell
 cat << EOF > "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx"
 .encoding = "UTF-8"
 config.version = "8"
@@ -384,10 +384,10 @@ ethernet0.bsdName = "en0"
 ethernet0.displayName = "Ethernet"
 EOF
 
-<% end %>
+```
 
 If you want to add the extra interfaces we defined earlier: repeat this for every interface you need (ESX1,ESX2,..ESXN)
-<% codify (:shell) do %>
+```shell
 cat << EOF >> "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx"
 ethernet1.present = "TRUE"
 ethernet1.connectionType = "custom"
@@ -399,7 +399,7 @@ ethernet1.vnet = "vmnet2"
 ethernet1.bsdName = "en0"
 ethernet1.displayName = "Ethernet ESX1"
 EOF
-<% end %>
+```
 
 
 <a name="admin_privilege"></a>
@@ -413,7 +413,7 @@ The trick is to change the system.privilege.admin setting. You set this by chang
 
 Here is an excerpt of that file; if you would run fusion as root this error will go away (allow-root). To give an ordinary user that privilege (and all the others!) , change it the text after key:class, from  "user" to "allow"
 
-<% codify (:text) do %>
+```text
 <key>system.privilege.admin</key>
         <dict>
                <key>allow-root</key>
@@ -431,17 +431,17 @@ Here is an excerpt of that file; if you would run fusion as root this error will
                          <key>timeout</key>
                          <integer>300</integer>
 
-<% end %>
+```
 
 To script that you can: 
-<% codify (:shell) do %>
+```shell
 # Make a backup of the /etc/authorization file
 sudo cp /etc/authorization /etc/authorization.$$
 
 # Do the changes. Use with caution: this has an impact on security, but if you want to automate the start you need it!
 sudo sed -i -e'/system.privilege.admin/,/Used by AuthorizationExecuteWithPrivileges/ s/<string>user/<string>allow/' /etc/authorization
 
-<% end %>
+```
 
 Now the nagging GUI message should be gone when you start the ESX virtual machine. 
 
@@ -449,21 +449,21 @@ Now the nagging GUI message should be gone when you start the ESX virtual machin
 ### Restart network services (proved helpful)
 When you recreate machines often and maybe some of the parts of the script fail, I found it useful to restart the VMWare Fusion network 
 
-<% codify (:shell) do %>
+```shell
 sudo sh -c "/Library/Application\ Support/VMware\ Fusion/boot.sh --restart"
-<% end %>
+```
 
 <a name="ssh"></a>
 ### Start the machine (in Vmware Fusion)
-<% codify (:shell) do %>
+```shell
 /Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion start  "$HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx" nogui 
-<% end %> 
+``` 
 
 <a name="webserver"></a>
 ### Starting a disposable webserver
 To serve the kickstart we have create we use a disposable webserver, with the help of ruby. This saves from installing an apache or other stuff. Also it allows us to choose the port very easily.
 
-<% codify (:shell) do %>
+```shell
 # Create a disposable ruby based webserver
 # This will stop after the the file has been fetched
 cat <<EOF > $ESX_KICKSTART_DIR/ks.rb
@@ -491,23 +491,23 @@ EOF
 # Start the webserver
 cat $ESX_KICKSTART_DIR/ks.rb|ruby --"
 
-<% end %>
+```
 
 <a name="ssh"></a>
 ### Wait for SSH to be working
 Once the kickstart 'kicks' in, we have to wait until the ssh is available. We can use the ssh-keyscan command for that.
 After we got a connection, we can cleanup the keys with ssh-keygen -R and add the new one with the ssh-keyscan command.
 
-<% codify (:shell) do %>
+```shell
 sleep 200
 ssh-keyscan -T 10000  $ESX_IP
 ssh-keygen -R $ESX_IP
 ssh-keyscan -T 10000  $ESX_IP >> $HOME/.ssh/known_hosts
-<% end %>
+```
 
 ### Removing the ESX Machine
 If you need to start all over again, you can wipe the create ESX Machine like this: 
-<% codify(:shell) do %>
+```shell
 # List the running machines
 /Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion list
 
@@ -525,7 +525,7 @@ kill $FUSION_PID
 # Remove the machine (including disk ; take care ! )
 /Library/Application\ Support/VMware\ Fusion/vmrun  -T fusion deleteVM $HOME/Documents/Virtual\ Machines.localized/$ESX_VM_NAME.vmwarevm/$ESX_VM_NAME.vmx
 rm -rf $HOME/Documents/Virtual Machines.localized/$ESX_VM_NAME.vmwarevm
-<% end %>
+```
 
 ### Final words
 After this exercise you should be able to completely script the installation of a Vmware ESX virtual machine and make it run inside Vmware Fusion.

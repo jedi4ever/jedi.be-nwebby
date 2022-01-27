@@ -5,20 +5,30 @@ extension: html
 
 {{ >/header }}
 
-<div>
-	   <div><h2>{{ page.title }} </h2> </div>
+<div style="display: flex; align-items: center;">
+	<div>
+		<center>
+		<img style="width:50px ; border-radius:10px" src="/images/patrickdebois.jpg"><br>
+		<div style="font-size:0.4em">Patrick Debois </div>
+		</center>
+	</div>
+	<div>
+	   <h2 style="padding-left:20px" > {{ page.title }} </h2>
+	</div>
+</div>
 	
 <div>
 {{ >content }}
 </div>
 
+<div>
     {{ #page.blog_post}}
 	   <div style="padding: 3em;  margin-top: auto;">
 		{{ >/discuss_comments }}
 	   </div>
     {{ /page.blog_post}}
 
- </div>
+</div>
 
 
 <div>

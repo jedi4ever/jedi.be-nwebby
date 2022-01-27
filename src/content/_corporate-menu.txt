@@ -30,7 +30,7 @@
 <div class="icons">
 <a href="https://www.twitter.com/patrickdebois"><img class="icon" alt="twitter" title="twitter" src="/images/twitter.png"></a>
 <a href="https://be.linkedin.com/in/patrickdebois"><img class="icon" alt="linkedin" title="linkedin" src="/images/linkedin.png"></a>
-<a href="https://www.youtube.com/user/jedibvba"><img class="icon" alt="youtube" title="youtube" src="/images/youtube.png"></a>
+<a href="https://www.youtube.com/channel/UCepBEvfydfEQkgRZ-bHbtbg"><img class="icon" alt="youtube" title="youtube" src="/images/youtube.png"></a>
 <a href="https://github.com/jedi4ever"><img style="background-color: white" class="icon" alt="github" title="github" src="/images/github.png"></a>
 </div>
 </div>

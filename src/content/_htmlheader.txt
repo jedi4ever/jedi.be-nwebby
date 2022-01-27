@@ -10,6 +10,8 @@
    <link rel="stylesheet" href="/css/github.css">
    <meta name="viewport" content="width=device-width, initial-scale=1">
 
+{{ >/googleanalytics }}
+
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/dark.min.css">
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/base16/railscasts.min.css">
 

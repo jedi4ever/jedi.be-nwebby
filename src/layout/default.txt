@@ -7,7 +7,9 @@ extension: html
 <div>
 	   <div><h2>{{ page.title }} </h2> </div>
 	
-	   <div> {{ >content }}   </div>
+<div>
+{{ >content }}
+</div>
 
     {{ #page.blog_post}}
 	   <div style="padding: 3em;  margin-top: auto;">

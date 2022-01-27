@@ -37,34 +37,41 @@ This document describes you to use:
 
 As described in <a href="http://commons.apache.org/fileupload/using.html">http://commons.apache.org/fileupload/using.html</a>
 You can specify &lt;yourMaxMemorySize&gt;, &lt;yourTempDirectory&gt;, &lt;yourMaxRequestSize&gt;
-<pre>// Create a factory for disk-based file items</pre>
-<pre>DiskFileItemFactory factory = new DiskFileItemFactory();</pre>
-<pre>// Set factory constraints
-factory.setSizeThreshold(<span>yourMaxMemorySize</span>);
-factory.setRepository(<strong>yourTempDirectory</strong>);</pre>
-<pre>// Create a new file upload handler
+
+```java
+// Create a factory for disk-based file items
+DiskFileItemFactory factory = new DiskFileItemFactory();
+// Set factory constraints
+factory.setSizeThreshold(yourMaxMemorySize);
+factory.setRepository(yourTempDirectory);
+// Create a new file upload handler
 ServletFileUpload upload = new ServletFileUpload(factory);
-<br>
+
 // Set overall request size constraint
 upload.setSizeMax(yourMaxRequestSize);
-<br>
+
 // Parse the request
-List /* FileItem */ items = upload.parseRequest(request);</pre>
-<p></p>
-<br>
+List /* FileItem */ items = upload.parseRequest(request);
+```
+
+
 Processing the items is easy. And check if it a file part
-<pre>// Process the uploaded items</pre>
-<pre>Iterator iter = items.iterator();
+```java
+// Process the uploaded items
+Iterator iter = items.iterator();
 while (iter.hasNext()) {
  FileItem item = (FileItem) iter.next();
- if (<strong>item.isFormField()</strong>) {
+ if (item.isFormField()) {
       processFormField(item);
  } else {
      processUploadedFile(item);
  }
-}</pre>
+}
+```
+
 You access the file characteristics like this:
-<pre>// Process a file upload
+```java
+// Process a file upload
 if (!item.isFormField()) {
      String fieldName = item.getFieldName();
      String fileName = item.getName();
@@ -72,41 +79,52 @@ if (!item.isFormField()) {
      boolean isInMemory = item.isInMemory();
      long sizeInBytes = item.getSize();
     ...
-}</pre>
+}
+````
+
 default implementation of FileUpload, write()  will attempt to rename the file to the specified destination, but if you want you can read the stream directly.
-<pre>// Process a file upload
+```java
+// Process a file upload
 if (writeToFile) {
  File uploadedFile = new File(...);
-          <span>item.write</span>(uploadedFile);
+          item.write(uploadedFile);
 } else {
-       InputStream uploadedStream = <strong>item.getInputStream</strong>();
+       InputStream uploadedStream = item.getInputStream();
         ...
  uploadedStream.close();
-}</pre>
-</p>
+}
+```
+
 <span>The streaming API:</span>
 <br>
 As described in <a href="http://commons.apache.org/fileupload/streaming.html">http://commons.apache.org/fileupload/streaming.html
 </a>fileupload provides a way to avoid the write to disk before your servlet can handle.
-<pre>// Check that we have a file upload request
-boolean isMultipart = ServletFileUpload.isMultipartContent(request);</pre>
+
+```java
+// Check that we have a file upload request
+boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+```
+
 Now we are ready to parse the request into its constituent items. Here's how we do it:
-<pre>// Create a new file upload handler
+
+```// Create a new file upload handler
 ServletFileUpload upload = new ServletFileUpload();
 // Parse the request
 FileItemIterator iter = upload.getItemIterator(request);
 while (iter.hasNext()) {
       FileItemStream item = iter.next();
      String name = item.getFieldName();
-     InputStream stream = item.<strong>openStream()</strong>;
+     InputStream stream = item.openStream();
      if (item.isFormField()) {
                System.out.println("Form field " + name + " with value " + Streams.asString(stream) + " detected.");
      } else {
-              System.out.println("File field " + name + " with file name " + <strong>item.getName()</strong> + " detected.");
+              System.out.println("File field " + name + " with file name " + item.getName() + " detected.");
               // Process the input stream
               ...
      }
-}</pre>
+}
+```
+
 <span>How to write is to disk most efficiently:</span>
 <br>
 We're allmost there. Now that we have the name, the stream we can write it to the correct place on this, without tempfiles and overloaded memory!
@@ -114,55 +132,72 @@ We're allmost there. Now that we have the name, the stream we can write it to th
 <a href="http://java.sun.com/docs/books/performance/1st_edition/html/JPIOPerformance.fm.html">http://java.sun.com/docs/books/performance/1st_edition/html/JPIOPerformance.fm.html</a> describes different ways you can use to write your file to disk
 <br>
 <strong>Option 1 :</strong> The naive way, we take the inputstream and write it byte per byte to an outputstream.
-<pre>FileOutputStream fout= new FileOutputStream (yourPathtowriteto);
+
+```java
+FileOutputStream fout= new FileOutputStream (yourPathtowriteto);
 int byte_;
-while ((byte_=<strong>stream</strong>.read()) != -1)
+while ((byte_=stream.read()) != -1)
 {
     fout.write(byte_);
 }
-fout.close();</pre>
+fout.close();
+```
+
 <strong>Option 2</strong>: We use bufferstreams to do the job
-<pre>FileOutputStream fout= new FileOutputStream ( yourPathtowriteto );
-<span>BufferedOutputStream</span> bout= new BufferedOutputStream (fout);
-<strong>BufferedInputStream</strong> bin= new BufferedInputStream(stream);
-<br>
+
+```java
+FileOutputStream fout= new FileOutputStream ( yourPathtowriteto );
+BufferedOutputStream< bout= new BufferedOutputStream (fout);
+BufferedInputStream bin= new BufferedInputStream(stream);
+
 int byte_;
 while ((byte_=bin.read()) != -1)
 {
      bout.write(byte_);
 }
 bout.close();
-bin.close();</pre>
+bin.close();
+```
+
 <span>Option 3</span>: Use a byte array instead of per byte. You can experiment with different buffersize to see the effect. This depends on your filesystem blocksize and your disk cache size and so on.
 <p></p>
 <p></p>
-<br>
-<pre> FileOutputStream fout= new FileOutputStream (yourPathtowriteto);
+
+
+```java
+ FileOutputStream fout= new FileOutputStream (yourPathtowriteto);
  BufferedOutputStream bout= new BufferedOutputStream (fout);
  BufferedInputStream bin= new BufferedInputStream(stream);
- byte buf[] = new <span>byte[2048]</span>;
+ byte buf[] = new byte[2048]>;
  while ((bin.read(buf)) != -1)
  {
      bout.write(buf);
  }
  bout.close();
-bin.close();</pre>
+bin.close();
+```
+
+
 <strong>Option 4</strong>: Using a *static* byte array: to avoid reallocation , we create a final buffer and use synchronized to control access to it.
 <br>
 Again experiment with the buffersize
-<pre> static <strong>final</strong> int BUFF_SIZE = 100000;
- static <strong>final</strong> byte[] buffer = new byte[BUFF_SIZE];
-<br>
+
+```java
+static final> int BUFF_SIZE = 100000;
+ static final byte[] buffer = new byte[BUFF_SIZE];
+
  FileOutputStream fout= new FileOutputStream (yourPathtowriteto);
  while (true) {
-       <strong>synchronized</strong> (buffer) {
+       synchronized (buffer) {
             int amountRead = stream.read(buffer);
             if (amountRead == -1) {
                   break;
             }
         fout.write(buffer, 0, amountRead);
       }
- }</pre>
+ }
+ ```
+
 <span>Controlling network I/O in your appserver</span>
 <br>
 We optimized our file writing. But we can also improve our network handling.

@@ -23,7 +23,7 @@ related:
 ---------
 
 ## Why
-Lots has been written about [Vagrant](http://vagrantup.com). It simply is [a great tool](http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011): people use it as a sandbox environment to develop their Chef recipes or Puppet manifests in a safe environment.
+Lots has been written about [Vagrant](http://vagrantup.com). It simply is a great tool: people use it as a sandbox environment to develop their Chef recipes or Puppet manifests in a safe environment.
 
 The workflow usually looks like this:
 

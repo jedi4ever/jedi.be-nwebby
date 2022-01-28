@@ -1,8 +1,8 @@
-<pre>
    	- Devopsdays Austin / Mooie plaatjes presentation - Word of the Godfather 2017?
     - Devopsdays Beijing - actual talk?
-
 	- Devops paris interview ??
+    - Mobile Delivery Days video
+
 
 Infrastructure as code: Automation is essential to DevOps. The infrastructure as code concept drives many of today’s cutting edge automaton techniques. What is it all about? Where are its limitations?
 Theo Schlossnagle – OmniTI
@@ -18,21 +18,30 @@ To download:
 - Idealcast podcast
 - Fireside chat Launchdarkly
 - Atlassian download
+- Atlassian Summit 2012 video
 - Devops Melbourne July 2020 | Patrick Debois & Natalia Djohari
 - InfoQ https://www.infoq.com/interviews/debois-devops
 
+- Gotocon - https://www.infoq.com/presentations/Using-Monitoring-and-Metrics-to-Learn-in-Development/
 
-	TODO New Devops Handbook v2
-	TODO Devops Handbook v1
-	TODO Mark Burgess book
+TODO - Agile 20211 - Continous Integration for the World UTAH
+Cast Codeurs Podcast
 
-	- ?? Security bij Belgian defence meetup
-	- ?? Apple boys gent - mobile delivery meetup
-	- ?? Oracle devsecops Talk internal
 
-	- Devops Melbourne (berlin) TODO 2021
-	- PepsiCo internal
+	<div>Gotocon Copenhagen - Using monitoring and metrics</div>	
+	<div>Gotocon 2011 - Devops Tools and Fools - Aarhus</div>	
+	<div>Gotocon 2011 - Devops Tools and Fools - Copenhagen</div>	
 
-	- ?? Lesson opleiding Puppet
-	- ?? Itrevolution talk online
-</pre>
+
+- ?? Itrevolution talk online
+- ?? Apple boys gent - mobile delivery meetup 
+- ?? Lesson opleiding Puppet
+- Infrastructure as Code - ABUG Session
+
+- Citcon / Dockercon attendance
+
+- Pragmatic Docker days
+- Puppetcamp
+- Devopsdays
+- Mobile Delivery Days
+- Agile Open

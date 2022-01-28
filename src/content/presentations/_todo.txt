@@ -1,0 +1,31 @@
+<pre>
+   	- Devopsdays Austin / Mooie plaatjes presentation - Word of the Godfather 2017?
+    - Devopsdays Beijing - actual talk?
+
+	- Devops paris interview ??
+
+Infrastructure as code: Automation is essential to DevOps. The infrastructure as code concept drives many of today’s cutting edge automaton techniques. What is it all about? Where are its limitations?
+Theo Schlossnagle – OmniTI
+Luke Kanies – Puppet Labs
+Adam Jacob – Opscode
+Erik Troan – rPath
+moderator: Patrick Debois
+
+Full talk with Andrew? Velocityconf 2011
+
+	TODO New Devops Handbook v2
+	TODO Devops Handbook v1
+	TODO Mark Burgess book
+
+	- ?? Security bij Belgian defence meetup
+	- ?? Apple boys gent - mobile delivery meetup
+	- ?? Oracle devsecops Talk internal
+
+	- Devops Melbourne (berlin) TODO 2021
+	- PepsiCo internal
+
+	- ?? Darin Pope podcast
+	- ?? Lesson opleiding Puppet
+	- ?? Itrevolution talk London
+	- ?? Itrevolution talk online
+	</pre>

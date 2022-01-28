@@ -32,10 +32,6 @@ This talk is probably the **most comprehensive tool list** that I've seen/made a
 
 Note: that at the end of the presentation there are many extra links still to be sorted or slight outdated tools.
 
-<center>
-<iframe src="http://www.slideshare.net/slideshow/embed_code/21814324" width="512" height="421" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC;border-width:1px 1px 0;margin-bottom:5px" allowfullscreen webkitallowfullscreen mozallowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="http://www.slideshare.net/jedi4ever/infrastructure-as-code-abug-session" title="Infrastructure as Code - ABUG Session" target="_blank">Infrastructure as Code - ABUG Session</a> </strong> from <strong><a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a></strong> </div>
-</center>
-
 
 I've given previous versions of this talk at Devoxx 2012 and Jax2012. Enjoy the Jax2012 video here:
 

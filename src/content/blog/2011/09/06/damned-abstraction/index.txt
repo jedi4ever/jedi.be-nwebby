@@ -11,12 +11,8 @@ In May 2011 I was asked to do a presentation at [GotoCon CopenHagen](http://goto
 Unfortunately due to illness I had to cancel at the last moment.
 I hope to make up for it in October at [GotoCon Aarhus](http://gotocon.com/aarhus-2011/speaker/Patrick+Debois)
 
-The slides were [already up on slideshare](http://www.slideshare.net/jedi4ever/damn-abstraction-development-vs-operational-efficiency), but now I finally found the time to post them on my blog.
-
 The main theme was that there is the notion in software development that everything can be solved by another level of indirection/abstraction. In a way the cloud are like one of these abstractions. Personally I really like abstraction as they allow you easier thinking about your problem domain. But ... , if things fails you want to understand what happens below the abstractions.
 
 Many people think devops is about automation, that way their job easier will become easier. And some even talk about no-ops as the Walhalla. The truth is that things will fail eventually and you need to be prepared to cope with that. And this is where devops helps: it helps you save time to go faster but by collaborating you can understand these complex systems and by pairing your whole team needs to be aware these things can happen. The right balance between non-functional and functional work stays whether it is automated or not.
 
-Enjoy the presentation :
-
-<div style="width:425px" id="__ss_7922787"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/damn-abstraction-development-vs-operational-efficiency" title="Damn Abstraction : Development vs Operational Efficiency " target="_blank">Damn Abstraction : Development vs Operational Efficiency </a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/7922787" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>
+Enjoy the presentation

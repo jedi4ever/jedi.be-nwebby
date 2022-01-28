@@ -34,8 +34,6 @@ Some people have asked for an overview on how all these tools relate to each-oth
 <img src='{{ page.url }}/how-it-fits-together.png'>
 
 
-<div style="width:425px" id="__ss_9147720"><strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/ci-for-the-world-agile-2011" title="CI for the world - Agile 2011">CI for the world - Agile 2011</a></strong><object id="__sse9147720" width="425" height="355"><param name="movie" value="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=presentation-agile-2011-slides-only-110906061357-phpapp02&stripped_title=ci-for-the-world-agile-2011&userName=jedi4ever" /><param name="allowFullScreen" value="true"/><param name="allowScriptAccess" value="always"/><embed name="__sse9147720" src="http://static.slidesharecdn.com/swf/ssplayer2.swf?doc=presentation-agile-2011-slides-only-110906061357-phpapp02&stripped_title=ci-for-the-world-agile-2011&userName=jedi4ever" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="425" height="355"></embed></object><div style="padding:5px 0 12px">View more <a href="http://www.slideshare.net/">presentations</a> from <a href="http://www.slideshare.net/jedi4ever">Patrick Debois</a>.</div></div>
-
 #### Demo of veewee creating Just Enough Operating System
 <a name="veewee"></a>
 <iframe width="425" height="349" src="http://www.youtube.com/embed/gR28-aHX_nU?hl=en&fs=1" frameborder="0" allowfullscreen></iframe>

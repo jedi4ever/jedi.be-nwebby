@@ -23,8 +23,6 @@ In the first part of the session, I will iterate over the conceptual models I’
 
 Don’t expect specific tools to be explained in full; We will refer to the tools as examples of concepts though. Come with an open mind and re-think / re-evaluate your “devops” project while applying the principles of the different models.
 
-<iframe src="//www.slideshare.net/slideshow/embed_code/28916468" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="//www.slideshare.net/jedi4ever/modelling-devops" title="Modelling Devops &amp; Seeing the system" target="_blank">Modelling Devops &amp; Seeing the system</a> </strong> from <strong><a href="//www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a></strong> </div>
-
 <iframe width="640" height="480" src="//www.youtube.com/embed/s4Qet9-2jQ0" frameborder="0" allowfullscreen></iframe>
 
 Synchronized Video on the <a href="https://yow.eventer.com/yow-2013-1080/devops-modelling-theory-practice-and-caveats-by-patrick-debois-1382">Yow Conference Site</a>

@@ -19,4 +19,3 @@ This presentation is a summary of my learnings along the way:
 
 Here's my presentation from [cloudcamp Ghent 2011](http://www.cloudcamp.org/ghent/2011-11-21) that was brilliantly organized by [Frederik Van Hecke](http://blog.cluttr.be/)
 
-<div style="width:425px" id="__ss_10242489"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/manage-your-devtestprod-like-a-cloud" title="Manage your dev-test-prod like a cloud" target="_blank">Manage your dev-test-prod like a cloud</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/10242489" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>

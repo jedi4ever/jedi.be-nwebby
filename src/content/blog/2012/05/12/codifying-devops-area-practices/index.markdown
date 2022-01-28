@@ -139,7 +139,7 @@ Examples would be :
 - Process Layer : Number of Change Requests/Day
 - People Layer : People Involved per deploy
 
-This is not yet fleshed out enough , I'm guessing it will be based on my research done for my [Velocity 2011 Presentation (Devops Metrics)](http://www.slideshare.net/jedi4ever/devops-metrics)
+This is not yet fleshed out enough , I'm guessing it will be based on my research done for my [Velocity 2011 Presentation (Devops Metrics)]
 
 ### Devops Scorecard
 To present progress during your 'devops' journey you can put all these things in a nice matrix, to get an overview on where you are at optimizing at the different layers and areas.

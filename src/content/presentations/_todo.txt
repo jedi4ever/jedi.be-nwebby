@@ -11,7 +11,16 @@ Adam Jacob – Opscode
 Erik Troan – rPath
 moderator: Patrick Debois
 
-Full talk with Andrew? Velocityconf 2011
+To download:
+
+- Full talk with Andrew? Velocityconf 2011 - Ask again
+- Download YOW video
+- Idealcast podcast
+- Fireside chat Launchdarkly
+- Atlassian download
+- Devops Melbourne July 2020 | Patrick Debois & Natalia Djohari
+- InfoQ https://www.infoq.com/interviews/debois-devops
+
 
 	TODO New Devops Handbook v2
 	TODO Devops Handbook v1
@@ -24,8 +33,6 @@ Full talk with Andrew? Velocityconf 2011
 	- Devops Melbourne (berlin) TODO 2021
 	- PepsiCo internal
 
-	- ?? Darin Pope podcast
 	- ?? Lesson opleiding Puppet
-	- ?? Itrevolution talk London
 	- ?? Itrevolution talk online
-	</pre>
+</pre>

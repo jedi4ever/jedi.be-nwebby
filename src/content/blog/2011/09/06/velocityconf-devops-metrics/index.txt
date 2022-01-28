@@ -17,6 +17,4 @@ Also it makes no sense to increase the number of interactions between different 
 
 A third take-away I got from the research what that in the Design world, they too are exploring ideas outside the usual <i>user-centered design</i> and are going the way of <i>[Participatory design](http://www.tandfonline.com/doi/abs/10.1080/15710880701875068)</i>. This fits directly to the devops idea, you automate and do all the stuff you need to, to free up more time in design. And there you can collaborate with your collegues, your peers from other groups and even with your end-users to test out new ideas. In the past design used to be a collective and shared ability. Only in the recent years this craft has become an [individual thing](http://www.amazon.com/Research-Design-Thinking-Nigel-Cross/dp/9062757960).
 
-Enjoy the presentation :
-
-<div style="width:425px" id="__ss_8332700"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/devops-metrics" title="Devops Metrics" target="_blank">Devops Metrics</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/8332700" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>
+Enjoy the presentation

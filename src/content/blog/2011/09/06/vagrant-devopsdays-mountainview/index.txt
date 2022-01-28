@@ -24,9 +24,7 @@ The second idea, is that it would make sense to build vagrant support in IDE's s
 
 I was proud to do a presentation on vagrant at [devopsdays Mountain View 2011](http://devopsdays.org/events/2011-mountainview/) and the nice folks from LinkedIn made an incredible nice video on it.
 
-Enjoy the presentation :
-
-<div style="width:425px" id="__ss_8340999"> <strong style="display:block;margin:12px 0 4px"><a href="http://www.slideshare.net/jedi4ever/vagrant-devopsdays-mountain-view-2011" title="Vagrant devopsdays Mountain View 2011" target="_blank">Vagrant devopsdays Mountain View 2011</a></strong> <iframe src="http://www.slideshare.net/slideshow/embed_code/8340999" width="425" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no"></iframe> <div style="padding:5px 0 12px"> View more <a href="http://www.slideshare.net/" target="_blank">presentations</a> from <a href="http://www.slideshare.net/jedi4ever" target="_blank">Patrick Debois</a> </div> </div>
+Enjoy the presentation
 
 And the video:
 

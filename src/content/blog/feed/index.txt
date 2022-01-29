@@ -6,42 +6,51 @@ site:      www.jedi.be
 author:    Patrick Debois
 email:     Patrick.Debois@jedi.be
 extension: xml
+layout: rss
 ---
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"
+ xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/">
 	<channel>
 		<atom:link href="https://www.jedi.be/blog/feed/" rel="self" type="application/rss+xml" />
 		<title>{{ page.title}}/title>
 		<description>{{ page.description }}</description>
-		<link>http://{{ page.site}}/blog</link>
-		<pubDate><%= Time.now.gmtime.rfc822 %></pubDate>
-		<generator>webby rss script</generator>
-		<lastBuildDate><%= Time.now.gmtime.rfc822 %></lastBuildDate>
+		<link>https://{{ page.site}}/blog</link>
+		<generator>nwebby rss script</generator>
 		<managingEditor>{{ page.email }} ({{ page.author }})</managingEditor>
 		<webMaster>{{ page.email }} ({{ page.author }})</webMaster>
 		<language>en</language>
-	 <%- @pages.find( :limit => 10,
-		 :in_directory => 'blog',
-		 :recursive => true,
-		 :sort_by => 'created_at',
-		 :reverse => true).each do |article|
 
-	 -%>
-		<item>
-			<title><%= h(article.title) %></title>
-			<link>http://<%= @page.site %><%= article.url %></link>
-			<% if article.guid.nil? %>
-			<guid isPermaLink="false">http://{{ page.site }}{{ article.url}}</guid>
-			<% else %>
-			<guid isPermaLink="false">{{ article.guid }}</guid>
-			<% end %>
-			<pubDate><%= article.created_at.gmtime.rfc822 %></pubDate>
-			<comments>http://<%= @page.site %><%= article.url %>#comments</comments>
+{{#rss.Feed}}
+  {{#Items}}
+  		<item>
+			<title>{{ Title }}</title>
+			<link>https://{{ page.site}}{{{ Link }}}</link>
+			<comments>https://{{ page.site}}{{{ Link }}}/#comments</comments>
+
+			<description>{{{ Content }}}</description>
+			<content:encoded>{{{ Content }}}
+			<![CDATA[<%= REXML::CData.new(render(article)) %>]]>
+			
+			</content:encoded>
+			<pubDate>{{{ pubDate }}}</pubDate> // article.created_at.gmtime.rfc822
+		</item>
+  {{/Items}}
+{{/rss.Feed}}
+
+
+	</channel>
+</rss>
+
+
+DONE 
+
 			<description><%= normaltext=render(article); 
-			normaltext.gsub!('<img src="/', '<img src="http://'+@page.site+'/')
-			normaltext.gsub!("<img src='/", "<img src='http://"+@page.site+'/')
+			normaltext.gsub!('<img src="/', '<img src="https://'+@page.site+'/')
+			normaltext.gsub!("<img src='/", "<img src='https://"+@page.site+'/')
+						h(normaltext) %></description>
 
-			 h(normaltext) %></description>
-		
+
+	
 			<%- if !article.keywords.nil? %>
 				<%- article.keywords.each do |keyword| %>
 		   			<category><![CDATA[<%= keyword %>]]></category>
@@ -53,8 +62,3 @@ extension: xml
 					<% end %>
 		        <% end %>
 		   <% end %>
-			<content:encoded><![CDATA[<%= REXML::CData.new(render(article)) %>]]></content:encoded>
-		</item>
-	<% end %>
-	</channel>
-</rss>

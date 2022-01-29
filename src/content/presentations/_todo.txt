@@ -21,17 +21,14 @@ To download:
 - Atlassian Summit 2012 video
 - Devops Melbourne July 2020 | Patrick Debois & Natalia Djohari
 - InfoQ https://www.infoq.com/interviews/debois-devops
-
 - Gotocon - https://www.infoq.com/presentations/Using-Monitoring-and-Metrics-to-Learn-in-Development/
-
-TODO - Agile 20211 - Continous Integration for the World UTAH
 Cast Codeurs Podcast
 
+TODO - Agile 20211 - Continous Integration for the World UTAH
 
 	<div>Gotocon Copenhagen - Using monitoring and metrics</div>	
 	<div>Gotocon 2011 - Devops Tools and Fools - Aarhus</div>	
 	<div>Gotocon 2011 - Devops Tools and Fools - Copenhagen</div>	
-
 
 - ?? Itrevolution talk online
 - ?? Apple boys gent - mobile delivery meetup 

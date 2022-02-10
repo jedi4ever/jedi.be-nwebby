@@ -29,3 +29,5 @@ sync:
 cache:
 	s3cmd --recursive modify --add-header="Cache-Control:public,max-age=60"  --no-preserve s3://www.jedi.be/
 
+link:
+	 npm link ../nwebby/

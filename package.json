@@ -7,10 +7,5 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "nwebby": "^2.0.0"
-  },
-  "dependencies": {
-  }
+  "license": "ISC"
 }
